@@ -15,6 +15,34 @@ ilr_basis = function(dim){
   .Call('coda_base_ilr_basis_default', PACKAGE = 'coda.base', dim)
 }
 
+#' Default additive log-ratio basis
+#'
+#' @param dim number of components
+#' @return matrix
+#' @examples
+#' alr_basis(5)
+#' @export
+alr_basis = function(dim, denominator = dim, numerator = which(denominator != 1:dim)){
+  res = .Call('coda_base_alr_basis_default', PACKAGE = 'coda.base', dim)
+  res = cbind(res, 0)
+  if(dim != denominator){
+    res[c(denominator, dim),] = res[c(dim, denominator),]
+    res[,c(denominator, dim)] = res[,c(dim, denominator)]
+  }
+  res[,numerator]
+}
+
+#' Default centered log-ratio basis
+#'
+#' @param dim number of components
+#' @return matrix
+#' @examples
+#' clr_basis(5)
+#' @export
+clr_basis = function(dim){
+  .Call('coda_base_clr_basis_default', PACKAGE = 'coda.base', dim)
+}
+
 #' Principal components orthonormal basis
 #'
 #' @param X pc_basis
@@ -127,7 +155,7 @@ sbp_basis = function(X, ..., silent=F){
 #' @examples
 #' coordinates(c(1,2,3,4,5))
 #' @export
-coordinates = function(X, basis = ilr_basis(getDim(X)), label = 'x'){
+coordinates = function(X, basis = 'ilr', label = 'x', sparse_basis = FALSE){
   class_type = class(X)
   is_vector = is.vector(X)
   is_data_frame = is.data.frame(X)
@@ -139,10 +167,32 @@ coordinates = function(X, basis = ilr_basis(getDim(X)), label = 'x'){
   if(is_data_frame){
     RAW = as.matrix(X)
   }
-  COORD = .Call('coda_base_coordinates', PACKAGE = 'coda.base', RAW, basis)
-
+  if(is.character(basis)){
+    dim = ncol(RAW)
+    if(basis == 'ilr'){
+      basis = ilr_basis(dim)
+      COORD = .Call('coda_base_coordinates_basis', PACKAGE = 'coda.base', RAW, ilr_basis(dim), sparse = FALSE)
+    }else{
+      if(basis == 'alr'){
+        basis = alr_basis(dim)
+        COORD = .Call('coda_base_coordinates_alr', PACKAGE = 'coda.base', RAW, 0)
+      }else{
+        if(basis == 'clr'){
+          basis = clr_basis(dim)
+          COORD = .Call('coda_base_coordinates_basis', PACKAGE = 'coda.base', RAW, clr_basis(dim), sparse = FALSE)
+        }else{
+          stop(sprintf('Basis %d not recognized'))
+        }
+      }
+    }
+  }else{
+    if(is.matrix(basis)){
+      COORD = .Call('coda_base_coordinates_basis', PACKAGE = 'coda.base', RAW, basis, sparse_basis)
+    }else{
+      stop(sprintf('Basis need to be either an string or a matrix'))
+    }
+  }
   colnames(COORD) = sprintf(sprintf('%s%%0%dd',label, 1+floor(log(ncol(COORD), 10))),1:ncol(COORD))
-
   if(is_vector){
     COORD = COORD[1,]
     names(COORD) = sprintf(sprintf('%s%%0%dd', label, 1+floor(log(length(COORD), 10))),1:length(COORD))

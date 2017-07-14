@@ -6,6 +6,28 @@
 
 using namespace Rcpp;
 
+// alr_basis_default
+arma::mat alr_basis_default(unsigned int dim);
+RcppExport SEXP coda_base_alr_basis_default(SEXP dimSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< unsigned int >::type dim(dimSEXP);
+    rcpp_result_gen = Rcpp::wrap(alr_basis_default(dim));
+    return rcpp_result_gen;
+END_RCPP
+}
+// clr_basis_default
+arma::mat clr_basis_default(unsigned int dim);
+RcppExport SEXP coda_base_clr_basis_default(SEXP dimSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< unsigned int >::type dim(dimSEXP);
+    rcpp_result_gen = Rcpp::wrap(clr_basis_default(dim));
+    return rcpp_result_gen;
+END_RCPP
+}
 // ilr_basis_default
 arma::mat ilr_basis_default(unsigned int dim);
 RcppExport SEXP coda_base_ilr_basis_default(SEXP dimSEXP) {
@@ -61,15 +83,40 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// coordinates
-arma::mat coordinates(arma::mat X, arma::mat B);
-RcppExport SEXP coda_base_coordinates(SEXP XSEXP, SEXP BSEXP) {
+// coordinates_alr2
+arma::mat coordinates_alr2(arma::mat X, int denominator);
+RcppExport SEXP coda_base_coordinates_alr2(SEXP XSEXP, SEXP denominatorSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
+    Rcpp::traits::input_parameter< int >::type denominator(denominatorSEXP);
+    rcpp_result_gen = Rcpp::wrap(coordinates_alr2(X, denominator));
+    return rcpp_result_gen;
+END_RCPP
+}
+// coordinates_alr
+arma::mat coordinates_alr(arma::mat X, int denominator);
+RcppExport SEXP coda_base_coordinates_alr(SEXP XSEXP, SEXP denominatorSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
+    Rcpp::traits::input_parameter< int >::type denominator(denominatorSEXP);
+    rcpp_result_gen = Rcpp::wrap(coordinates_alr(X, denominator));
+    return rcpp_result_gen;
+END_RCPP
+}
+// coordinates_basis
+arma::mat coordinates_basis(arma::mat X, arma::mat B, bool sparse);
+RcppExport SEXP coda_base_coordinates_basis(SEXP XSEXP, SEXP BSEXP, SEXP sparseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type B(BSEXP);
-    rcpp_result_gen = Rcpp::wrap(coordinates(X, B));
+    Rcpp::traits::input_parameter< bool >::type sparse(sparseSEXP);
+    rcpp_result_gen = Rcpp::wrap(coordinates_basis(X, B, sparse));
     return rcpp_result_gen;
 END_RCPP
 }

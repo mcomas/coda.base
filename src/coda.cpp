@@ -3,13 +3,38 @@
 #include <RcppArmadillo.h>
 #include "coda.h"
 #include <random>
-#include <vector>
 
 // Enable C++11 via this plugin (Rcpp 0.10.3 or later)
 // [[Rcpp::plugins(cpp11)]]
 
 using namespace Rcpp;
 
+
+// [[Rcpp::export]]
+arma::mat alr_basis_default(unsigned int dim){
+  arma::mat B = arma::mat(dim, dim-1);
+  for(unsigned int i = 0; i < dim - 1; i++){
+    for(unsigned int j = 0; j < dim - 1; j++){
+      B(i,j) = i == j ? 1 : 0;
+    }
+  }
+  for(unsigned int j = 0; j < dim - 1; j++){
+    B(dim-1,j) = -1;
+  }
+  return(B);
+}
+
+// [[Rcpp::export]]
+arma::mat clr_basis_default(unsigned int dim){
+  arma::mat B = arma::mat(dim, dim);
+  double dim_inv = -1/(double)dim;
+  for(unsigned int i = 0; i < dim; i++){
+    for(unsigned int j = 0; j < dim; j++){
+      B(i,j) = i == j ? 1 + dim_inv : dim_inv;
+    }
+  }
+  return(B);
+}
 
 // [[Rcpp::export]]
 arma::mat ilr_basis_default(unsigned int dim){
@@ -86,9 +111,41 @@ arma::mat inv_clr_coordinates(arma::mat clrX){
 }
 
 // [[Rcpp::export]]
-arma::mat coordinates(arma::mat X, arma::mat B){
+arma::mat coordinates_alr2(arma::mat X, int denominator){
   arma::mat logX = log(X);
+  arma::mat res = logX(arma::span::all, arma::span(0,X.n_cols-2));
+  for(int i = 0; i < res.n_cols; i++){
+    res(arma::span::all, i) -= logX(arma::span::all,X.n_cols-1);
+  }
+  return(res);
+}
+
+// [[Rcpp::export]]
+arma::mat coordinates_alr(arma::mat X, int denominator){
+  arma::mat logX = log(X);
+  arma::mat res(logX.n_rows, logX.n_cols-1);
+  int idenom = logX.n_cols-1;
+  for(int j = 0; j < res.n_cols; j++){
+    for(int i = 0; i< res.n_rows; i++){
+      res(i,j) = logX(i,j) - logX(i,idenom);
+    }
+  }
+  //arma::mat res = logX(arma::span::all, arma::span(0,X.n_cols-2));
+  //arma::vec vdenom = logX.col(X.n_cols-1);
+  //res.each_col() -= vdenom;
+  return(res);
+}
+
+// [[Rcpp::export]]
+arma::mat coordinates_basis(arma::mat X, arma::mat B, bool sparse = false){
+  if(sparse){
+    arma::sp_mat sB(B);
+    arma::mat logX = log(X);
+    return(logX * sB);
+  }else{
+    arma::mat logX = log(X);
     return(logX * B);
+  }
 }
 
 // [[Rcpp::export]]
