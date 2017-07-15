@@ -120,14 +120,14 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// coordinates_default
-arma::mat coordinates_default(arma::mat X);
-RcppExport SEXP coda_base_coordinates_default(SEXP XSEXP) {
+// ilr_coordinates
+arma::mat ilr_coordinates(arma::mat X);
+RcppExport SEXP coda_base_ilr_coordinates(SEXP XSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
-    rcpp_result_gen = Rcpp::wrap(coordinates_default(X));
+    rcpp_result_gen = Rcpp::wrap(ilr_coordinates(X));
     return rcpp_result_gen;
 END_RCPP
 }

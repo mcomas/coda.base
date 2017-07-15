@@ -149,7 +149,7 @@ arma::mat coordinates_basis(arma::mat X, arma::mat B, bool sparse = false){
 }
 
 // [[Rcpp::export]]
-arma::mat coordinates_default(arma::mat X){
+arma::mat ilr_coordinates(arma::mat X){
   arma::mat logX = log(X);
   arma::mat B = ilr_basis_default(X.n_cols);
   return(logX * B);

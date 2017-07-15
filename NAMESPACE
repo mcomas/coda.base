@@ -2,9 +2,9 @@
 
 export(alr_basis)
 export(clr_basis)
+export(composition)
 export(coordinates)
 export(ilr_basis)
-export(pc_basis)
 export(sbp_basis)
 importFrom(Rcpp,evalCpp)
 useDynLib(coda.base)

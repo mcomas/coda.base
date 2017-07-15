@@ -4,7 +4,7 @@ coda_basis = function(){
 
 }
 
-#' Default isometric log-ratio basis
+#' Build an isometric log-ratio basis
 #'
 #' @param dim number of components
 #' @return matrix
@@ -15,7 +15,7 @@ ilr_basis = function(dim){
   .Call('coda_base_ilr_basis_default', PACKAGE = 'coda.base', dim)
 }
 
-#' Default additive log-ratio basis
+#' Build an additive log-ratio basis
 #'
 #' @param dim number of components
 #' @return matrix
@@ -32,7 +32,7 @@ alr_basis = function(dim, denominator = dim, numerator = which(denominator != 1:
   res[,numerator]
 }
 
-#' Default centered log-ratio basis
+#' Build a centered log-ratio basis
 #'
 #' @param dim number of components
 #' @return matrix
@@ -43,23 +43,15 @@ clr_basis = function(dim){
   .Call('coda_base_clr_basis_default', PACKAGE = 'coda.base', dim)
 }
 
-#' Principal components orthonormal basis
-#'
-#' @param X pc_basis
-#' @return matrix
-#' @examples
-#' X = data.frame(a=exp(rnorm(10)), b=exp(rnorm(10)),
-#'                c=exp(rnorm(10)), d=exp(rnorm(10)),
-#'                e=exp(rnorm(10)), f=exp(rnorm(10)))
-#' pc_basis(X)
-#' @export
+
 pc_basis = function(X){
   lX =  log(X)
   pr = princomp(lX - rowMeans(lX))
   pr$loadings[,-NCOL(X)]
 }
 
-#' Define basis using binary partitions.
+#' Build an \code{\link{ilr_basis}} using a sequential binary partition or
+#' or a generic coordinate system based on balances.
 #'
 #' @param X composition from where to extract parts names
 #' @param ... balances to consider
@@ -162,10 +154,9 @@ sbp_basis = function(..., data, silent=F){
   RES
 }
 
-#'
 #' coordinates with respect an specific basis
 #'
-#' Calculate the coordinates with respect a given basis
+#' Calculate the coordinates of a composition with respect a given basis
 #'
 #' @param X compositional dataset. Either a matrix, a data.frame or a vector
 #' @param basis ilr base used to obtain coordinates
@@ -176,6 +167,8 @@ sbp_basis = function(..., data, silent=F){
 #' @seealso See functions \code{\link{ilr_basis}}, \code{\link{alr_basis}},
 #' \code{\link{clr_basis}}, \code{\link{sbp_basis}}, \code{\link{pc_basis}}
 #' to define different compositional basis.
+#' See function \code{\link{composition}} to obtain details on how to calculate
+#' a compositions from given coordinates.
 #' @examples
 #' coordinates(c(1,2,3,4,5))
 #' # Setting sparse_basi to TRUE can improve performance if log-ratio basis is sparse.
@@ -185,12 +178,11 @@ sbp_basis = function(..., data, silent=F){
 #' system.time(coordinates(X, alr_basis(K), sparse_basis = FALSE))
 #' system.time(coordinates(X, alr_basis(K), sparse_basis = TRUE))
 #' system.time(coordinates(X, 'alr', sparse_basis = TRUE))
-#'
 #' @export
 coordinates = function(X, basis = 'ilr', label = 'x', sparse_basis = FALSE){
   class_type = class(X)
-  is_vector = is.vector(X)
-  is_data_frame = is.data.frame(X)
+  is_vector = inherits(X, 'numeric')
+  is_data_frame = inherits(X, 'data.frame')
   RAW = X
   if(is_vector){
     class_type = 'double'
@@ -242,4 +234,78 @@ coordinates = function(X, basis = 'ilr', label = 'x', sparse_basis = FALSE){
   class(COORD) = class_type
   attr(COORD, 'basis') = basis
   COORD
+}
+
+#' coordinates with respect an specific basis
+#'
+#' Calculate a composition from coordinates with respect a given basis
+#'
+#' @param H coordinates of a composition. Either a matrix, a data.frame or a vector
+#' @param basis basis used to calculate the coordinates
+#' @param label name given to the coordinates
+#' @param sparse_basis Is the given matrix basis sparse? If TRUE calculation are carried
+#' taking into an account sparsity (default `FALSE`)
+#' @return coordinates with respect the given basis
+#' @seealso See functions \code{\link{ilr_basis}}, \code{\link{alr_basis}},
+#' \code{\link{clr_basis}}, \code{\link{sbp_basis}}, \code{\link{pc_basis}}
+#' to define different compositional basis.
+#' See function \code{\link{coordinates}} to obtain details on how to calculate
+#' coordinates of a given composition.
+#' @export
+composition = function(H, basis = NULL, label = 'x', sparse_basis = FALSE){
+  class_type = class(H)
+  if(is.null(basis) & "basis" %in% names(attributes(H))){
+    basis = attr(H, 'basis')
+  }else{
+    basis = 'ilr'
+  }
+  is_vector = inherits(H, 'numeric')
+  is_data_frame = inherits(H, 'data.frame')
+
+  COORD = H
+  if(is_vector){
+    class_type = 'double'
+    COORD = matrix(H, nrow=1)
+  }
+  if(is_data_frame){
+    COORD = as.matrix(H)
+  }
+  if(is.character(basis)){
+    dim = ncol(COORD)+1
+    if(basis == 'ilr'){
+      basis = ilr_basis(dim)
+      RAW = exp(COORD %*% t(basis))
+    }else{
+      if(basis == 'alr'){
+        basis = alr_basis(dim)
+        RAW = cbind(exp(COORD), 1)
+      }else{
+        if(basis == 'clr'){
+          dim = ncol(COORD)
+          basis = clr_basis(dim)
+          RAW = exp(COORD)
+        }else{
+          stop(sprintf('Basis %d not recognized'))
+        }
+      }
+    }
+  }else{
+    if(is.matrix(basis)){
+      RAW = exp(COORD %*% MASS::ginv(basis))
+    }else{
+      stop(sprintf('Basis need to be either an string or a matrix'))
+    }
+  }
+  RAW = RAW / rowSums(RAW)
+  colnames(RAW) = sprintf(sprintf('%s%%0%dd',label, 1+floor(log(ncol(RAW), 10))),1:ncol(RAW))
+  if(is_vector){
+    RAW = RAW[1,]
+    names(RAW) = sprintf(sprintf('%s%%0%dd', label, 1+floor(log(length(RAW), 10))),1:length(RAW))
+  }
+  if(is_data_frame){
+    RAW = as.data.frame(RAW)
+  }
+  class(RAW) = class_type
+  #attr(RAW, 'basis') = basis
+  RAW
 }

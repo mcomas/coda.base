@@ -41,8 +41,8 @@ coordinates_basis <- function(X, B, sparse = FALSE) {
     .Call('coda_base_coordinates_basis', PACKAGE = 'coda.base', X, B, sparse)
 }
 
-coordinates_default <- function(X) {
-    .Call('coda_base_coordinates_default', PACKAGE = 'coda.base', X)
+ilr_coordinates <- function(X) {
+    .Call('coda_base_ilr_coordinates', PACKAGE = 'coda.base', X)
 }
 
 inv_ilr_coordinates <- function(ilrX) {
