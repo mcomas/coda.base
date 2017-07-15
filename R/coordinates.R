@@ -67,23 +67,42 @@ pc_basis = function(X){
 #' @return matrix
 #' @examples
 #' X = data.frame(a=1:2, b=2:3, c=4:5, d=5:6, e=10:11, f=100:101, g=1:2)
-#' sbp_basis(X,
-#'           b1 = a~b+c+d+e+f+g,
+#' sbp_basis(b1 = a~b+c+d+e+f+g,
 #'           b2 = b~c+d+e+f+g,
 #'           b3 = c~d+e+f+g,
 #'           b4 = d~e+f+g,
 #'           b5 = e~f+g,
-#'           b6 = f~g)
+#'           b6 = f~g, data = X)
+#' sbp_basis(b1 = a~b,
+#'          b2 = b1~c,
+#'          b3 = b2~d,
+#'          b4 = b3~e,
+#'          b5 = b4~f,
+#'          b6 = b5~g, data = X)
+#' # A non-orthogonal basis can also be calculated.
+#' sbp_basis(b1 = a+b+c~e+f+g,
+#'           b2 = d~a+b+c,
+#'           b3 = d~e+g,
+#'           b4 = a~e+b,
+#'           b5 = b~f,
+#'           b6 = c~g, data = X)
 #' @export
-sbp_basis = function(X, ..., silent=F){
-  sbp = list(...)
+sbp_basis = function(..., data, silent=F){
+  if (!is.data.frame(data) && !is.environment(data) && !is.null(attr(data, "class")))
+    data <- as.data.frame(data)
+  else if (is.array(data))
+    stop("'data' must be a data.frame, not a matrix or an array")
 
+  sbp = list(...)
+  if(!all(unlist(lapply(sbp, all.vars)) %in% c(names(data), names(sbp)))){
+    stop("Balances should be columns of 'data'")
+  }
   nms = setdiff(names(sbp), "")
   if(length(nms) > 0){
     substitutions = lapply(sbp, all.vars)
     substitutions = substitutions[nms]
     while(!all(is.na(substitutions)) &
-          !all(unlist(substitutions) %in% names(X))){
+          !all(unlist(substitutions) %in% names(data))){
       for(nm in nms){
         substitutions = lapply(substitutions, function(subs){
           I = match(nm, subs)
@@ -146,14 +165,27 @@ sbp_basis = function(X, ..., silent=F){
 #'
 #' coordinates with respect an specific basis
 #'
-#' Calculate the coordinates with respect a fiven basis
+#' Calculate the coordinates with respect a given basis
 #'
 #' @param X compositional dataset. Either a matrix, a data.frame or a vector
 #' @param basis ilr base used to obtain coordinates
 #' @param label name given to the coordinates
+#' @param sparse_basis Is the given matrix basis sparse? If TRUE calculation are carried
+#' taking into an account sparsity (default `FALSE`)
 #' @return coordinates with respect the given basis
+#' @seealso See functions \code{\link{ilr_basis}}, \code{\link{alr_basis}},
+#' \code{\link{clr_basis}}, \code{\link{sbp_basis}}, \code{\link{pc_basis}}
+#' to define different compositional basis.
 #' @examples
 #' coordinates(c(1,2,3,4,5))
+#' # Setting sparse_basi to TRUE can improve performance if log-ratio basis is sparse.
+#' N = 100
+#' K = 1000
+#' X = matrix(exp(rnorm(N*K)), nrow=N, ncol=K)
+#' system.time(coordinates(X, alr_basis(K), sparse_basis = FALSE))
+#' system.time(coordinates(X, alr_basis(K), sparse_basis = TRUE))
+#' system.time(coordinates(X, 'alr', sparse_basis = TRUE))
+#'
 #' @export
 coordinates = function(X, basis = 'ilr', label = 'x', sparse_basis = FALSE){
   class_type = class(X)
@@ -181,7 +213,14 @@ coordinates = function(X, basis = 'ilr', label = 'x', sparse_basis = FALSE){
           basis = clr_basis(dim)
           COORD = .Call('coda_base_coordinates_basis', PACKAGE = 'coda.base', RAW, clr_basis(dim), sparse = FALSE)
         }else{
-          stop(sprintf('Basis %d not recognized'))
+          if(basis == 'pc'){
+            lRAW =  log(RAW)
+            pr = princomp(lRAW - rowMeans(lRAW))
+            basis = pr$loadings[,-dim]
+            COORD = pr$scores[,-dim]
+          }else{
+            stop(sprintf('Basis %d not recognized'))
+          }
         }
       }
     }
