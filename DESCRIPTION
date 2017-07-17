@@ -1,18 +1,21 @@
 Package: coda.base
 Type: Package
-Title: A basic set of functions for compositional data analysis
-Version: 0.1.0
-Date: 2017-05-14
+Title: A Basic Set of Functions for Compositional Data Analysis
+Version: 0.1.1
+Date: 2017-07-17
 Authors@R: c(person("Marc", "Comas-Cufí", role = c("aut", "cre"), 
                     email = "mcomas@imae.udg.edu"))
-Description: A minimum set of functions to perform compositional data analysis.
+Description: A minimum set of functions to perform compositional data analysis
+    using the log-ratio approach introduced by John Aitchison (Aitchison, 1984)
+    <isbn:978-1930665781>.
 Depends:
     R (>= 3.0.2)
 Imports:
-    Rcpp (>= 0.11.5), MASS
+    Rcpp (>= 0.12.12),
+    MASS
 LinkingTo: Rcpp, RcppArmadillo
 License: GPL
 Encoding: UTF-8
 LazyData: true
 NeedsCompilation: yes
-RoxygenNote: 6.0.1
+RoxygenNote: 5.0.1
