@@ -18,6 +18,8 @@ ilr_basis = function(dim){
 #' Build an additive log-ratio basis
 #'
 #' @param dim number of components
+#' @param denominator part used as denominator
+#' @param numerator parts to be used as numerator. By default all except the denominator following same order.
 #' @return matrix
 #' @examples
 #' alr_basis(5)
@@ -43,18 +45,18 @@ clr_basis = function(dim){
   .Call('_coda_base_clr_basis_default', PACKAGE = 'coda.base', dim)
 }
 
-
-pc_basis = function(X){
-  lX =  log(X)
-  pr = princomp(lX - rowMeans(lX))
-  pr$loadings[,-NCOL(X)]
-}
+#
+# pc_basis = function(X){
+#   lX =  log(X)
+#   pr = stats::princomp(lX - rowMeans(lX))
+#   pr$loadings[,-NCOL(X)]
+# }
 
 #' Build an \code{\link{ilr_basis}} using a sequential binary partition or
 #' or a generic coordinate system based on balances.
 #'
-#' @param X composition from where to extract parts names
 #' @param ... balances to consider
+#' @param data composition from where name parts are extracted
 #' @param silent inform about orthgonality
 #' @return matrix
 #' @examples
@@ -109,7 +111,7 @@ sbp_basis = function(..., data, silent=F){
   }
 
   sbp_split = function(part){
-    RIGHT = attr(terms(part), 'term.labels')
+    RIGHT = attr(stats::terms(part), 'term.labels')
     LEFT = setdiff(all.vars(part), RIGHT)
     if(length(nms) > 0){
       for(nm in nms){
@@ -132,13 +134,13 @@ sbp_basis = function(..., data, silent=F){
     I2 = length(balance[[2]])
     l = +1/I1 * sqrt(I1*I2/(I1+I2))
     r = -1/I2 * sqrt(I1*I2/(I1+I2))
-    bal = setNames(rep(0, length(names(X))), names(X))
+    bal = stats::setNames(rep(0, length(names(data))), names(data))
     bal[balance[[1]]] = bal[balance[[1]]] + l
     bal[balance[[2]]] = bal[balance[[2]]] + r
     bal
   })
   if(!silent){
-    if(qr(RES)$rank != NCOL(X)-1){
+    if(qr(RES)$rank != NCOL(data)-1){
       warning('Given partition is not a basis')
     }else{
       Z = t(RES) %*% RES
@@ -165,7 +167,7 @@ sbp_basis = function(..., data, silent=F){
 #' taking into an account sparsity (default `FALSE`)
 #' @return coordinates with respect the given basis
 #' @seealso See functions \code{\link{ilr_basis}}, \code{\link{alr_basis}},
-#' \code{\link{clr_basis}}, \code{\link{sbp_basis}}, \code{\link{pc_basis}}
+#' \code{\link{clr_basis}}, \code{\link{sbp_basis}}
 #' to define different compositional basis.
 #' See function \code{\link{composition}} to obtain details on how to calculate
 #' a compositions from given coordinates.
@@ -207,7 +209,7 @@ coordinates = function(X, basis = 'ilr', label = 'x', sparse_basis = FALSE){
         }else{
           if(basis == 'pc'){
             lRAW =  log(RAW)
-            pr = princomp(lRAW - rowMeans(lRAW))
+            pr = stats::princomp(lRAW - rowMeans(lRAW))
             basis = pr$loadings[,-dim]
             COORD = pr$scores[,-dim]
           }else{
@@ -247,7 +249,7 @@ coordinates = function(X, basis = 'ilr', label = 'x', sparse_basis = FALSE){
 #' taking into an account sparsity (default `FALSE`)
 #' @return coordinates with respect the given basis
 #' @seealso See functions \code{\link{ilr_basis}}, \code{\link{alr_basis}},
-#' \code{\link{clr_basis}}, \code{\link{sbp_basis}}, \code{\link{pc_basis}}
+#' \code{\link{clr_basis}}, \code{\link{sbp_basis}}
 #' to define different compositional basis.
 #' See function \code{\link{coordinates}} to obtain details on how to calculate
 #' coordinates of a given composition.

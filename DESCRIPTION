@@ -9,13 +9,10 @@ Description: A minimum set of functions to perform compositional data analysis.
 Depends:
     R (>= 3.0.2)
 Imports:
-    Rcpp (>= 0.11.5)
+    Rcpp (>= 0.11.5), MASS
 LinkingTo: Rcpp, RcppArmadillo
-Suggests:
-    knitr
 License: GPL
 Encoding: UTF-8
 LazyData: true
 NeedsCompilation: yes
 RoxygenNote: 6.0.1
-VignetteBuilder: knitr
