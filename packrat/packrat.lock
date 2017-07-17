@@ -4,7 +4,120 @@ RVersion: 3.3.2
 Repos: CRAN=https://cran.rstudio.com/,
     CRANextra=http://www.stats.ox.ac.uk/pub/RWin
 
+Package: BH
+Source: CRAN
+Version: 1.62.0-1
+Hash: 14dfb3e8ffe20996118306ff4de1fab2
+
+Package: R6
+Source: CRAN
+Version: 2.2.2
+Hash: b2366cd9d2f3851a5704b4e192b985c2
+
+Package: Rcpp
+Source: CRAN
+Version: 0.12.12
+
+Package: RcppArmadillo
+Source: CRAN
+Version: 0.7.900.2.0
+Requires: Rcpp
+
+Package: assertthat
+Source: CRAN
+Version: 0.2.0
+Hash: e8805df54c65ac96d50235c44a82615c
+
+Package: backports
+Source: CRAN
+Version: 1.1.0
+Hash: 3f754426ca2b7dbbf63951fe5075373b
+
+Package: brew
+Source: CRAN
+Version: 1.0-6
+Hash: 931f9972deae0f205e1c78a51f33149b
+
+Package: commonmark
+Source: CRAN
+Version: 1.2
+Hash: 1290583b9d16fb60322126a8698fb729
+
+Package: crayon
+Source: CRAN
+Version: 1.3.2
+Hash: 576a9d297a567d6a5ebd164ca5221590
+
+Package: desc
+Source: CRAN
+Version: 1.1.0
+Hash: 346d3477f87b89692dd1379eaed1a1be
+Requires: R6, assertthat, crayon, rprojroot
+
+Package: digest
+Source: CRAN
+Version: 0.6.12
+
+Package: evaluate
+Source: CRAN
+Version: 0.10.1
+Requires: stringr
+
+Package: highr
+Source: CRAN
+Version: 0.6
+
+Package: knitr
+Source: CRAN
+Version: 1.16
+Requires: digest, highr, yaml, markdown, stringr, evaluate
+
+Package: magrittr
+Source: CRAN
+Version: 1.5
+
+Package: markdown
+Source: CRAN
+Version: 0.8
+Requires: mime
+
+Package: mime
+Source: CRAN
+Version: 0.5
+
 Package: packrat
 Source: CRAN
 Version: 0.4.7-1
 Hash: 16ca16d36eb18d1d16113606ecc5c400
+
+Package: roxygen2
+Source: CRAN
+Version: 6.0.1
+Hash: 82a85278378502d37455fcfc84951433
+Requires: R6, Rcpp, brew, commonmark, desc, digest, stringi, stringr,
+    xml2
+
+Package: rprojroot
+Source: CRAN
+Version: 1.2
+Hash: fdcac51a7f47decd60556ceefc3c26b1
+Requires: backports
+
+Package: stringi
+Source: CRAN
+Version: 1.1.5
+
+Package: stringr
+Source: CRAN
+Version: 1.2.0
+Requires: magrittr, stringi
+
+Package: xml2
+Source: CRAN
+Version: 1.1.1
+Hash: b326a762ddb04eef605cc88987fa71fb
+Requires: BH, Rcpp
+
+Package: yaml
+Source: CRAN
+Version: 2.1.14

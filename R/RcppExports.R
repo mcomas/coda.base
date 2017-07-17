@@ -2,50 +2,50 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 alr_basis_default <- function(dim) {
-    .Call('coda_base_alr_basis_default', PACKAGE = 'coda.base', dim)
+    .Call('_coda_base_alr_basis_default', PACKAGE = 'coda.base', dim)
 }
 
 clr_basis_default <- function(dim) {
-    .Call('coda_base_clr_basis_default', PACKAGE = 'coda.base', dim)
+    .Call('_coda_base_clr_basis_default', PACKAGE = 'coda.base', dim)
 }
 
 ilr_basis_default <- function(dim) {
-    .Call('coda_base_ilr_basis_default', PACKAGE = 'coda.base', dim)
+    .Call('_coda_base_ilr_basis_default', PACKAGE = 'coda.base', dim)
 }
 
 ilr_basis_simplex <- function(dim) {
-    .Call('coda_base_ilr_basis_simplex', PACKAGE = 'coda.base', dim)
+    .Call('_coda_base_ilr_basis_simplex', PACKAGE = 'coda.base', dim)
 }
 
 ilr_to_alr <- function(dim) {
-    .Call('coda_base_ilr_to_alr', PACKAGE = 'coda.base', dim)
+    .Call('_coda_base_ilr_to_alr', PACKAGE = 'coda.base', dim)
 }
 
 clr_coordinates <- function(X) {
-    .Call('coda_base_clr_coordinates', PACKAGE = 'coda.base', X)
+    .Call('_coda_base_clr_coordinates', PACKAGE = 'coda.base', X)
 }
 
 inv_clr_coordinates <- function(clrX) {
-    .Call('coda_base_inv_clr_coordinates', PACKAGE = 'coda.base', clrX)
+    .Call('_coda_base_inv_clr_coordinates', PACKAGE = 'coda.base', clrX)
 }
 
 coordinates_alr2 <- function(X, denominator) {
-    .Call('coda_base_coordinates_alr2', PACKAGE = 'coda.base', X, denominator)
+    .Call('_coda_base_coordinates_alr2', PACKAGE = 'coda.base', X, denominator)
 }
 
 coordinates_alr <- function(X, denominator) {
-    .Call('coda_base_coordinates_alr', PACKAGE = 'coda.base', X, denominator)
+    .Call('_coda_base_coordinates_alr', PACKAGE = 'coda.base', X, denominator)
 }
 
 coordinates_basis <- function(X, B, sparse = FALSE) {
-    .Call('coda_base_coordinates_basis', PACKAGE = 'coda.base', X, B, sparse)
+    .Call('_coda_base_coordinates_basis', PACKAGE = 'coda.base', X, B, sparse)
 }
 
 ilr_coordinates <- function(X) {
-    .Call('coda_base_ilr_coordinates', PACKAGE = 'coda.base', X)
+    .Call('_coda_base_ilr_coordinates', PACKAGE = 'coda.base', X)
 }
 
 inv_ilr_coordinates <- function(ilrX) {
-    .Call('coda_base_inv_ilr_coordinates', PACKAGE = 'coda.base', ilrX)
+    .Call('_coda_base_inv_ilr_coordinates', PACKAGE = 'coda.base', ilrX)
 }
 

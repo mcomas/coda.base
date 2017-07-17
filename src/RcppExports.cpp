@@ -8,7 +8,7 @@ using namespace Rcpp;
 
 // alr_basis_default
 arma::mat alr_basis_default(unsigned int dim);
-RcppExport SEXP coda_base_alr_basis_default(SEXP dimSEXP) {
+RcppExport SEXP _coda_base_alr_basis_default(SEXP dimSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -19,7 +19,7 @@ END_RCPP
 }
 // clr_basis_default
 arma::mat clr_basis_default(unsigned int dim);
-RcppExport SEXP coda_base_clr_basis_default(SEXP dimSEXP) {
+RcppExport SEXP _coda_base_clr_basis_default(SEXP dimSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -30,7 +30,7 @@ END_RCPP
 }
 // ilr_basis_default
 arma::mat ilr_basis_default(unsigned int dim);
-RcppExport SEXP coda_base_ilr_basis_default(SEXP dimSEXP) {
+RcppExport SEXP _coda_base_ilr_basis_default(SEXP dimSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -41,7 +41,7 @@ END_RCPP
 }
 // ilr_basis_simplex
 arma::mat ilr_basis_simplex(unsigned int dim);
-RcppExport SEXP coda_base_ilr_basis_simplex(SEXP dimSEXP) {
+RcppExport SEXP _coda_base_ilr_basis_simplex(SEXP dimSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -52,7 +52,7 @@ END_RCPP
 }
 // ilr_to_alr
 arma::mat ilr_to_alr(unsigned int dim);
-RcppExport SEXP coda_base_ilr_to_alr(SEXP dimSEXP) {
+RcppExport SEXP _coda_base_ilr_to_alr(SEXP dimSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -63,7 +63,7 @@ END_RCPP
 }
 // clr_coordinates
 arma::mat clr_coordinates(arma::mat X);
-RcppExport SEXP coda_base_clr_coordinates(SEXP XSEXP) {
+RcppExport SEXP _coda_base_clr_coordinates(SEXP XSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -74,7 +74,7 @@ END_RCPP
 }
 // inv_clr_coordinates
 arma::mat inv_clr_coordinates(arma::mat clrX);
-RcppExport SEXP coda_base_inv_clr_coordinates(SEXP clrXSEXP) {
+RcppExport SEXP _coda_base_inv_clr_coordinates(SEXP clrXSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -85,7 +85,7 @@ END_RCPP
 }
 // coordinates_alr2
 arma::mat coordinates_alr2(arma::mat X, int denominator);
-RcppExport SEXP coda_base_coordinates_alr2(SEXP XSEXP, SEXP denominatorSEXP) {
+RcppExport SEXP _coda_base_coordinates_alr2(SEXP XSEXP, SEXP denominatorSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -97,7 +97,7 @@ END_RCPP
 }
 // coordinates_alr
 arma::mat coordinates_alr(arma::mat X, int denominator);
-RcppExport SEXP coda_base_coordinates_alr(SEXP XSEXP, SEXP denominatorSEXP) {
+RcppExport SEXP _coda_base_coordinates_alr(SEXP XSEXP, SEXP denominatorSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -109,7 +109,7 @@ END_RCPP
 }
 // coordinates_basis
 arma::mat coordinates_basis(arma::mat X, arma::mat B, bool sparse);
-RcppExport SEXP coda_base_coordinates_basis(SEXP XSEXP, SEXP BSEXP, SEXP sparseSEXP) {
+RcppExport SEXP _coda_base_coordinates_basis(SEXP XSEXP, SEXP BSEXP, SEXP sparseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -122,7 +122,7 @@ END_RCPP
 }
 // ilr_coordinates
 arma::mat ilr_coordinates(arma::mat X);
-RcppExport SEXP coda_base_ilr_coordinates(SEXP XSEXP) {
+RcppExport SEXP _coda_base_ilr_coordinates(SEXP XSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -133,7 +133,7 @@ END_RCPP
 }
 // inv_ilr_coordinates
 arma::mat inv_ilr_coordinates(arma::mat ilrX);
-RcppExport SEXP coda_base_inv_ilr_coordinates(SEXP ilrXSEXP) {
+RcppExport SEXP _coda_base_inv_ilr_coordinates(SEXP ilrXSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -141,4 +141,25 @@ BEGIN_RCPP
     rcpp_result_gen = Rcpp::wrap(inv_ilr_coordinates(ilrX));
     return rcpp_result_gen;
 END_RCPP
+}
+
+static const R_CallMethodDef CallEntries[] = {
+    {"_coda_base_alr_basis_default", (DL_FUNC) &_coda_base_alr_basis_default, 1},
+    {"_coda_base_clr_basis_default", (DL_FUNC) &_coda_base_clr_basis_default, 1},
+    {"_coda_base_ilr_basis_default", (DL_FUNC) &_coda_base_ilr_basis_default, 1},
+    {"_coda_base_ilr_basis_simplex", (DL_FUNC) &_coda_base_ilr_basis_simplex, 1},
+    {"_coda_base_ilr_to_alr", (DL_FUNC) &_coda_base_ilr_to_alr, 1},
+    {"_coda_base_clr_coordinates", (DL_FUNC) &_coda_base_clr_coordinates, 1},
+    {"_coda_base_inv_clr_coordinates", (DL_FUNC) &_coda_base_inv_clr_coordinates, 1},
+    {"_coda_base_coordinates_alr2", (DL_FUNC) &_coda_base_coordinates_alr2, 2},
+    {"_coda_base_coordinates_alr", (DL_FUNC) &_coda_base_coordinates_alr, 2},
+    {"_coda_base_coordinates_basis", (DL_FUNC) &_coda_base_coordinates_basis, 3},
+    {"_coda_base_ilr_coordinates", (DL_FUNC) &_coda_base_ilr_coordinates, 1},
+    {"_coda_base_inv_ilr_coordinates", (DL_FUNC) &_coda_base_inv_ilr_coordinates, 1},
+    {NULL, NULL, 0}
+};
+
+RcppExport void R_init_coda_base(DllInfo *dll) {
+    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
+    R_useDynamicSymbols(dll, FALSE);
 }
