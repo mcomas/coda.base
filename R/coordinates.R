@@ -183,7 +183,7 @@ sbp_basis = function(..., data, silent=F){
 #' @export
 coordinates = function(X, basis = 'ilr', label = 'x', sparse_basis = FALSE){
   class_type = class(X)
-  is_vector = inherits(X, 'numeric')
+  is_vector = is.atomic(H) & !is.list(H) & !is.matrix(H)
   is_data_frame = inherits(X, 'data.frame')
   RAW = X
   if(is_vector){
@@ -261,7 +261,7 @@ composition = function(H, basis = NULL, label = 'x', sparse_basis = FALSE){
   }else{
     basis = 'ilr'
   }
-  is_vector = inherits(H, 'numeric')
+  is_vector = is.atomic(H) & !is.list(H) & !is.matrix(H)
   is_data_frame = inherits(H, 'data.frame')
 
   COORD = H
