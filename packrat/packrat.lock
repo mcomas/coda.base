@@ -9,6 +9,11 @@ Source: CRAN
 Version: 1.62.0-1
 Hash: 14dfb3e8ffe20996118306ff4de1fab2
 
+Package: MASS
+Source: CRAN
+Version: 7.3-45
+Hash: 0650d5701aa7e369e77c9e2c8e1dc913
+
 Package: R6
 Source: CRAN
 Version: 2.2.2
@@ -57,33 +62,12 @@ Requires: R6, assertthat, crayon, rprojroot
 Package: digest
 Source: CRAN
 Version: 0.6.12
-
-Package: evaluate
-Source: CRAN
-Version: 0.10.1
-Requires: stringr
-
-Package: highr
-Source: CRAN
-Version: 0.6
-
-Package: knitr
-Source: CRAN
-Version: 1.16
-Requires: digest, highr, yaml, markdown, stringr, evaluate
+Hash: e53fb8c58673df868183697e39a6a4d6
 
 Package: magrittr
 Source: CRAN
 Version: 1.5
-
-Package: markdown
-Source: CRAN
-Version: 0.8
-Requires: mime
-
-Package: mime
-Source: CRAN
-Version: 0.5
+Hash: bdc4d48c3135e8f3b399536ddf160df4
 
 Package: packrat
 Source: CRAN
@@ -106,10 +90,12 @@ Requires: backports
 Package: stringi
 Source: CRAN
 Version: 1.1.5
+Hash: b6308e49357a0b475f433599e0d8b5eb
 
 Package: stringr
 Source: CRAN
 Version: 1.2.0
+Hash: 25a86d7f410513ebb7c0bc6a5e16bdc3
 Requires: magrittr, stringi
 
 Package: xml2
@@ -117,7 +103,3 @@ Source: CRAN
 Version: 1.1.1
 Hash: b326a762ddb04eef605cc88987fa71fb
 Requires: BH, Rcpp
-
-Package: yaml
-Source: CRAN
-Version: 2.1.14
