@@ -161,7 +161,9 @@ sbp_basis = function(..., data, silent=F){
 #' Calculate the coordinates of a composition with respect a given basis
 #'
 #' @param X compositional dataset. Either a matrix, a data.frame or a vector
-#' @param basis ilr base used to obtain coordinates
+#' @param basis basis used to calculate the coordinates. \code{basis} can be either a string or a matrix.
+#' Accepted values for strings are: 'ilr' (default), 'clr', 'alr' and 'pc'. If \code{basis} is a matrix, it is expected
+#' to have log-ratio basis given in columns.
 #' @param label name given to the coordinates
 #' @param sparse_basis Is the given matrix basis sparse? If TRUE calculation are carried
 #' taking into an account sparsity (default `FALSE`)
