@@ -43,8 +43,8 @@ arma::mat ilr_basis_default(unsigned int dim){
   for(unsigned int i = 0; i < dim - 1; i++){
     unsigned int I1 = i + 1;
     unsigned int I2 = i + 2;
-    double l = 1/sqrt(I1*I2);
-    double r = - sqrt((double)I1/I2);
+    double l = 1/std::sqrt((double)(I1*I2));
+    double r = - std::sqrt((double)I1/I2);
     for(unsigned int j = 0; j < I1; j++){
       B(j,i) = l;
     }
@@ -63,8 +63,8 @@ arma::mat ilr_basis_simplex(unsigned int dim){
   for(unsigned int i = 0; i < dim - 1; i++){
     unsigned int I1 = i + 1;
     unsigned int I2 = i + 2;
-    double l = exp(1/sqrt(I1*I2));
-    double r = 1/exp(sqrt((double)I1/I2));
+    double l = exp(1/std::sqrt((double)(I1*I2)));
+    double r = 1/exp(std::sqrt((double)I1/I2));
     for(unsigned int j = 0; j < I1; j++){
       B(j,i) = l;
     }
