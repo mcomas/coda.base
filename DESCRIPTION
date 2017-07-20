@@ -1,7 +1,7 @@
 Package: coda.base
 Type: Package
 Title: A Basic Set of Functions for Compositional Data Analysis
-Version: 0.1.3
+Version: 0.1.4
 Date: 2017-07-17
 Authors@R: c(person("Marc", "Comas-Cufí", role = c("aut", "cre"), 
                     email = "mcomas@imae.udg.edu"))
