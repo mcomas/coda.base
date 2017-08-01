@@ -1,9 +1,5 @@
 getDim = function(X) ifelse(is.vector(X), length(X), NCOL(X))
 
-coda_basis = function(){
-
-}
-
 #' Build an isometric log-ratio basis
 #'
 #' @param dim number of components
