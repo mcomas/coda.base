@@ -52,10 +52,32 @@ addR = function(sol, i){
        'sL' = sL, 'sR' =  sR, 'sM' = sM,
        'var' = (sL + sR + sM) / (nL+nR))
 }
+removeL = function(sol, i){
+  if(!i %in% sol$L){
+    stop('Not in K set')
+  }
+  L = setdiff(sol$L,i)
+  R = sol$R
+  O = union(sol$O, i)
 
-sol = build(L = c(3,4,5), R = c(1,2), O = 6:10, M)
-addL(sol, 6)
+  nR = length(R)
+  nL = length(L)
+
+  sR = sol$sR * (nL+1)/nL
+  sL = sol$sL * nL/(nL+1) - (nR/(nL+1)) * (2*sum(M[i,sol$L]) - M[i,i])
+  sM = sol$sM + 2*sum(M[R,i])
+  list('L' = L, 'R' = R, 'O' = O,
+       'sL' = sL, 'sR' =  sR, 'sM' = sM,
+       'var' = (sL + sR + sM) / (nL+nR))
+}
+
+sol1 = build(L = c(3,4,5), R = c(1,2), O = 6:10, M)
+sol2 = addL(sol1, 6)
+sol3 = removeL(sol2, 6)
+sol1$var
+sol3$var
 addR(sol, 6)
+remove(sol, )
 
 K = ncol(X)
 R = c(1,2)
