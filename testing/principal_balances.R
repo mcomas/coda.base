@@ -1,3 +1,4 @@
+library(coda.base)
 source('testing/principal_balances_functions.R')
 
 
@@ -24,27 +25,32 @@ sols_02 = apply(sims_02[,sample(1:ncol(sims_02),TESTS)], 2, function(v){
 max(sapply(sols_01, function(sol) sol$var))
 max(sapply(sols_02, function(sol) sol$var))
 
-pb_01 = gsi.PrinBal(acomp(X), "PBhclust")
-pb_02 = gsi.PrinBal(acomp(X), "PBmaxvar")
-pb_03 = gsi.PrinBal(acomp(X), "angprox")
+library(compositions)
 
 data("Hydrochem")
-x = acomp(Hydrochem[,c(6:10)])
-(v1 = gsi.PrinBal(x, "PBhclust"))
-(v2 = gsi.PrinBal(x, "PBmaxvar"))
-(v3 = gsi.PrinBal(x, "PBangprox"))
+X = Hydrochem[,c(6:10)]
+x = acomp(X)
+(v1 <- gsi.PrinBal(x, "PBhclust"))
+(v2 <- gsi.PrinBal(x, "PBmaxvar"))
+(v3 <- gsi.PrinBal(x, "PBangprox"))
 
 M = cov(log(Hydrochem[,c(6:10)]))
-TESTS = 10
-sims = replicate(TESTS, {
-  I = 2
-  J = 1
-  ind = 1:nrow(M)
-  L = sample(ind, I)
-  R = sample(setdiff(ind, L), J)
-  list(R = R, L = L)
-}, simplify=FALSE)
-sols_01 = lapply(sims, function(sim) improve_until_finished(M, sim$L, sim$R))
+SOL = findPB(M, TESTS = 10)
+b1 = sprintf("%s ~ %s",
+             paste(names(X)[SOL$L], collapse='+'),
+             paste(names(X)[SOL$R], collapse='+'))
+
+apply(coordinates(X, v1), 2, var)
+apply(coordinates(X, v2), 2, var)
+apply(coordinates(X, v3), 2, var)
+apply(coordinates(X, sbp_basis(b1 = eval(parse(text=b1)), data=X)), 2, var)
+
+list(M[SOL$L, SOL$L], M[SOL$L, SOL$L], "(M, amb restriccio [M i L] mateix costat")
+pb = function(lM){
+  lapply(lM, findPB)
+}
+
+
 #
 #
 # L0 = 1
