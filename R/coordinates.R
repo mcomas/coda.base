@@ -1,5 +1,21 @@
 getDim = function(X) ifelse(is.vector(X), length(X), NCOL(X))
 
+#' Variation array is returned.
+#'
+#' @param X Compositional dataset
+#' @param only_variation if TRUE only the variation matrix is calculated
+#' @return variation array matrix
+#' @examples
+#' set.seed(1)
+#' X = matrix(exp(rnorm(5*100)), nrow=100, ncol=5)
+#' variation_array(X)
+#' variation_array(X, only_variation = TRUE)
+#' @export
+variation_array = function(X, only_variation = FALSE){
+  X = as.matrix(X)
+  c_variation_array(X, as.logical(only_variation))
+}
+
 #' Build an isometric log-ratio basis
 #'
 #' @param dim number of components
@@ -150,6 +166,44 @@ sbp_basis = function(..., data, silent=F){
     }
   }
   RES
+}
+
+#' Compute a basis for considering Principal Balances.
+#'
+#' @param X compositional dataset
+#' @param method method to be used with Principal Balances. Methods available are: 'lsearch' or
+#' method to be passed to hclust function (for example `ward.D` or `ward.D2` to use Ward method).
+#' @param rep Number of restartings to be used with the local search algorithm.
+#' @param ... parameters passed to hclust function
+#' @return matrix
+#' @examples
+#' X = matrix(exp(rnorm(10*100)), nrow=100, ncol=10)
+#' # Optimal variance obtained with Principal components
+#' apply(coordinates(X, 'pc'), 2, var)
+#' # Solution obtained using local search
+#' apply(coordinates(X,pb_basis(X, method='lsearch')), 2, var)
+#' # Solution obtained using Ward method
+#' apply(coordinates(X,pb_basis(X, method='ward.D2')), 2, var)
+#' # Solution obtained using Old Ward function (in R versions <= 3.0.3)
+#' apply(coordinates(X,pb_basis(X, method='ward.D')), 2, var)
+#' @export
+pb_basis = function(X, method, rep = ceiling(ncol(X)/2), ...){
+  X = as.matrix(X)
+  if(method == 'lsearch'){
+    find_PB(stats::cov(log(X)), rep=rep)
+  }else{
+    hh = stats::hclust(stats::as.dist(variation_array(X, only_variation = TRUE)), method=method, ...)
+    bin = hh$merge
+    df = as.data.frame(X)
+    names(df) = paste0('P.', 1:NCOL(df))
+    nms = paste0('P',gsub('-','.', bin))
+    dim(nms) = dim(bin)
+    sbp = apply(nms, 1, paste, collapse='~')
+    id = seq_along(sbp)
+    sbp.exp = paste(sprintf("%s = %s ~ %s", paste0('P', id), nms[,1], nms[,2]),
+                    collapse=', ')
+    eval(parse(text = sprintf("sbp_basis(%s,data=df)", sbp.exp)))[,rev(id)]
+  }
 }
 
 #' coordinates with respect an specific basis

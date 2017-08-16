@@ -9,7 +9,7 @@ Description: A minimum set of functions to perform compositional data analysis
     using the log-ratio approach introduced by John Aitchison in 1982. Main functions
     have been implemented in c++ for better performance.
 Depends:
-    R (>= 3.0.2)
+    R (>= 3.0.4)
 Imports:
     Rcpp (>= 0.12.12),
     MASS

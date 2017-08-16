@@ -37,6 +37,8 @@ void SBP::init(arma::uvec L0, arma::uvec R0){
   R_length = R0.n_elem;
   R.head(R0.n_elem) = R0;
 
+  //Rcpp::Rcout << M;
+  //Rcpp::Rcout << L0 << R0;
   double nL = (double)get_nL();
   double nR = (double)get_nR();
 
@@ -45,7 +47,7 @@ void SBP::init(arma::uvec L0, arma::uvec R0){
   sC = - 2*arma::accu(M(R0,L0));
 
   variance = (sL + sR + sC) / (nL+nR);
-
+  //Rcpp::Rcout << "Variance: "<< variance << std::endl;
   initialized = true;
 }
 void SBP::best_improve(){
@@ -126,28 +128,35 @@ void SBP::local_search(int rep){
   double bestVar = 0;
   //
   //
-  for(int i=0; i<rep; i++){
-    init();
+  if(node.size() == 2){
+    arma::uvec L0(1), R0(1);
+    L0(0) = 0;
+    R0(0) = 1;
+    init(L0,R0);
+  }else{
+    for(int i=0; i<rep; i++){
+      init();
 
-    double prev_variance = -1;
-    double new_variance = variance;
-    int iter = 0;
-    //sbp->print_status();
-    while(prev_variance != new_variance){
-      prev_variance = new_variance;
-      best_improve();
-      new_variance = variance;
-      iter++;
-      //Rcpp::Rcout << "New variance:" << new_variance << " Old variance: "<< prev_variance << std::endl;
-      if (iter % 1000 == 0) Rcpp::checkUserInterrupt();
+      double prev_variance = -1;
+      double new_variance = variance;
+      int iter = 0;
+      //sbp->print_status();
+      while(prev_variance != new_variance){
+        prev_variance = new_variance;
+        best_improve();
+        new_variance = variance;
+        iter++;
+        //Rcpp::Rcout << "New variance:" << new_variance << " Old variance: "<< prev_variance << std::endl;
+        if (iter % 1000 == 0) Rcpp::checkUserInterrupt();
+      }
+      if(bestVar < variance){
+        bestVar = variance;
+        bestL = getL();
+        bestR = getR();
+      }
     }
-    if(bestVar < variance){
-      bestVar = variance;
-      bestL = getL();
-      bestR = getR();
-    }
+    init(bestL, bestR);
   }
-  init(bestL, bestR);
 }
 
 SBP SBP::top(){

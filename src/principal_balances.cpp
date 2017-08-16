@@ -7,7 +7,7 @@ void print_list(std::vector<SBP> SOLS){
   Rcpp::Rcout << ":Begin list:" << std::endl;
   for(unsigned int i=0; i<SOLS.size(); i++){
     Rcpp::Rcout << "Element " << i << std::endl;
-    SOLS[i].print_status(true,true,false);
+    SOLS[i].print_status(true,true,true);
   }
   Rcpp::Rcout << ":End list:" << std::endl;
 }
@@ -43,9 +43,8 @@ arma::mat find_PB(arma::mat M, int rep = 1){
 
   SOLS.push_back(SBP(M, default_node(K)));
   SOLS.back().local_search(rep);
-
   for(int l=0;l<K-1;l++){
-    //Rcpp::Rcout << "Step " << l+1 << std::endl;
+    //Rcpp::Rcout << "Starting step " << l + 1 << " of " << K-1 << std::endl;
     //print_list(SOLS);
     double vBestSolution = 0;
     int iBestSolution = -1;
@@ -67,27 +66,35 @@ arma::mat find_PB(arma::mat M, int rep = 1){
     int nR = SOLS[iBestSolution].getR().n_elem;
     //Rcpp::Rcout << n << " " << nL << " " << nR << std::endl;
     if(n > nL + nR){
+      //Rcpp:: Rcout << "Start top...";
       //Rcpp::Rcout << "Including top... ";
       SOLS.push_back(SOLS[iBestSolution].top());
       //Rcpp::Rcout << "Top included!" << std::endl;
+      //SOLS.back().print_status(true,true,true);
       SOLS.back().local_search(rep);
-
+      //SOLS.back().print_status(true,true,true);
+      //Rcpp::Rcout << "End top" << std::endl;
     }
     if(nL > 1){
+      //Rcpp:: Rcout << "Start left..." << std::endl;
       //SOLS[1].print_status(true,true,true);
       SOLS.push_back(SOLS[iBestSolution].left());
       SOLS.back().local_search(rep);
+      //Rcpp::Rcout << "End left" << std::endl;
     }
     if(nR > 1){
+      //Rcpp:: Rcout << "Start right...";
       //SOLS[2].print_status(true,true,true);
       SOLS.push_back(SOLS[iBestSolution].right());
       SOLS.back().local_search(rep);
+      //Rcpp::Rcout << "End right" << std::endl;
     }
     //SOLS.back().print_status(true,true,true);
 
     SOLS[iBestSolution] = SOLS.back();
     SOLS.pop_back();
   }
+  //Rcpp::Rcout << "End" << std::endl;
   arma::mat pb_mat = arma::mat(K,PB.size());
   for(unsigned int i=0; i<PB.size(); i++){
     pb_mat.col(i) = balance(K,PB[i]);

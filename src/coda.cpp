@@ -5,6 +5,30 @@
 
 using namespace Rcpp;
 
+// [[Rcpp::export]]
+arma::mat c_variation_array(arma::mat X, bool only_variation = false){
+  unsigned int K = X.n_cols;
+  arma::mat lX = log(X);
+  arma::mat varray = arma::mat(K,K);
+  varray.diag().zeros();
+  arma::mat Xcov = cov(lX);
+  if(!only_variation){
+    arma::mat Xmeans = arma::mean(lX, 0);
+    for(unsigned i = 0; i < K; i++){
+      for(unsigned j = 0; j < i; j++){
+        varray(i,j) = Xmeans(j) - Xmeans(i);
+        varray(j,i) = Xcov(i,i) + Xcov(j,j) - 2*Xcov(i,j);
+      }
+    }
+  }else{
+    for(unsigned i = 0; i < K; i++){
+      for(unsigned j = 0; j < i; j++){
+        varray(i,j) = varray(j,i) = Xcov(i,i) + Xcov(j,j) - 2*Xcov(i,j);
+      }
+    }
+  }
+  return varray;
+}
 
 // [[Rcpp::export]]
 arma::mat alr_basis_default(unsigned int dim){
