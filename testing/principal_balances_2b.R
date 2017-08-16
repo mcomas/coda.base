@@ -1,11 +1,49 @@
 library(coda.base)
-source('testing/principal_balances_functions.R')
+source('testing/principal_balances_functions_2b.R')
 
 
-set.seed(1)
-X = as.data.frame(matrix(exp(rnorm(10*100)), nrow=10, ncol=100))
+#set.seed(1)
+K = 100
+X = as.data.frame(matrix(exp(rnorm(100*K)), nrow=100, ncol=K))
 M = cov(log(X))
 
+#####
+PB = list()
+current_trees = list()
+current_sols = list()
+new_trees = list()
+new_trees[[1]] = list(M=M,nodes=as.list(1:nrow(M)))
+new_sols = lapply(new_trees, findPB, TESTS = 20)
+
+
+for(i in 1:(nrow(M)-1)){
+  current_trees = c(current_trees, new_trees)
+  current_sols = c(current_sols, new_sols)
+  BEST = which.max(sapply(current_sols, function(sols) sols$var))
+  PB[[i]] = current_sols[[BEST]]
+  new_trees = list()
+  if(length(PB[[i]]$nodes) != length(c(PB[[i]]$L, PB[[i]]$R))){
+    new_trees[[length(new_trees)+1]] = toptree(PB[[i]])
+  }
+  if(length(PB[[i]]$L) > 1){
+    new_trees[[length(new_trees)+1]] = subtreeL(PB[[i]])
+  }
+  if(length(PB[[i]]$R) > 1){
+    new_trees[[length(new_trees)+1]] = subtreeR(PB[[i]])
+  }
+  new_sols = lapply(new_trees, findPB)
+
+  current_sols[[BEST]] = NULL
+  current_trees[[BEST]] = NULL
+}
+
+x.var = sapply(PB, function(pb) pb$var)
+plot(x.var)
+
+solPB1
+if(NCOL(SOL) == 2){
+
+}
 
 TESTS = 10
 sims = replicate(TESTS, {
@@ -53,14 +91,20 @@ pb = function(lM){
 
 #
 #
-# L0 = 1
-# R0 = 2
-# (sol <- build(L = L0, R = R0, O = setdiff(1:nrow(M), c(R0,L0)), M))
-# (sol <- addL(6, sol))
-# (sol <- addR(4, sol))
-# (sol <- removeL(1, sol))
-# (sol <- removeR(4, sol))
-# (sol <- addR(5, sol))
+L0 = 1
+R0 = 2
+(sol <- build(M, L = L0, R = R0, nodes = 1:nrow(M)))
+(sol <- addL(6, sol))
+(sol <- addL(4, sol))
+(sol <- removeL(1, sol))
+(sol <- removeL(6, sol))
+
+
+
+(sol <- addR(4, sol))
+(sol <- removeL(1, sol))
+(sol <- removeR(4, sol))
+(sol <- addR(5, sol))
 #
 # variances = function(sols) sapply(sols, function(sol) sol$var)
 #

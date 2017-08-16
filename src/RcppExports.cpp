@@ -142,6 +142,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// timesTwo
+NumericVector timesTwo(NumericVector x);
+RcppExport SEXP _coda_base_timesTwo(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(timesTwo(x));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_coda_base_alr_basis_default", (DL_FUNC) &_coda_base_alr_basis_default, 1},
@@ -156,6 +167,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_coda_base_coordinates_basis", (DL_FUNC) &_coda_base_coordinates_basis, 3},
     {"_coda_base_ilr_coordinates", (DL_FUNC) &_coda_base_ilr_coordinates, 1},
     {"_coda_base_inv_ilr_coordinates", (DL_FUNC) &_coda_base_inv_ilr_coordinates, 1},
+    {"_coda_base_timesTwo", (DL_FUNC) &_coda_base_timesTwo, 1},
     {NULL, NULL, 0}
 };
 

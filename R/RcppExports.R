@@ -49,3 +49,7 @@ inv_ilr_coordinates <- function(ilrX) {
     .Call('_coda_base_inv_ilr_coordinates', PACKAGE = 'coda.base', ilrX)
 }
 
+timesTwo <- function(x) {
+    .Call('_coda_base_timesTwo', PACKAGE = 'coda.base', x)
+}
+
