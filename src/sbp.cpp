@@ -21,14 +21,31 @@ SBP::SBP (arma::mat M0, std::map<int,arma::uvec> node0){
 
   initialized = false;
 }
+
+arma::vec get_two(int n){
+  int first = (int)floor(n * arma::randu(1)[0]);
+  int delta = 1 + (int)floor((n-1) * arma::randu(1)[0]);
+  int second = (first + delta) % n;
+  arma::vec res(2);
+  res(0) = first;
+  res(1) = second;
+  return(res);
+}
+
+arma::vec arma_sampling(int n, int k){
+  return(arma::floor(n*arma::vec(k).randu()));
+}
+
 void SBP::init(){
   int n = get_n();
-  Rcpp::IntegerVector v_initial = Rcpp::sample(n, 2, false);
-  arma::uvec v_random = Rcpp::as<arma::uvec>(Rcpp::sample(3, n, true));
-  v_random[v_initial[0]-1] = 2;
-  v_random[v_initial[1]-1] = 3;
-  arma::uvec L0 = find(v_random == 2);
-  arma::uvec R0 = find(v_random == 3);
+  arma::vec v_initial = get_two(n);
+  arma::vec v_random = arma_sampling(3, n);
+  //Rcpp::IntegerVector v_initial = Rcpp::sample(n, 2, false);
+  //arma::uvec v_random = Rcpp::as<arma::uvec>(Rcpp::sample(3, n, true));
+  v_random[v_initial[0]] = 1;
+  v_random[v_initial[1]] = 2;
+  arma::uvec L0 = find(v_random == 1);
+  arma::uvec R0 = find(v_random == 2);
   init(L0,R0);
 }
 void SBP::init(arma::uvec L0, arma::uvec R0){
