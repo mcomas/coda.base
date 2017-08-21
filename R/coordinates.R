@@ -54,12 +54,18 @@ alr_basis = function(dim, denominator = dim, numerator = which(denominator != 1:
   res[,numerator]
 }
 
-#' Build a centered log-ratio basis
+#' Centered log-ratio basis
 #'
-#' @param dim number of components
+#' Compute the transformation matrix to express a composition using
+#' the linearly dependant centered log-ratio coordinates.
+#'
+#' @param dim number of parts
 #' @return matrix
 #' @examples
 #' clr_basis(5)
+#' # CLR coordinates are linearly dependant coordinates.
+#' (clr_coordinates <- coordinates(c(1,2,3,4,5), clr_basis(5)))
+#' sum(clr_coordinates) < 1e-15
 #' @export
 clr_basis = function(dim){
   clr_basis_default(dim)
