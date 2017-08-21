@@ -27,14 +27,22 @@ ilr_basis = function(dim){
   ilr_basis_default(dim)
 }
 
-#' Build an additive log-ratio basis
+#' Additive log-ratio basis
 #'
-#' @param dim number of components
-#' @param denominator part used as denominator
-#' @param numerator parts to be used as numerator. By default all except the denominator following same order.
+#' Compute the transformation matrix to express a composition using the oblique additive log-ratio
+#' coordinates.
+#'
+#' @param dim number of parts
+#' @param denominator part used as denominator (default behaviour is to use last part)
+#' @param numerator parts to be used as numerator. By default all except the denominator parts are chosen following original order.
 #' @return matrix
 #' @examples
 #' alr_basis(5)
+#' # Third part is used as denominator
+#' alr_basis(5, 3)
+#' # Third part is used as denominator, and
+#' # other parts are rearranged
+#' alr_basis(5, 3, c(1,5,2,4))
 #' @export
 alr_basis = function(dim, denominator = dim, numerator = which(denominator != 1:dim)){
   res = alr_basis_default(dim)
