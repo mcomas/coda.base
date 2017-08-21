@@ -20,6 +20,10 @@ variation_array = function(X, only_variation = FALSE){
 #'
 #' @param dim number of components
 #' @return matrix
+#' @references
+#' Egozcue, J.J., Pawlowsky-Glahn, V., Mateu-Figueras, G. and Barceló-Vidal C. (2003).
+#' \emph{Isometric logratio transformations for compositional data analysis}.
+#' Mathematical Geology, \strong{35}(3) 279-300
 #' @examples
 #' ilr_basis(5)
 #' @export
@@ -43,6 +47,10 @@ ilr_basis = function(dim){
 #' # Third part is used as denominator, and
 #' # other parts are rearranged
 #' alr_basis(5, 3, c(1,5,2,4))
+#' @references
+#' Aitchison, J. (1986)
+#' \emph{The Statistical Analysis of Compositional Data}.
+#' Monographs on Statistics and Applied Probability. Chapman & Hall Ltd., London (UK). 416p.
 #' @export
 alr_basis = function(dim, denominator = dim, numerator = which(denominator != 1:dim)){
   res = alr_basis_default(dim)
@@ -61,10 +69,15 @@ alr_basis = function(dim, denominator = dim, numerator = which(denominator != 1:
 #'
 #' @param dim number of parts
 #' @return matrix
+#' @references
+#' Aitchison, J. (1986)
+#' \emph{The Statistical Analysis of Compositional Data}.
+#' Monographs on Statistics and Applied Probability. Chapman & Hall Ltd., London (UK). 416p.
 #' @examples
-#' clr_basis(5)
+#' (B <- clr_basis(5))
 #' # CLR coordinates are linearly dependant coordinates.
-#' (clr_coordinates <- coordinates(c(1,2,3,4,5), clr_basis(5)))
+#' (clr_coordinates <- coordinates(c(1,2,3,4,5), B))
+#' # The sum of all coordinates equal to zero
 #' sum(clr_coordinates) < 1e-15
 #' @export
 clr_basis = function(dim){
@@ -182,7 +195,9 @@ sbp_basis = function(..., data, silent=F){
   RES
 }
 
-#' Compute a basis for considering Principal Balances.
+#' Isometric log-ratio basis based on Principal Balances.
+#'
+#' Different approximations to approximate the principal balances of a compositional dataset.
 #'
 #' @param X compositional dataset
 #' @param method method to be used with Principal Balances. Methods available are: 'lsearch' or
@@ -190,11 +205,15 @@ sbp_basis = function(..., data, silent=F){
 #' @param rep Number of restartings to be used with the local search algorithm.
 #' @param ... parameters passed to hclust function
 #' @return matrix
+#' @references
+#' Pawlowsky-Glahn, V., Egozcue, J.J., Tolosana-Delgado R. (2011).
+#' \emph{Principal balances}.
+#' in proceeding of the 4th International Workshop on Compositional Data Analysis (CODAWORK'11) (available online at \url{http://www-ma3.upc.edu/users/ortego/codawork11-Proceedings/Admin/Files/FilePaper/p55.pdf})
 #' @examples
 #' X = matrix(exp(rnorm(10*100)), nrow=100, ncol=10)
 #' # Optimal variance obtained with Principal components
 #' apply(coordinates(X, 'pc'), 2, var)
-#' # Solution obtained using local search
+#' # Solution obtained using a hill climbing algorithm
 #' apply(coordinates(X,pb_basis(X, method='lsearch')), 2, var)
 #' # Solution obtained using Ward method
 #' apply(coordinates(X,pb_basis(X, method='ward.D2')), 2, var)
