@@ -7,4 +7,8 @@ M = cov(log(X))
 
 ## This example has the lowest variance precisly in the balance separating all parts.
 ##
-find_PB(M, 10)
+B1 = find_PB(M, 10)
+var(coordinates(X, B1)[,1])
+
+B2 = find_PB2(M, 1000)
+var(coordinates(X, B2)[,1])

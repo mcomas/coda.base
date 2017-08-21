@@ -138,6 +138,72 @@ void SBP::best_improve(){
     }
   }
 }
+bool change_state(double prev_variance, double new_variance, double p){
+  Rcpp::Rcout << "Previous: " << prev_variance << ", new: " << new_variance << std::endl;
+  if(new_variance > prev_variance) return(true);
+  if(new_variance/prev_variance < arma::vec(1).randu()[0] * (1-p)) return(true);
+  return(false);
+}
+
+void SBP::simulated_annealing(int steps){
+  arma::uvec bestL;
+  arma::uvec bestR;
+  double bestVar = 0;
+  if(node.size() == 2){
+    arma::uvec L0(1), R0(1);
+    L0(0) = 0;
+    R0(0) = 1;
+    init(L0,R0);
+  }else{
+    init();
+    for(int i=0; i<steps; i++){
+      int n = get_n();
+
+      arma::uvec uL = getL();
+      arma::uvec uR = getR();
+
+      arma::uvec O = arma::zeros<arma::uvec>(n);
+      O(uL).fill(1);
+      O(uR).fill(2);
+      if(uL.n_elem == 1){
+        O(uL).fill(4);
+      }
+      if(uR.n_elem == 1){
+        O(uR).fill(4);
+      }
+      double randu = 0;
+      unsigned int iact = 0;
+      do{
+       randu = arma::vec(1).randu()[0];
+       iact = (unsigned int)floor(n * randu);
+      }while(O[iact] == 4);
+      double new_variance = 0;
+      if(O[iact] == 0){
+        if(randu < 0.5){
+          new_variance = v_addL(iact);
+          if( change_state(variance, new_variance, (double)i/double(steps)) ) addL(iact);
+        }else{
+          new_variance = v_addR(iact);
+          if( change_state(variance, new_variance, (double)i/double(steps)) ) addR(iact);
+        }
+      }else{
+        if(O[iact] == 1){
+          new_variance = v_removeL(iact);
+          if( change_state(variance, new_variance, (double)i/double(steps)) ) removeL(iact);
+        }else{
+          new_variance = v_removeR(iact);
+          if( change_state(variance, new_variance, (double)i/double(steps)) ) removeR(iact);
+        }
+      }
+      if(bestVar < variance){
+        bestVar = variance;
+        bestL = getL();
+        bestR = getR();
+      }
+    }
+    init(bestL, bestR);
+  }
+}
 
 void SBP::local_search(int rep){
   arma::uvec bestL;

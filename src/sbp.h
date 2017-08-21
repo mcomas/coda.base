@@ -51,5 +51,6 @@ public:
   double v_removeR(int);
 
   void local_search(int rep);
+  void simulated_annealing(int steps);
   void print_status(bool, bool, bool);
 };
