@@ -32,14 +32,28 @@ arma::vec get_two(int n){
   return(res);
 }
 
-arma::vec arma_sampling(int n, int k){
+arma::vec arma_sampling_with_replacement(int n, int k){
   return(arma::floor(n*arma::vec(k).randu()));
 }
-
+// [[Rcpp::export]]
+arma::uvec arma_sampling_without_replacement(int n, int k){
+  arma::vec rpick = arma::vec(k).randu();
+  arma::uvec random_vec = arma::uvec(k);
+  arma::uvec index =  arma::uvec(n);
+  index[0] = 0;
+  for(int i = 1; i < n; i++) index[i] = index[i-1] + 1;
+  for(int i = 0; i < k; i++){
+    int N = (n-i);
+    int ipick = floor(N * rpick[i]);
+    random_vec[i] = index[ipick];
+    index[ipick] = index[N-1];
+  }
+  return(random_vec);
+}
 void SBP::init(){
   int n = get_n();
   arma::vec v_initial = get_two(n);
-  arma::vec v_random = arma_sampling(3, n);
+  arma::vec v_random = arma_sampling_with_replacement(3, n);
   //Rcpp::IntegerVector v_initial = Rcpp::sample(n, 2, false);
   //arma::uvec v_random = Rcpp::as<arma::uvec>(Rcpp::sample(3, n, true));
   v_random[v_initial[0]] = 1;
@@ -138,14 +152,95 @@ void SBP::best_improve(){
     }
   }
 }
+void SBP::k_best_improve(int k){
+
+  int n = get_n();
+
+  if(k > n) k = n;
+
+  arma::uvec uL = getL();
+  arma::uvec uR = getR();
+
+  arma::uvec O = arma::zeros<arma::uvec>(n);
+  O(uL).fill(1);
+  O(uR).fill(2);
+
+  arma::uvec IN = arma_sampling_without_replacement(n, k);
+  arma::uvec uIN = arma::zeros<arma::uvec>(n);
+  uIN(IN).fill(1);
+
+  arma::uvec uO = find(O == 0 && uIN == 1);
+  arma::uvec uLsub = find(O == 1 && uIN == 1);
+  arma::uvec uRsub = find(O == 2 && uIN == 1);
+
+  double maxVar = variance;
+  bool add = false;
+  bool left = false;
+  int which = -1;
+
+  for(unsigned int i=0; i < uO.n_elem; i++){
+    double newVar = v_addL(uO[i]);
+    if(newVar > maxVar){
+      maxVar = newVar;
+      add = true;
+      left = true;
+      which = uO[i];
+    }
+    newVar = v_addR(uO[i]);
+    if(newVar > maxVar){
+      maxVar = newVar;
+      add = true;
+      left = false;
+      which = uO[i];
+    }
+  }
+  if(uLsub.n_elem > 1){
+    for(unsigned int i=0; i<uLsub.n_elem; i++){
+      double newVar = v_removeL(uLsub[i]);
+      if(newVar > maxVar){
+        maxVar = newVar;
+        add = false;
+        left = true;
+        which = uLsub[i];
+      }
+    }
+  }
+  if(uRsub.n_elem > 1){
+    for(unsigned int i=0; i<uRsub.n_elem; i++){
+      double newVar = v_removeR(uRsub[i]);
+      if(newVar > maxVar){
+        maxVar = newVar;
+        add = false;
+        left = false;
+        which = uRsub[i];
+      }
+    }
+  }
+  if(which > -1){
+    if(add){
+      if(left){
+        addL(which);
+      }else{
+        addR(which);
+      }
+    }else{ // remove
+      if(left){
+        removeL(which);
+      }else{
+        removeR(which);
+      }
+    }
+  }
+}
 bool change_state(double prev_variance, double new_variance, double p){
-  Rcpp::Rcout << "Previous: " << prev_variance << ", new: " << new_variance << std::endl;
-  if(new_variance > prev_variance) return(true);
-  if(new_variance/prev_variance < arma::vec(1).randu()[0] * (1-p)) return(true);
+  //Rcpp::Rcout << "Previous: " << prev_variance << ", new: " << new_variance << std::endl;
+  double ratio = new_variance/prev_variance;
+  if(1 < ratio) return(true);
+  if(arma::vec(1).randu()[0] < sqrt(sqrt(ratio))) return(true);
   return(false);
 }
 
-void SBP::simulated_annealing(int steps){
+void SBP::simulated_annealing(int steps, int optim){
   arma::uvec bestL;
   arma::uvec bestR;
   double bestVar = 0;
@@ -194,6 +289,135 @@ void SBP::simulated_annealing(int steps){
           new_variance = v_removeR(iact);
           if( change_state(variance, new_variance, (double)i/double(steps)) ) removeR(iact);
         }
+      }
+      double prev_variance = 0;
+      for(int j=0; j<optim && prev_variance != variance; j++){
+        prev_variance = variance;
+        best_improve();
+      }
+      if(bestVar < variance){
+        bestVar = variance;
+        bestL = getL();
+        bestR = getR();
+      }
+    }
+    init(bestL, bestR);
+  }
+}
+
+void SBP::simulated_annealing2(int steps, int random, int optim, int k){
+  arma::uvec bestL;
+  arma::uvec bestR;
+  double bestVar = 0;
+  if(node.size() == 2){
+    arma::uvec L0(1), R0(1);
+    L0(0) = 0;
+    R0(0) = 1;
+    init(L0,R0);
+  }else{
+    init();
+    for(int i=0; i<steps; i++){
+      if(random == 0){
+        // Random start
+        init();
+      }else{
+        // Random walk
+        for(int j=0;j<random;j++){
+          int n = get_n();
+
+          arma::uvec uL = getL();
+          arma::uvec uR = getR();
+
+          arma::uvec O = arma::zeros<arma::uvec>(n);
+          O(uL).fill(1);
+          O(uR).fill(2);
+          if(uL.n_elem == 1){
+            O(uL).fill(4);
+          }
+          if(uR.n_elem == 1){
+            O(uR).fill(4);
+          }
+          double randu = 0;
+          unsigned int iact = 0;
+          do{
+            randu = arma::vec(1).randu()[0];
+            iact = (unsigned int)floor(n * randu);
+          }while(O[iact] == 4);
+          double new_variance = 0;
+          if(O[iact] == 0){
+            if(randu < 0.5){
+              new_variance = v_addL(iact);
+              if( change_state(variance, new_variance, (double)i/double(steps)) ) addL(iact);
+            }else{
+              new_variance = v_addR(iact);
+              if( change_state(variance, new_variance, (double)i/double(steps)) ) addR(iact);
+            }
+          }else{
+            if(O[iact] == 1){
+              new_variance = v_removeL(iact);
+              if( change_state(variance, new_variance, (double)i/double(steps)) ) removeL(iact);
+            }else{
+              new_variance = v_removeR(iact);
+              if( change_state(variance, new_variance, (double)i/double(steps)) ) removeR(iact);
+            }
+          }
+          if(bestVar < variance){
+            bestVar = variance;
+            bestL = getL();
+            bestR = getR();
+          }
+        }
+      }
+      // Optimizing walk
+      double prev_variance = 0;
+      for(int j=0; j<optim && prev_variance != variance; j++){
+        prev_variance = variance;
+        k_best_improve(k);
+      }
+      if(bestVar < variance){
+        bestVar = variance;
+        bestL = getL();
+        bestR = getR();
+      }
+    }
+    init(bestL, bestR);
+  }
+}
+
+
+void SBP::first_component_approximation(){
+  if(node.size() == 2){
+    arma::uvec L0(1), R0(1);
+    L0(0) = 0;
+    R0(0) = 1;
+    init(L0,R0);
+  }else{
+    arma::uvec bestL;
+    arma::uvec bestR;
+    double bestVar = 0;
+
+    int K = M.n_cols;
+    arma::mat G = arma::eye(K,K) - arma::ones<arma::mat>(K,K)/K;
+    arma::mat S = G * M * G;
+    arma::vec eigval;
+    arma::mat eigvec;
+
+    arma::eig_sym(eigval, eigvec, S);
+    arma::vec pc1 = eigvec.col(K-1);
+    arma::uvec indices = sort_index(abs(pc1), "descent");
+
+    arma::uvec L0(K), R0(K);
+    int nL0 = 0, nR0 = 0;
+    for(int i = 0; i < indices.n_elem; i++){
+      if(pc1[indices[i]] < 0){ // Left
+        L0[nL0] = indices[i];
+        nL0++;
+      }else{
+        R0[nR0] = indices[i];
+        nR0++;
+      }
+      if(nR0 > 0 && nL0 > 0){
+        init(L0.head(nL0), R0.head(nR0));
       }
       if(bestVar < variance){
         bestVar = variance;

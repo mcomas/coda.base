@@ -19,6 +19,7 @@ class SBP {
   void print_M(){ Rcpp::Rcout << M; }
 
   void best_improve();
+  void k_best_improve(int k);
 public:
   double var(){ return(variance); }
   SBP (arma::mat, std::map<int,arma::uvec>);
@@ -51,6 +52,8 @@ public:
   double v_removeR(int);
 
   void local_search(int rep);
-  void simulated_annealing(int steps);
+  void simulated_annealing(int steps, int optim);
+  void simulated_annealing2(int steps, int random, int optim, int k);
+  void first_component_approximation();
   void print_status(bool, bool, bool);
 };

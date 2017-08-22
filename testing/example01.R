@@ -10,5 +10,11 @@ M = cov(log(X))
 B1 = find_PB(M, 10)
 var(coordinates(X, B1)[,1])
 
-B2 = find_PB2(M, 1000)
+B2 = find_PB2(M, 1000, 10)
 var(coordinates(X, B2)[,1])
+
+B3 = find_PB3(M, steps = 5, random = 100, optim = .Machine$integer.max, k = 10)
+var(coordinates(X, B3)[,1])
+
+B4 = find_PB4(M)
+var(coordinates(X, B4)[,1])
