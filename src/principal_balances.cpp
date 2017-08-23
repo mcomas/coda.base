@@ -2,6 +2,7 @@
 #include <RcppArmadillo.h>
 #include "sbp.h"
 #include "principal_balances.h"
+#include "coda.h"
 
 void print_list(std::vector<SBP> SOLS){
   Rcpp::Rcout << ":Begin list:" << std::endl;
@@ -325,15 +326,33 @@ arma::mat find_PB4(arma::mat M){
   //print_list(PB);
 }
 
+arma::vec get_pc1(arma::mat M){
+  arma::vec b_old = arma::zeros<arma::vec>(M.n_cols);
+  arma::vec b_new = arma::ones<arma::vec>(M.n_cols);
+  while( max(abs(b_old-b_new)) > 10e-10){
+    b_old = b_new;
+    b_new = normalise(M * b_old);
+  }
+  return(b_new);
+}
+
 // [[Rcpp::export]]
-arma::mat find_PB5(arma::mat M){
+arma::mat find_PB5(arma::mat X){
+  arma::mat M = cov(log(X));
+
+  arma::mat Xclr = clr_coordinates(X);
+  arma::mat Mclr = cov(Xclr);
+
   int K = M.n_cols;
 
   std::vector<SBP> PB;
+  arma::mat pb_mat = arma::mat(K,K-1);
   std::vector<SBP> SOLS;
 
   SOLS.push_back(SBP(M, default_node(K)));
-  SOLS.back().first_component_approximation2();
+
+  SOLS.back().first_component_approximation2(Mclr);
+  //print_list(SOLS);
   for(int l=0;l<K-1;l++){
     //Rcpp::Rcout << "Starting step " << l + 1 << " of " << K-1 << std::endl;
     //print_list(SOLS);
@@ -347,8 +366,12 @@ arma::mat find_PB5(arma::mat M){
       }
     }
     PB.push_back(SOLS[iBestSolution]);
-    //Rcpp::Rcout << "Best solution found" << std::endl;
-    //SOLS[iBestSolution].print_status(true,true,true);
+    // Rcpp::Rcout << "Best solution found" << std::endl;
+    // SOLS[iBestSolution].print_status(true,true,true);
+    pb_mat.col(l) = balance(K,PB[l]);
+    Xclr = Xclr - Xclr * pb_mat.col(l) * pb_mat.col(l).t();
+    Mclr = cov(Xclr);
+
 
     //Rcpp::Rcout << "Status:" << SOLS.size() << std::endl;
     //SOLS.back().print_status(true,true,true);
@@ -362,7 +385,7 @@ arma::mat find_PB5(arma::mat M){
       SOLS.push_back(SOLS[iBestSolution].top());
       //Rcpp::Rcout << "Top included!" << std::endl;
       //SOLS.back().print_status(true,true,true);
-      SOLS.back().first_component_approximation2();
+      SOLS.back().first_component_approximation2(Mclr);
       //SOLS.back().print_status(true,true,true);
       //Rcpp::Rcout << "End top" << std::endl;
     }
@@ -370,31 +393,106 @@ arma::mat find_PB5(arma::mat M){
       //Rcpp:: Rcout << "Start left..." << std::endl;
       //SOLS[1].print_status(true,true,true);
       SOLS.push_back(SOLS[iBestSolution].left());
-      SOLS.back().first_component_approximation2();
+      SOLS.back().first_component_approximation2(Mclr);
       //Rcpp::Rcout << "End left" << std::endl;
     }
     if(nR > 1){
       //Rcpp:: Rcout << "Start right...";
       //SOLS[2].print_status(true,true,true);
       SOLS.push_back(SOLS[iBestSolution].right());
-      SOLS.back().first_component_approximation2();
+      SOLS.back().first_component_approximation2(Mclr);
       //Rcpp::Rcout << "End right" << std::endl;
     }
     //SOLS.back().print_status(true,true,true);
 
     SOLS[iBestSolution] = SOLS.back();
     SOLS.pop_back();
+
+    Rcpp::checkUserInterrupt();
   }
-  //Rcpp::Rcout << "End" << std::endl;
-  arma::mat pb_mat = arma::mat(K,PB.size());
-  for(unsigned int i=0; i<PB.size(); i++){
-    pb_mat.col(i) = balance(K,PB[i]);
-  }
+
   return(pb_mat);
-  //Rcpp::Rcout << "Principal balances: "<< std::endl;
-  //print_list(PB);
 }
 
+// [[Rcpp::export]]
+arma::mat find_PB6(arma::mat X){
+  arma::mat M = cov(log(X));
+
+  arma::mat Xclr = clr_coordinates(X);
+  arma::mat Mclr = cov(Xclr);
+  arma::vec PC1 = get_pc1(Mclr);
+
+  int K = M.n_cols;
+
+  std::vector<SBP> PB;
+  arma::mat pb_mat = arma::mat(K,K-1);
+  std::vector<SBP> SOLS;
+
+  SOLS.push_back(SBP(M, default_node(K)));
+
+  SOLS.back().first_component_approximation2(PC1);
+  //print_list(SOLS);
+  for(int l=0;l<K-1;l++){
+    //Rcpp::Rcout << "Starting step " << l + 1 << " of " << K-1 << std::endl;
+    //print_list(SOLS);
+    double vBestSolution = 0;
+    int iBestSolution = -1;
+    for(unsigned int i =0; i< SOLS.size();i++){
+      double v = SOLS[i].var();
+      if(v > vBestSolution){
+        vBestSolution = v;
+        iBestSolution = i;
+      }
+    }
+    PB.push_back(SOLS[iBestSolution]);
+    // Rcpp::Rcout << "Best solution found" << std::endl;
+    // SOLS[iBestSolution].print_status(true,true,true);
+    pb_mat.col(l) = balance(K,PB[l]);
+    Xclr = Xclr - Xclr * pb_mat.col(l) * pb_mat.col(l).t();
+    Mclr = cov(Xclr);
+    arma::vec PC1 = get_pc1(Mclr);
+
+
+    //Rcpp::Rcout << "Status:" << SOLS.size() << std::endl;
+    //SOLS.back().print_status(true,true,true);
+    int n = SOLS[iBestSolution].get_n();
+    int nL = SOLS[iBestSolution].getL().n_elem;
+    int nR = SOLS[iBestSolution].getR().n_elem;
+    //Rcpp::Rcout << n << " " << nL << " " << nR << std::endl;
+    if(n > nL + nR){
+      //Rcpp:: Rcout << "Start top...";
+      //Rcpp::Rcout << "Including top... ";
+      SOLS.push_back(SOLS[iBestSolution].top());
+      //Rcpp::Rcout << "Top included!" << std::endl;
+      //SOLS.back().print_status(true,true,true);
+      SOLS.back().first_component_approximation2(PC1);
+      //SOLS.back().print_status(true,true,true);
+      //Rcpp::Rcout << "End top" << std::endl;
+    }
+    if(nL > 1){
+      //Rcpp:: Rcout << "Start left..." << std::endl;
+      //SOLS[1].print_status(true,true,true);
+      SOLS.push_back(SOLS[iBestSolution].left());
+      SOLS.back().first_component_approximation2(PC1);
+      //Rcpp::Rcout << "End left" << std::endl;
+    }
+    if(nR > 1){
+      //Rcpp:: Rcout << "Start right...";
+      //SOLS[2].print_status(true,true,true);
+      SOLS.push_back(SOLS[iBestSolution].right());
+      SOLS.back().first_component_approximation2(PC1);
+      //Rcpp::Rcout << "End right" << std::endl;
+    }
+    //SOLS.back().print_status(true,true,true);
+
+    SOLS[iBestSolution] = SOLS.back();
+    SOLS.pop_back();
+
+    Rcpp::checkUserInterrupt();
+  }
+
+  return(pb_mat);
+}
 // Helpers
 std::map<int,arma::uvec> default_node(int size){
   std::map<int,arma::uvec> node;

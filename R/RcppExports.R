@@ -69,8 +69,8 @@ find_PB4 <- function(M) {
     .Call('_coda_base_find_PB4', PACKAGE = 'coda.base', M)
 }
 
-find_PB5 <- function(M) {
-    .Call('_coda_base_find_PB5', PACKAGE = 'coda.base', M)
+find_PB5 <- function(X) {
+    .Call('_coda_base_find_PB5', PACKAGE = 'coda.base', X)
 }
 
 arma_sampling_without_replacement <- function(n, k) {

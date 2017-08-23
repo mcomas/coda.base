@@ -18,9 +18,17 @@ B4 = find_PB4(M)
 v4 = apply(coordinates(X, B4), 2, var)
 table(sign(diff(v4)))
 
-B5 = find_PB5(M)
+# Better for high matrices
+B5 = find_PB5(as.matrix(X))
 v5 = apply(coordinates(X, B5), 2, var)
 table(sign(diff(v5)))
+
+# Better for small matrices
+B6 = find_PB6(as.matrix(X))
+v6 = apply(coordinates(X, B6), 2, var)
+table(sign(diff(v6)))
+
+microbenchmark(find_PB5(as.matrix(X)), find_PB6(as.matrix(X)))
 
 
 B3a = find_PB3(M, 1, K, .Machine$integer.max)
