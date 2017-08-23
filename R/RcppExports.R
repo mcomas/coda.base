@@ -65,6 +65,14 @@ find_PB3 <- function(M, steps, random = 100L, optim = 0L, k = 0L) {
     .Call('_coda_base_find_PB3', PACKAGE = 'coda.base', M, steps, random, optim, k)
 }
 
+find_PB4 <- function(M) {
+    .Call('_coda_base_find_PB4', PACKAGE = 'coda.base', M)
+}
+
+find_PB5 <- function(M) {
+    .Call('_coda_base_find_PB5', PACKAGE = 'coda.base', M)
+}
+
 arma_sampling_without_replacement <- function(n, k) {
     .Call('_coda_base_arma_sampling_without_replacement', PACKAGE = 'coda.base', n, k)
 }

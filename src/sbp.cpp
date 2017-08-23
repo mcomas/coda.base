@@ -408,7 +408,7 @@ void SBP::first_component_approximation(){
 
     arma::uvec L0(K), R0(K);
     int nL0 = 0, nR0 = 0;
-    for(int i = 0; i < indices.n_elem; i++){
+    for(unsigned int i = 0; i < indices.n_elem; i++){
       if(pc1[indices[i]] < 0){ // Left
         L0[nL0] = indices[i];
         nL0++;
@@ -426,6 +426,62 @@ void SBP::first_component_approximation(){
       }
     }
     init(bestL, bestR);
+  }
+}
+
+void SBP::first_component_approximation2(){
+  if(node.size() == 2){
+    arma::uvec L0(1), R0(1);
+    L0(0) = 0;
+    R0(0) = 1;
+    init(L0,R0);
+  }else{
+    arma::uvec bestL;
+    arma::uvec bestR;
+    double bestVar = 0;
+
+    int K = M.n_cols;
+    arma::mat G = arma::eye(K,K) - arma::ones<arma::mat>(K,K)/K;
+    arma::mat S = G * M * G;
+    arma::vec eigval;
+    arma::mat eigvec;
+
+    arma::eig_sym(eigval, eigvec, S);
+    arma::vec pc1 = eigvec.col(K-1);
+    arma::uvec indices = sort_index(abs(pc1), "descent");
+
+    arma::uvec L0(K), R0(K);
+    int nL0 = 0, nR0 = 0;
+    for(unsigned int i = 0; i < indices.n_elem; i++){
+      if(pc1[indices[i]] < 0){ // Left
+        L0[nL0] = indices[i];
+        nL0++;
+      }else{
+        R0[nR0] = indices[i];
+        nR0++;
+      }
+      if(nR0 > 0 && nL0 > 0){
+        init(L0.head(nL0), R0.head(nR0));
+      }
+      if(bestVar < variance){
+        bestVar = variance;
+        bestL = getL();
+        bestR = getR();
+      }
+    }
+    init(bestL, bestR);
+    double prev_variance = -1;
+    double new_variance = variance;
+    int iter = 0;
+    //sbp->print_status();
+    while(prev_variance != new_variance){
+      prev_variance = new_variance;
+      best_improve();
+      new_variance = variance;
+      iter++;
+      //Rcpp::Rcout << "New variance:" << new_variance << " Old variance: "<< prev_variance << std::endl;
+      if (iter % 1000 == 0) Rcpp::checkUserInterrupt();
+    }
   }
 }
 
