@@ -8,14 +8,24 @@ M = cov(log(X))
 
 B0 = pb_basis(X, 'ward.D2')
 v0 = apply(coordinates(X, B0), 2, var)
+max(v0)
 table(sign(diff(v0)))
 
-B1 = find_PB(M, 1)
+B1 = find_PB_rnd_local_search(M, 1)
 v1 = apply(coordinates(X, B1), 2, var)
+max(v1)
 table(sign(diff(v1)))
 
-B4 = find_PB4(M)
+B2 = find_PB_pc_local_search(as.matrix(X))
+v2 = apply(coordinates(X, B2), 2, var)
+max(v2)
+table(sign(diff(v2)))
+
+
+
+B4 = find_PB4(cov(log(M)))
 v4 = apply(coordinates(X, B4), 2, var)
+max(v4)
 table(sign(diff(v4)))
 
 # Better for high matrices

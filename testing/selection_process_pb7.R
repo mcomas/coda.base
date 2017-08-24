@@ -2,7 +2,7 @@ set.seed(1)
 library(Rcpp)
 library(coda.base)
 sourceCpp('src/principal_balances.cpp')
-K = 5
+K = 1000
 X=as.data.frame(matrix(exp(rnorm(K*K*2)), nrow=2*K, ncol=K))
 M = cov(log(X))
 Xclr = coordinates(X, 'clr')

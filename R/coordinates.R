@@ -202,7 +202,11 @@ sbp_basis = function(..., data, silent=F){
 #' @param X compositional dataset
 #' @param method method to be used with Principal Balances. Methods available are: 'lsearch' or
 #' method to be passed to hclust function (for example `ward.D` or `ward.D2` to use Ward method).
-#' @param rep Number of restartings to be used with the local search algorithm.
+#' @param rep Number of restartings to be used with the local search algorithm. If zero is supplied
+#' (default), one local search is performed using an starting point close to the principal component
+#' solution.
+#' @param ordering should the principal balances found be returned ordered? (first column, first
+#' principal balance and so on)
 #' @param ... parameters passed to hclust function
 #' @return matrix
 #' @references
@@ -210,20 +214,27 @@ sbp_basis = function(..., data, silent=F){
 #' \emph{Principal balances}.
 #' in proceeding of the 4th International Workshop on Compositional Data Analysis (CODAWORK'11) (available online at \url{http://www-ma3.upc.edu/users/ortego/codawork11-Proceedings/Admin/Files/FilePaper/p55.pdf})
 #' @examples
-#' X = matrix(exp(rnorm(10*100)), nrow=100, ncol=10)
+#' X = matrix(exp(rnorm(20*100)), nrow=100, ncol=20)
 #' # Optimal variance obtained with Principal components
-#' apply(coordinates(X, 'pc'), 2, var)
-#' # Solution obtained using a hill climbing algorithm
-#' apply(coordinates(X,pb_basis(X, method='lsearch')), 2, var)
+#' head(apply(coordinates(X, 'pc'), 2, var))
+#'# Solution obtained using a hill climbing algorithm from pc approximation
+#'head(apply(coordinates(X,pb_basis(X, method='lsearch')), 2, var))
+#'# Solution obtained using a hill climbing algorithm using 10 restartings
+#'head(apply(coordinates(X,pb_basis(X, method='lsearch', rep=10)), 2, var))
 #' # Solution obtained using Ward method
-#' apply(coordinates(X,pb_basis(X, method='ward.D2')), 2, var)
+#' head(apply(coordinates(X,pb_basis(X, method='ward.D2')), 2, var))
 #' # Solution obtained using Old Ward function (in R versions <= 3.0.3)
-#' apply(coordinates(X,pb_basis(X, method='ward.D')), 2, var)
+#' head(apply(coordinates(X,pb_basis(X, method='ward.D')), 2, var))
 #' @export
-pb_basis = function(X, method, rep = ceiling(ncol(X)/2), ...){
+pb_basis = function(X, method, rep = 0, ordering = TRUE, ...){
   X = as.matrix(X)
   if(method == 'lsearch'){
-    find_PB(stats::cov(log(X)), rep=rep)
+    if(rep == 0){
+      B = find_PB_pc_local_search(X)
+    }else{
+      B = find_PB_rnd_local_search(stats::cov(log(X)), rep=rep)
+    }
+
   }else{
     hh = stats::hclust(stats::as.dist(variation_array(X, only_variation = TRUE)), method=method, ...)
     bin = hh$merge
@@ -235,8 +246,12 @@ pb_basis = function(X, method, rep = ceiling(ncol(X)/2), ...){
     id = seq_along(sbp)
     sbp.exp = paste(sprintf("%s = %s ~ %s", paste0('P', id), nms[,1], nms[,2]),
                     collapse=', ')
-    eval(parse(text = sprintf("sbp_basis(%s,data=df)", sbp.exp)))[,rev(id)]
+    B = eval(parse(text = sprintf("sbp_basis(%s,data=df)", sbp.exp)))[,rev(id)]
   }
+  if(ordering){
+    B = B[,order(apply(coordinates(X, B), 2, stats::var), decreasing = TRUE)]
+  }
+  B
 }
 
 #' coordinates with respect an specific basis
