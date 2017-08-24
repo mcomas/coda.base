@@ -16,7 +16,12 @@ variation_array = function(X, only_variation = FALSE){
   c_variation_array(X, as.logical(only_variation))
 }
 
-#' Build an isometric log-ratio basis
+#' Default Isometric log-ratio basis
+#'
+#' Build an isometric log-ratio basis for a composition with k+1 parts
+#' \deqn{h_i = \sqrt{\frac{i}{i+1}} \log\frac{\sqrt[i]{\prod_{j=1}^i x_j}}{x_{i+1}}}{%
+#' h[i] = \sqrt(i/(i+1)) ( log(x[1] \ldots x[i])/i - log(x[i+1]) )}
+#' for \eqn{i in 1\ldots k}
 #'
 #' @param dim number of components
 #' @return matrix
@@ -91,8 +96,9 @@ clr_basis = function(dim){
 #   pr$loadings[,-NCOL(X)]
 # }
 
+#' Isometric log-ratio basis based on Balances
 #' Build an \code{\link{ilr_basis}} using a sequential binary partition or
-#' or a generic coordinate system based on balances.
+#' a generic coordinate system based on balances.
 #'
 #' @param ... balances to consider
 #' @param data composition from where name parts are extracted
