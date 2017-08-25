@@ -515,7 +515,7 @@ void SBP::first_component_approximation2(arma::vec pc1){
     double bestVar = 0;
 
     int K = M.n_cols;
-    int Ki = pc1.n_elem;
+
     //Rcpp::Rcout << pc1 << std::endl;
     arma::vec pc1_restricted = arma::vec(K);
     for(unsigned i = 0; i < pc1_restricted.n_elem; i++){

@@ -320,7 +320,7 @@ coordinates = function(X, basis = 'ilr', label = 'x', sparse_basis = FALSE){
   }
   class(COORD) = class_type
   attr(COORD, 'basis') = basis
-  COORD
+  set.coda(COORD)
 }
 
 #' coordinates with respect an specific basis
