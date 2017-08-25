@@ -4,3 +4,5 @@
 ^\.Rproj\.user$
 testing/
 test/
+.APtable
+out

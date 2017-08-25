@@ -56,6 +56,6 @@ public:
   void simulated_annealing2(int steps, int random, int optim, int k);
   void first_component_approximation();
   void first_component_approximation2(arma::mat Mclr);
-  void first_component_approximation2(arma::vec Mclr);
+  void first_pc_local_search(arma::vec pc1);
   void print_status(bool, bool, bool);
 };

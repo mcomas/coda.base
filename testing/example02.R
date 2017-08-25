@@ -15,7 +15,7 @@ library(compositions)
 
 hide = function(f) suppressMessages(invisible(capture.output(f)))
 
-hide(b0 <- find_PB(M, 10))
+hide(b0 <- find_PB_rnd_local_search(M, 10))
 max(apply(coordinates(X, b0), 2, var))
 hide(b1 <- gsi.PrinBal(acomp(X), method = 'PBhclust'))
 max(apply(coordinates(X, b1), 2, var))
@@ -27,7 +27,7 @@ max(apply(coordinates(X, b3), 2, var))
 
 library(microbenchmark)
 microbenchmark(
-  find_PB(M, rep=10),
+  find_PB_rnd_local_search(M, rep=10),
   gsi.PrinBal(acomp(X), method = 'PBhclust'),
   gsi.PrinBal(acomp(X), method = 'PBmaxvar'),
   gsi.PrinBal(as.data.frame(X), method = 'PBangprox'))

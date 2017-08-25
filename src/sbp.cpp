@@ -1,3 +1,5 @@
+#define ARMA_NO_DEBUG
+
 // [[Rcpp::depends(RcppArmadillo)]]
 #include <RcppArmadillo.h>
 #include "sbp.h"
@@ -502,7 +504,7 @@ void SBP::first_component_approximation2(arma::mat Mclr){
   }
 }
 
-void SBP::first_component_approximation2(arma::vec pc1){
+void SBP::first_pc_local_search(arma::vec pc1){
 
   if(node.size() == 2){
     arma::uvec L0(1), R0(1);
@@ -519,27 +521,37 @@ void SBP::first_component_approximation2(arma::vec pc1){
     //Rcpp::Rcout << pc1 << std::endl;
     arma::vec pc1_restricted = arma::vec(K);
     for(unsigned i = 0; i < pc1_restricted.n_elem; i++){
-      pc1_restricted[i] = mean(pc1(node[i]));
+      pc1_restricted[i] = arma::norm(pc1(node[i]));
     }
     arma::uvec indices = sort_index(abs(pc1_restricted), "descent");
     arma::uvec L0(K), R0(K);
     int nL0 = 0, nR0 = 0;
+
     for(unsigned int i = 0; i < indices.n_elem; i++){
-      if(pc1_restricted[indices[i]] < 0){ // Left
-        L0[nL0] = indices[i];
-        nL0++;
-      }else{
-        R0[nR0] = indices[i];
-        nR0++;
-      }
-      if(nR0 > 0 && nL0 > 0){
-        init(L0.head(nL0), R0.head(nR0));
-      }
-      if(bestVar < variance){
-        bestVar = variance;
-        bestL = getL();
-        bestR = getR();
-      }
+      // if(nR0 > 0 && nL0 > 0){
+      //   init(L0.head(nL0), R0.head(nR0));
+      //   if(pc1_restricted[indices[i]] < 0 && v_addL(indices[i]) > variance){ // Left
+      //     L0[nL0] = indices[i];
+      //     nL0++;
+      //   }
+      //   if(pc1_restricted[indices[i]] > 0 && v_addR(indices[i]) > variance){ // Right
+      //     R0[nR0] = indices[i];
+      //     nR0++;
+      //   }
+      // }else{
+        if(pc1_restricted[indices[i]] < 0){ // Left
+          L0[nL0] = indices[i];
+          nL0++;
+        }else{
+          R0[nR0] = indices[i];
+          nR0++;
+        }
+      // }
+      // if(bestVar < variance){
+      //   bestVar = variance;
+      //   bestL = getL();
+      //   bestR = getR();
+      // }
     }
     if(nR0 == 0 || nL0 == 0){
       if(nR0 == 0){
@@ -551,10 +563,11 @@ void SBP::first_component_approximation2(arma::vec pc1){
         L0[0] = indices[indices.n_elem-1];
         nL0 = 1;
       }
-      init(L0.head(nL0), R0.head(nR0));
-    }else{
-      init(bestL, bestR);
-    }
+
+    }//else{
+     // init(bestL, bestR);
+    //}
+    init(L0.head(nL0), R0.head(nR0));
     double prev_variance = -1;
     double new_variance = variance;
     int iter = 0;

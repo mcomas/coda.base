@@ -53,8 +53,12 @@ inv_ilr_coordinates <- function(ilrX) {
     .Call('_coda_base_inv_ilr_coordinates', PACKAGE = 'coda.base', ilrX)
 }
 
-find_PB <- function(M, rep = 1L) {
-    .Call('_coda_base_find_PB', PACKAGE = 'coda.base', M, rep)
+find_PB_rnd_local_search <- function(M, rep = 1L) {
+    .Call('_coda_base_find_PB_rnd_local_search', PACKAGE = 'coda.base', M, rep)
+}
+
+find_PB_pc_local_search <- function(X) {
+    .Call('_coda_base_find_PB_pc_local_search', PACKAGE = 'coda.base', X)
 }
 
 find_PB2 <- function(M, random = 100L, optim = 0L) {
