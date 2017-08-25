@@ -1,3 +1,7 @@
-coda.base 0.1.6 (Release date: 2017-08-16)
+coda.base 0.1.7 (Release date: 2017-08-25)
 ===============
 
+* Problem with function composition using 'clr' basis solved.
+* 'coda.base.basis' option included to hide the basis when printing the coordinates.
+* New method which uses the principal components included in pb_basis.
+* Documentaion improved.
