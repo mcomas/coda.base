@@ -279,13 +279,16 @@ pb_basis = function(X, method, rep = 0, ordering = TRUE, ...){
 #' a compositions from given coordinates.
 #' @examples
 #' coordinates(c(1,2,3,4,5))
+#' # basis is shown if 'coda.base.basis' option is set to TRUE
+#' options('coda.base.basis' = TRUE)
+#' coordinates(c(1,2,3,4,5))
 #' # Setting sparse_basi to TRUE can improve performance if log-ratio basis is sparse.
 #' N = 100
 #' K = 1000
 #' X = matrix(exp(rnorm(N*K)), nrow=N, ncol=K)
 #' system.time(coordinates(X, alr_basis(K), sparse_basis = FALSE))
 #' system.time(coordinates(X, alr_basis(K), sparse_basis = TRUE))
-#' system.time(coordinates(X, 'alr', sparse_basis = TRUE))
+#' system.time(coordinates(X, 'alr'))
 #' @export
 coordinates = function(X, basis = 'ilr', label = 'x', sparse_basis = FALSE){
   class_type = class(X)
@@ -364,7 +367,8 @@ composition = function(H, basis = NULL, label = 'x', sparse_basis = FALSE){
   class_type = class(H)
   if(is.null(basis) & "basis" %in% names(attributes(H))){
     basis = attr(H, 'basis')
-  }else{
+  }
+  if(is.null(basis)){
     basis = 'ilr'
   }
   is_vector = is.atomic(H) & !is.list(H) & !is.matrix(H)

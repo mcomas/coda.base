@@ -3,7 +3,7 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 
 #include <RcppArmadillo.h>
-#include "coda.h"
+#include <coda.h>
 
 using namespace Rcpp;
 

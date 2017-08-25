@@ -514,7 +514,7 @@ void SBP::first_pc_local_search(arma::vec pc1){
   }else{
     arma::uvec bestL;
     arma::uvec bestR;
-    double bestVar = 0;
+    //double bestVar = 0;
 
     int K = M.n_cols;
 
