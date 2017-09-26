@@ -13,11 +13,11 @@ set.coda = function(x){
 #' @export
 print.coda = function(x, ..., basis = getOption('coda.base.basis')){
   x.print = x
-  print.methods.list = methods('print')
+  print.methods.list = utils::methods('print')
   orig_class = setdiff(class(x.print), 'coda')
   class(x.print) = orig_class
   print.method = match(paste0('print.',orig_class), print.methods.list)[1]
   if(!basis) attr(x.print, 'basis') = NULL
   if(is.na(print.method)) print.default(x.print, ...)
-  else getAnywhere(print.methods.list[print.method])$objs[[1]](x.print, ...)
+  else utils::getAnywhere(print.methods.list[print.method])$objs[[1]](x.print, ...)
 }
