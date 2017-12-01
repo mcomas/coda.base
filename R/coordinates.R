@@ -260,9 +260,16 @@ pb_basis = function(X, method, rep = 0, ordering = TRUE, ...){
   B
 }
 
-#' coordinates with respect an specific basis
+#' @title Get coordinates from compositions w.r.t. an specific basis
 #'
+#' @description
 #' Calculate the coordinates of a composition with respect a given basis
+#'
+#' @details
+#' \code{coordinates} function calculates the coordinates of a compositiona w.r.t. a given basis. `basis` parameter is
+#' used to set the basis, it can be either a matrix defining the log-contrasts in columns or a string defining some well-known
+#' log-contrast: 'alr' 'clr', 'ilr' or 'pc' for the additive log-ratio, centered log-ratio, isometric log-ratio or
+#' clr principal components respectively.
 #'
 #' @param X compositional dataset. Either a matrix, a data.frame or a vector
 #' @param basis basis used to calculate the coordinates. \code{basis} can be either a string or a matrix.
@@ -271,7 +278,10 @@ pb_basis = function(X, method, rep = 0, ordering = TRUE, ...){
 #' @param label name given to the coordinates
 #' @param sparse_basis Is the given matrix basis sparse? If TRUE calculation are carried
 #' taking into an account sparsity (default `FALSE`)
-#' @return coordinates with respect the given basis
+#'
+#' @return
+#' Coordinates of composition \code{X} with respect the given \code{basis}.
+#'
 #' @seealso See functions \code{\link{ilr_basis}}, \code{\link{alr_basis}},
 #' \code{\link{clr_basis}}, \code{\link{sbp_basis}}
 #' to define different compositional basis.
@@ -347,7 +357,7 @@ coordinates = function(X, basis = 'ilr', label = 'x', sparse_basis = FALSE){
   set.coda(COORD)
 }
 
-#' coordinates with respect an specific basis
+#' Get composition from coordinates w.r.t.  an specific basis
 #'
 #' Calculate a composition from coordinates with respect a given basis
 #'
