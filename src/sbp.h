@@ -51,6 +51,9 @@ public:
   void removeR(int);
   double v_removeR(int);
 
+  void optimal();
+  bool hasNext();
+  void nextSBP();
   void local_search(int rep);
   void simulated_annealing(int steps, int optim);
   void simulated_annealing2(int steps, int random, int optim, int k);

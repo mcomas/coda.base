@@ -505,7 +505,7 @@ void SBP::first_component_approximation2(arma::mat Mclr){
 }
 
 void SBP::first_pc_local_search(arma::vec pc1){
-
+  //Rcpp::Rcout << "Entering first_pc_local_search" << std::endl;
   if(node.size() == 2){
     arma::uvec L0(1), R0(1);
     L0(0) = 0;
@@ -580,6 +580,7 @@ void SBP::first_pc_local_search(arma::vec pc1){
       if (iter % 1000 == 0) Rcpp::checkUserInterrupt();
     }
   }
+  //Rcpp::Rcout << "Exiting first_pc_local_search" << std::endl;
 }
 
 void SBP::local_search(int rep){
@@ -618,6 +619,81 @@ void SBP::local_search(int rep){
     init(bestL, bestR);
   }
 }
+
+bool SBP::hasNext(){
+  int n = get_n();
+  arma::uvec uL = arma::uvec(getL());
+  arma::uvec uR = arma::uvec(getR());
+  if(uL.n_elem == 1 & uR.n_elem + 1 == n & uL[0] == n-1){
+    return(false);
+  }
+  return(true);
+}
+
+void SBP::nextSBP(){
+  int n = get_n();
+  arma::uvec uL = arma::uvec(getL());
+  arma::uvec uR = arma::uvec(getR());
+  arma::uvec O = arma::zeros<arma::uvec>(n);
+  O(uL).fill(1);
+  O(uR).fill(2);
+  do{
+    int pos = 0;
+    while(O[pos] == 2){
+      O[pos] = 0;
+      pos++;
+    }
+    O[pos]++;
+    uL = find(O == 1);
+    uR = find(O == 2);
+  } while (uL.n_elem == 0 | uR.n_elem == 0);
+  init(uL,uR);
+}
+
+void SBP::optimal(){
+  arma::uvec bestL;
+  arma::uvec bestR;
+  double bestVar = 0;
+  //
+  //
+  //Rcpp::Rcout << "Before optimisation!!" << std::endl;
+  //print_status(true,true,false);
+  arma::uvec L0(1), R0(1);
+  L0(0) = 0;
+  R0(0) = 1;
+  init(L0,R0);
+  bestVar = variance;
+  bestL = getL();
+  bestR = getR();
+  if(node.size() > 2){
+
+    double prev_variance = -1;
+    double new_variance = variance;
+    int iter = 0;
+    //sbp->print_status();
+    while(hasNext()){
+
+      prev_variance = new_variance;
+      nextSBP();
+      new_variance = variance;
+      iter++;
+
+      //Rcpp::Rcout << "New variance:" << new_variance << " Old variance: "<< prev_variance << std::endl;
+      if (iter % 10000 == 0) Rcpp::checkUserInterrupt();
+      if(bestVar < variance){
+        bestVar = variance;
+        bestL = getL();
+        bestR = getR();
+      }
+    }
+    init(bestL, bestR);
+  }
+
+  //Rcpp::Rcout << "After optimisation!!" << std::endl;
+  //print_status(true,true,false);
+
+}
+
 
 SBP SBP::top(){
   int n = M.n_cols;
