@@ -5,3 +5,8 @@ coda.base 0.1.7 (Release date: 2017-08-25)
 * 'coda.base.basis' option included to hide the basis when printing the coordinates.
 * New method which uses the principal components included in pb_basis.
 * Documentaion improved.
+
+coda.base 0.1.8 (Release date: 2017-12-03)
+===============
+* Exact algorithm for Principal Balances included.
+* Bug in lsearch base in principal components solved.
