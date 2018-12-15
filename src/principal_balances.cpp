@@ -111,7 +111,7 @@ arma::vec get_pc1(arma::mat M){
   arma::vec b_old = arma::zeros<arma::vec>(M.n_cols);
   arma::vec b_new = arma::ones<arma::vec>(M.n_cols);
   int iter = 0;
-  while( max(abs(b_old-b_new)) > 10e-5 & iter < 1000){
+  while( (max(abs(b_old-b_new)) > 10e-5) & (iter < 1000) ){
     iter++;
     b_old = b_new;
     b_new = normalise(M * b_old);

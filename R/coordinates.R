@@ -280,8 +280,8 @@ pb_basis = function(X, method, rep = 0, ordering = TRUE, ...){
 #' @details
 #' \code{coordinates} function calculates the coordinates of a compositiona w.r.t. a given basis. `basis` parameter is
 #' used to set the basis, it can be either a matrix defining the log-contrasts in columns or a string defining some well-known
-#' log-contrast: 'alr' 'clr', 'ilr' or 'pc' for the additive log-ratio, centered log-ratio, isometric log-ratio or
-#' clr principal components respectively.
+#' log-contrast: 'alr' 'clr', 'ilr', 'pc' or 'pb' for the additive log-ratio, centered log-ratio, isometric log-ratio,
+#' clr principal components or clr principal balances respectively.
 #'
 #' @param X compositional dataset. Either a matrix, a data.frame or a vector
 #' @param basis basis used to calculate the coordinates. \code{basis} can be either a string or a matrix.
@@ -325,30 +325,44 @@ coordinates = function(X, basis = 'ilr', label = 'x', sparse_basis = FALSE){
     RAW = as.matrix(X)
   }
   if(is.character(basis)){
-    dim = ncol(RAW)
+    sel = rowSums(is.na(RAW) | RAW <= 0) == 0
+    RAW.coda = RAW[sel, ]
+    dim = ncol(RAW.coda)
+    coord.dim = ncol(RAW.coda) - 1
     if(basis == 'ilr'){
       basis = ilr_basis(dim)
-      COORD = coordinates_basis(RAW, ilr_basis(dim), sparse = FALSE)
+      COORD.coda = coordinates_basis(RAW.coda, ilr_basis(dim), sparse = FALSE)
     }else{
       if(basis == 'alr'){
         basis = alr_basis(dim)
-        COORD = coordinates_alr(RAW, 0)
+        COORD.coda = coordinates_alr(RAW.coda, 0)
       }else{
         if(basis == 'clr'){
+          coord.dim = ncol(RAW.coda)
           basis = clr_basis(dim)
-          COORD = coordinates_basis(RAW, clr_basis(dim), sparse = FALSE)
+          COORD.coda = coordinates_basis(RAW.coda, clr_basis(dim), sparse = FALSE)
         }else{
           if(basis == 'pc'){
-            lRAW =  log(RAW)
+            lRAW =  log(RAW.coda)
             pr = stats::princomp(lRAW - rowMeans(lRAW))
             basis = pr$loadings[,-dim]
-            COORD = pr$scores[,-dim]
+            COORD.coda = pr$scores[,-dim]
           }else{
-            stop(sprintf('Basis %d not recognized'))
+            if(basis == 'pb'){
+              if(ncol(RAW.coda) > 15){
+                message("Number of columns is high for 'pb' method. Depending on your system this computation can take too long. Consider using an approximate method. Consult 'pb_basis' function for more details.")
+              }
+              basis = pb_basis(RAW.coda, method = 'exact')
+              COORD.coda = coordinates_basis(RAW.coda, basis, sparse = FALSE)
+            }else{
+              stop(sprintf('Basis %d not recognized'))
+            }
           }
         }
       }
     }
+    COORD = matrix(NA_real_, ncol = coord.dim, nrow = nrow(RAW))
+    COORD[sel,] = COORD.coda
   }else{
     if(is.matrix(basis)){
       COORD = coordinates_basis(RAW, basis, sparse_basis)
@@ -356,6 +370,7 @@ coordinates = function(X, basis = 'ilr', label = 'x', sparse_basis = FALSE){
       stop(sprintf('Basis need to be either an string or a matrix'))
     }
   }
+
   colnames(COORD) = sprintf(sprintf('%s%%0%dd',label, 1+floor(log(ncol(COORD), 10))),1:ncol(COORD))
   if(is_vector){
     COORD = COORD[1,]

@@ -624,7 +624,7 @@ bool SBP::hasNext(){
   int n = get_n();
   arma::uvec uL = arma::uvec(getL());
   arma::uvec uR = arma::uvec(getR());
-  if(uL.n_elem == 1 & uR.n_elem + 1 == n & uL[0] == n-1){
+  if( (uL.n_elem == 1) & (uR.n_elem + 1 == n) & (uL[0] == n-1) ){
     return(false);
   }
   return(true);
@@ -646,7 +646,7 @@ void SBP::nextSBP(){
     O[pos]++;
     uL = find(O == 1);
     uR = find(O == 2);
-  } while (uL.n_elem == 0 | uR.n_elem == 0);
+  } while ( (uL.n_elem == 0) | (uR.n_elem == 0) );
   init(uL,uR);
 }
 

@@ -10,3 +10,12 @@ coda.base 0.1.8 (Release date: 2017-12-03)
 ===============
 * Exact algorithm for Principal Balances included.
 * Bug in lsearch base in principal components solved.
+
+coda.base 0.1.9 (Release date: 2018-05-03)
+===============
+* Modifications included to rcran policies.
+
+coda.base 0.1.10 (Release date: 2018-08-03)
+===============
+* Principal Balances included as direct method in coordinates function.
+* Coordinates function filters non-valid compositions.
