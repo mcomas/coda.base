@@ -40,6 +40,6 @@ microbenchmark(
 )
 
 microbenchmark(
+  variation_array(X, only_variation = TRUE),
   compositions::variation(aX),
-  robCompositions::variation(X, robust=FALSE),
-  variation_array(X, only_variation = TRUE), times = 10)
+  robCompositions::variation(X, robust=FALSE),times = 10)
