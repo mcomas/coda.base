@@ -240,7 +240,9 @@ sbp_basis = function(..., data, silent=F){
 #' @export
 pb_basis = function(X, method, rep = 0, ordering = TRUE, ...){
   X = as.matrix(X)
-
+  if(!(all(X) > 0)){
+    stop("All components must be strictly positive.", call. = FALSE)
+  }
   if(method %in% c('lsearch', 'exact')){
     if(method == 'exact'){
       B = find_PB(X)
