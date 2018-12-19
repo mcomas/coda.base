@@ -324,11 +324,16 @@ coordinates = function(X, basis = 'ilr', label = 'x', sparse_basis = FALSE){
   if(is_data_frame){
     RAW = as.matrix(X)
   }
+  non_compositional = rowSums(is.na(RAW) | RAW <= 0)
+  if(sum(non_compositional) > 0){
+    warning("Some observations are not compositional (either missing or non-strictly positive. They are returned as missing values.",
+            call. = FALSE)
+  }
   if(is.character(basis)){
-    sel = rowSums(is.na(RAW) | RAW <= 0) == 0
-    RAW.coda = RAW[sel, ]
-    dim = ncol(RAW.coda)
-    coord.dim = ncol(RAW.coda) - 1
+    dim = ncol(RAW)
+    sel = non_compositional == 0
+    RAW.coda = matrix(RAW[sel, ], ncol = dim)
+    coord.dim = dim - 1
     if(basis == 'ilr'){
       basis = ilr_basis(dim)
       COORD.coda = coordinates_basis(RAW.coda, ilr_basis(dim), sparse = FALSE)
