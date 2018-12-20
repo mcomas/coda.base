@@ -67,6 +67,45 @@ alr_basis = function(dim, denominator = dim, numerator = which(denominator != 1:
   res[,numerator]
 }
 
+fillPartition = function(partition, row, left, right){
+  new_row = rep(0, ncol(partition))
+  if(right - left <= 0){
+    return(partition)
+  }
+  if(right - left == 1){
+    new_row[left] = 1
+    new_row[right] = -1
+    if(row == 0){
+      partition = rbind(new_row)
+    }else{
+      partition = rbind(partition, new_row)
+    }
+    return(partition)
+  }
+  middle = left + (0.5 + right - left)/2
+  new_row[left:floor(middle)] = 1
+  new_row[ceiling(middle):right] = -1
+  if(row == 0){
+    partition = rbind(new_row)
+  }else{
+    partition = rbind(partition, new_row)
+  }
+  partition = fillPartition(partition, nrow(partition), left, floor(middle))
+  partition = fillPartition(partition, nrow(partition), ceiling(middle), right)
+  return(partition)
+}
+
+#' CoDaPack's default binary partition
+#'
+#' Compute the default binary partition used in CoDaPack's software
+#'
+#' @param ncomp number of parts
+#' @return matrix
+#' @examples
+#' cdp_partition(4)
+#' @export
+cdp_partition = function(ncomp) fillPartition(matrix(0, nrow = 1, ncol = ncomp), 0, 1, ncomp)
+
 #' Centered log-ratio basis
 #'
 #' Compute the transformation matrix to express a composition using
@@ -268,7 +307,7 @@ pc_basis = function(X){
 #' @export
 pb_basis = function(X, method, rep = 0, ordering = TRUE, ...){
   X = as.matrix(X)
-  if(!(all(X) > 0)){
+  if(!(all(X > 0))){
     stop("All components must be strictly positive.", call. = FALSE)
   }
   if(method %in% c('lsearch', 'exact')){
@@ -310,12 +349,12 @@ pb_basis = function(X, method, rep = 0, ordering = TRUE, ...){
 #' @details
 #' \code{coordinates} function calculates the coordinates of a compositiona w.r.t. a given basis. `basis` parameter is
 #' used to set the basis, it can be either a matrix defining the log-contrasts in columns or a string defining some well-known
-#' log-contrast: 'alr' 'clr', 'ilr', 'pc' or 'pb' for the additive log-ratio, centered log-ratio, isometric log-ratio,
-#' clr principal components or clr principal balances respectively.
+#' log-contrast: 'alr' 'clr', 'ilr', 'pc', 'pb' and 'cdp', for the additive log-ratio, centered log-ratio, isometric log-ratio,
+#' clr principal components, clr principal balances or default's CoDaPack balances respectively.
 #'
 #' @param X compositional dataset. Either a matrix, a data.frame or a vector
 #' @param basis basis used to calculate the coordinates. \code{basis} can be either a string or a matrix.
-#' Accepted values for strings are: 'ilr' (default), 'clr', 'alr' and 'pc'. If \code{basis} is a matrix, it is expected
+#' Accepted values for strings are: 'ilr' (default), 'clr', 'alr', 'pc', 'pb' and 'cdp'. If \code{basis} is a matrix, it is expected
 #' to have log-ratio basis given in columns.
 #' @param label name given to the coordinates
 #' @param sparse_basis Is the given matrix basis sparse? If TRUE calculation are carried
@@ -396,7 +435,11 @@ coordinates = function(X, basis = 'ilr', label = NULL, sparse_basis = FALSE){
               basis = pb_basis(RAW.coda, method = 'exact')
               COORD.coda = coordinates_basis(RAW.coda, basis, sparse = FALSE)
             }else{
-              stop(sprintf('Basis %d not recognized'))
+              if(basis == 'cdp'){
+                COORD.coda = coordinates(RAW.coda, basis = sbp_basis(cdp_partition(dim)), label = 'cdp')
+              }else{
+                stop(sprintf('Basis %d not recognized'))
+              }
             }
           }
         }

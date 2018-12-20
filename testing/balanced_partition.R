@@ -1,13 +1,3 @@
-public static int[][] defaultPartition(int n_components){
-  int partition[][] = new int[n_components-1][n_components];
-  fillPartition(partition, 0, 0, n_components);
-  return partition;
-}
-
-defaultPartition = function(n_comp){
-
-}
-
 fillPartition = function(partition, row, left, right){
   new_row = rep(0, ncol(partition))
   if(right - left <= 0){
@@ -36,9 +26,8 @@ fillPartition = function(partition, row, left, right){
   return(partition)
 }
 
-fillPartition(matrix(0, nrow = 1, ncol = 2), 0, 1, 2)
-fillPartition(matrix(0, nrow = 1, ncol = 3), 0, 1, 3)
-fillPartition(matrix(0, nrow = 1, ncol = 4), 0, 1, 4)
-fillPartition(matrix(0, nrow = 1, ncol = 5), 0, 1, 5)
+cdp_partition = function(ncomp) fillPartition(matrix(0, nrow = 1, ncol = ncomp), 0, 1, ncomp)
 
-partition = fillPartition(partition, 1, 1, n_comp)
+cdp_partition(2)
+cdp_partition(3)
+cdp_partition(4)

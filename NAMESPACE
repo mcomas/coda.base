@@ -2,6 +2,7 @@
 
 S3method(print,coda)
 export(alr_basis)
+export(cdp_partition)
 export(clr_basis)
 export(composition)
 export(coordinates)

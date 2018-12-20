@@ -16,25 +16,25 @@ by_prov = function(YEAR){
 }
 
 prinbal = function(.parl){
-  X = .parl %>% select(-prov, -com, -other)
+  X = .parl %>% select(-com, -other)
   pb = pb_basis(X, method = 'exact')
   rownames(pb) = names(X)
   colnames(pb) = paste0('pb', 1:ncol(pb))
   pb
 }
 
-by_prov(1980)
-by_prov(1984)
-by_prov(1988)
-by_prov(1992)
-by_prov(1995)
-by_prov(1999)
-by_prov(2003)
-by_prov(2006)
-by_prov(2010)
-by_prov(2012)
-by_prov(2015)
-by_prov(2017)
+prinbal(by_prov(1980))
+prinbal(by_prov(1984))
+prinbal(by_prov(1988))
+prinbal(by_prov(1992))
+prinbal(by_prov(1995))
+prinbal(by_prov(1999))
+prinbal(by_prov(2003))
+prinbal(by_prov(2006))
+prinbal(by_prov(2010))
+prinbal(by_prov(2012))
+prinbal(by_prov(2015))
+prinbal(by_prov(2017))
 
 prinbal(by_prov(1999))
 prinbal(parl2010_com)

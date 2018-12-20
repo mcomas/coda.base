@@ -39,18 +39,18 @@ coordinates(X, basis = 'pc')
 B = pc_basis(X)
 coordinates(X, basis = B, label = 'pc')
 
-## A partir de balanços
+
+## A partir de balanços (partició CoDaPack defecte)
+coordinates(X, basis = 'cdp')
+B = sbp_basis(matrix(c(1, 1,-1,
+                       1,-1, 0), byrow = TRUE, ncol = 3))
+coordinates(X, basis = B)
 coordinates(X, list(b1 = c1+c2~c3,
                     b2 = c1~c2))
 B = sbp_basis(b1 = c1+c2~c3,
               b2 = c1~c2, data = X)
 coordinates(X, basis = B)
-B = sbp_basis(matrix(c(-1,-1, 1,
-                       -1, 1, 0), byrow = TRUE, ncol = 3))
-coordinates(X, basis = B)
 
-B = sbp_basis(matrix(c(1, 1,-1,
-                       1,-1, 0), byrow = TRUE, ncol = 3))
-coordinates(c(10.10, 1.40, 0.50), basis = B)
+
 
 

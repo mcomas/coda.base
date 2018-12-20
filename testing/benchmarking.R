@@ -21,7 +21,8 @@ microbenchmark(
 microbenchmark(
   coordinates(X, 'ilr'),
   ilr(aX),
-  isomLR(X, fast=T), times = 1000
+  isomLR(X, fast=T),
+  pivotCoord(X, fast=T), times = 1000
 )
 
 B = sbp_basis(b1 = V1~V2,
@@ -42,4 +43,4 @@ microbenchmark(
 microbenchmark(
   variation_array(X, only_variation = TRUE),
   compositions::variation(aX),
-  robCompositions::variation(X, robust=FALSE),times = 10)
+  robCompositions::variation(X, robust=FALSE),times = 1000)
