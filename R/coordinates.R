@@ -131,7 +131,7 @@ sbp_basis = function(..., data = NULL, silent=F){
   if(is.null(data) & is.matrix(sbp[[1]])){
     df = as.data.frame(matrix(1, ncol(sbp[[1]]), nrow = 1))
     str_to_frm = function(vec){
-      frm = paste(stats::aggregate(nm ~ vec, subset(data.frame(nm = paste0('`',names(df), '`'), vec,
+      frm = paste(stats::aggregate(nm ~ vec, subset(data.frame(nm = paste0('`',names(df), '`'), vec = -1 * vec,
                                                                stringsAsFactors = FALSE), vec != 0),
                                    FUN = paste, collapse= ' + ')[['nm']], collapse=' ~ ')
       stats::as.formula(frm)

@@ -49,3 +49,8 @@ B = sbp_basis(matrix(c(-1,-1, 1,
                        -1, 1, 0), byrow = TRUE, ncol = 3))
 coordinates(X, basis = B)
 
+B = sbp_basis(matrix(c(1, 1,-1,
+                       1,-1, 0), byrow = TRUE, ncol = 3))
+coordinates(c(10.10, 1.40, 0.50), basis = B)
+
+
