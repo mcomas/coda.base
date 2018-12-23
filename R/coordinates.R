@@ -104,7 +104,7 @@ fillPartition = function(partition, row, left, right){
 #' @examples
 #' cdp_partition(4)
 #' @export
-cdp_partition = function(ncomp) fillPartition(matrix(0, nrow = 1, ncol = ncomp), 0, 1, ncomp)
+cdp_partition = function(ncomp) unname(t(fillPartition(matrix(0, nrow = 1, ncol = ncomp), 0, 1, ncomp)))
 
 #' Centered log-ratio basis
 #'
@@ -168,14 +168,15 @@ clr_basis = function(dim){
 sbp_basis = function(..., data = NULL, silent=F){
   sbp = list(...)
   if(is.null(data) & is.matrix(sbp[[1]])){
-    df = as.data.frame(matrix(1, ncol(sbp[[1]]), nrow = 1))
+    P = t(sbp[[1]])
+    df = as.data.frame(matrix(1, ncol(P), nrow = 1))
     str_to_frm = function(vec){
       frm = paste(stats::aggregate(nm ~ vec, subset(data.frame(nm = paste0('`',names(df), '`'), vec = -1 * vec,
                                                                stringsAsFactors = FALSE), vec != 0),
                                    FUN = paste, collapse= ' + ')[['nm']], collapse=' ~ ')
       stats::as.formula(frm)
     }
-    return(do.call('sbp_basis', c(apply(sbp[[1]], 1, str_to_frm), list(data=df)), envir = as.environment('package:coda.base')))
+    return(do.call('sbp_basis', c(apply(P, 1, str_to_frm), list(data=df)), envir = as.environment('package:coda.base')))
   }
 
   if (!is.data.frame(data) && !is.environment(data) && ( (is.matrix(data) && !is.null(colnames(data))) | !is.null(attr(data, "class"))))
@@ -436,7 +437,8 @@ coordinates = function(X, basis = 'ilr', label = NULL, sparse_basis = FALSE){
               COORD.coda = coordinates_basis(RAW.coda, basis, sparse = FALSE)
             }else{
               if(basis == 'cdp'){
-                COORD.coda = coordinates(RAW.coda, basis = sbp_basis(cdp_partition(dim)), label = 'cdp')
+                basis = sbp_basis(cdp_partition(dim))
+                COORD.coda = coordinates(RAW.coda, basis = basis, label = 'cdp')
               }else{
                 stop(sprintf('Basis %d not recognized'))
               }
