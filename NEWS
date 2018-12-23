@@ -1,3 +1,24 @@
+coda.base 0.1.11 (Release date: 2018-12-23)
+===============
+* Principal components coordinates uncentered.
+* Sequential binary partition can be defined using a matrix with -1,0 and 1's.
+* CoDaPack's basis included.
+* A vignette explaining how to build coordinates has been included.
+
+coda.base 0.1.10 (Release date: 2018-08-03)
+===============
+* Principal Balances included as direct method in coordinates function.
+* Coordinates function filters non-valid compositions.
+
+coda.base 0.1.9 (Release date: 2018-05-03)
+===============
+* Modifications included to rcran policies.
+
+coda.base 0.1.8 (Release date: 2017-12-03)
+===============
+* Exact algorithm for Principal Balances included.
+* Bug in lsearch base in principal components solved.
+
 coda.base 0.1.7 (Release date: 2017-08-25)
 ===============
 
@@ -6,16 +27,4 @@ coda.base 0.1.7 (Release date: 2017-08-25)
 * New method which uses the principal components included in pb_basis.
 * Documentaion improved.
 
-coda.base 0.1.8 (Release date: 2017-12-03)
-===============
-* Exact algorithm for Principal Balances included.
-* Bug in lsearch base in principal components solved.
 
-coda.base 0.1.9 (Release date: 2018-05-03)
-===============
-* Modifications included to rcran policies.
-
-coda.base 0.1.10 (Release date: 2018-08-03)
-===============
-* Principal Balances included as direct method in coordinates function.
-* Coordinates function filters non-valid compositions.
