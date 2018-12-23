@@ -528,7 +528,12 @@ composition = function(H, basis = NULL, label = 'x', sparse_basis = FALSE){
           basis = clr_basis(dim)
           RAW = exp(COORD)
         }else{
-          stop(sprintf('Basis %d not recognized'))
+          if(basis == 'cdp'){
+            basis = sbp_basis(cdp_partition(dim))
+            RAW = composition(COORD, basis = basis)
+          }else{
+            stop(sprintf('Basis %d not recognized'))
+          }
         }
       }
     }
@@ -548,7 +553,7 @@ composition = function(H, basis = NULL, label = 'x', sparse_basis = FALSE){
   if(is_data_frame){
     RAW = as.data.frame(RAW)
   }
-  class(RAW) = class_type
+  class(RAW) = setdiff(class_type, 'coda')
   #attr(RAW, 'basis') = basis
   RAW
 }
