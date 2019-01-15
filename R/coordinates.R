@@ -21,9 +21,12 @@ variation_array = function(X, only_variation = FALSE){
 #' Build an isometric log-ratio basis for a composition with k+1 parts
 #' \deqn{h_i = \sqrt{\frac{i}{i+1}} \log\frac{\sqrt[i]{\prod_{j=1}^i x_j}}{x_{i+1}}}{%
 #' h[i] = \sqrt(i/(i+1)) ( log(x[1] \ldots x[i])/i - log(x[i+1]) )}
-#' for \eqn{i in 1\ldots k}
+#' for \eqn{i in 1\ldots k}.
+#'
+#'Modifying parameter type (pivot or cdp) other ilr basis can be generated
 #'
 #' @param dim number of components
+#' @param type if different than `pivot` (pivot balances) or `cdp` (codapack balances) default balances are returned.
 #' @return matrix
 #' @references
 #' Egozcue, J.J., Pawlowsky-Glahn, V., Mateu-Figueras, G. and Barceló-Vidal C. (2003).
@@ -32,8 +35,15 @@ variation_array = function(X, only_variation = FALSE){
 #' @examples
 #' ilr_basis(5)
 #' @export
-ilr_basis = function(dim){
-  ilr_basis_default(dim)
+ilr_basis = function(dim, type = 'default'){
+  B = ilr_basis_default(dim)
+  if(type == 'pivot'){
+    return((-B)[,ncol(B):1][nrow(B):1,])
+  }
+  if(type == 'cdp'){
+    return(sbp_basis(cdp_partition(dim)))
+  }
+  B
 }
 
 #' Additive log-ratio basis

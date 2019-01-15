@@ -2,6 +2,7 @@ library(microbenchmark)
 library(coda.base)
 library(compositions)
 library(robCompositions)
+library(easyCODA)
 
 K = 10
 X = as.data.frame(matrix(exp(rnorm(K*100)), nrow=100, ncol=K))
@@ -9,20 +10,23 @@ aX = acomp(X)
 microbenchmark(
   coordinates(X, 'alr'),
   alr(aX),
-  addLR(X), times = 1000
+  addLR(X),
+  ALR(X), times = 1000
 )
 
 microbenchmark(
   coordinates(X, 'clr'),
   clr(aX),
-  cenLR(X), times = 1000
+  cenLR(X),
+  CLR(X), times = 1000
 )
 
 microbenchmark(
   coordinates(X, 'ilr'),
   ilr(aX),
   isomLR(X, fast=T),
-  pivotCoord(X, fast=T), times = 1000
+  pivotCoord(X, fast=T),
+  PLR(X), times = 1000
 )
 
 B = sbp_basis(b1 = V1~V2,
