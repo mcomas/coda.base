@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-In this vignette we show how to define logratio coordinates using `coda.base` package and its function `coordinates` with parameters `X`, a composition, and `basis`, defining the independent log-contrasts for building the coordinates.
+In this vignette we show how to define log-ratio coordinates using `coda.base` package and its function `coordinates` with parameters `X`, a composition, and `basis`, defining the independent log-contrasts for building the coordinates.
 
 In this vignette we work with a subcomposition of the results obtained in different regions of Catalonia in 2017's parliament elections:
 
@@ -43,7 +43,7 @@ H1.alr = coordinates(X, basis = 'alr')
 head(H1.alr)
 ```
 
-It defines an alr-coordinates were the first parts are used for the numerator of the log-quocient and the last part for the denominator.
+It defines an alr-coordinates were the first parts are used for the numerator of the log-quotient and the last part for the denominator.
 
 The basis can be reproduced using the function `alr_basis`:
 
@@ -58,7 +58,7 @@ B.alr = alr_basis(dim = 4, numerator = c(4,2,3), denominator = 1)
 B.alr
 ```
 
-The logcontrast matrix defining the basis can be used in `basis` paramater:
+The log-contrast matrix defining the basis can be used in `basis` parameter:
 
 ```{r}
 H2.alr = coordinates(X, basis = B.alr)
@@ -67,7 +67,7 @@ head(H2.alr)
 
 ###  The centered logratio (clr) coordinates
 
-Building centered logratio coordinates can be acomplished by setting parameter `basis=TRUE`:
+Building centred log-ratio coordinates can be accomplished by setting parameter `basis=TRUE`:
 
 ```{r}
 H.clr = coordinates(X, basis = 'clr')
@@ -92,7 +92,7 @@ all.equal( coordinates(X, basis = 'ilr'),
            H1.ilr )
 ```
 
-Other easily accessible coordinate is the pc coordinates. pc coordinates define the first coordinate as the logcontrast with highest variance, the second the one independent from the first and with highest variance and so on:
+Other easily accessible coordinate is the pc coordinates. pc coordinates define the first coordinate as the log-contrast with highest variance, the second the one independent from the first and with highest variance and so on:
 
 ```{r, fig.width=5.5, fig.height=4, fig.align='center', caption='Variance of principal components coordinates'}
 H2.ilr = coordinates(X, basis = 'pc')
@@ -100,7 +100,7 @@ head(H2.ilr)
 barplot(apply(H2.ilr, 2, var))
 ```
 
-The pb coordinates are similar to pc coordinates but with the restriction that the logcontrast are balances 
+The pb coordinates are similar to pc coordinates but with the restriction that the log contrast are balances 
 
 ```{r, fig.width=5.5, fig.height=4, fig.align='center', caption='Variance of principal balances coordinates'}
 H3.ilr = coordinates(X, basis = 'pb')
@@ -117,7 +117,7 @@ head(H4.ilr)
 
 ### Defining coordinates manually
 
-We can define the coordinates directly by providing the logcontrast matrix.
+We can define the coordinates directly by providing the log-contrast matrix.
 
 ```{r}
 B = matrix(c(1,-1,2,0,
