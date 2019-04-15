@@ -281,7 +281,7 @@ pc_basis = function(X){
 
 #' Isometric log-ratio basis based on Principal Balances.
 #'
-#' Different approximations to approximate the principal balances of a compositional dataset.
+#' Exact method to calculate the principal balances of a compositional dataset. Different methods to approximate the principal balances of a compositional dataset are also included.
 #'
 #' @param X compositional dataset
 #' @param method method to be used with Principal Balances. Methods available are: 'exact', 'lsearch' or

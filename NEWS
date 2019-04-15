@@ -1,6 +1,6 @@
-coda.base 0.1.12 (Release date: 2018-12-23)
+coda.base 0.1.12 (Release date: 2018-04-15)
 ===============
-* coordinates function keeps row.names attribute
+* coordinates function keeps row.names attribute (thank )
 * Principal components calculations are done using svd function which is faster than princomp
 * sbp_basis function does not need package to be loaded, can run as coda.base::sbp_basis()
 
