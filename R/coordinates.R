@@ -313,7 +313,7 @@ pc_basis = function(X){
 #' # Solution obtained using Old Ward function (in R versions <= 3.0.3)
 #' apply(coordinates(X,pb_basis(X, method='ward.D')), 2, var)
 #' # Plotting the variances
-#' barplot(rbind(v1,v2,v3), beside = TRUE, legend = c('PC','PB','Ward'), args.legend = list(cex = 0.8))
+#' barplot(rbind(v1,v2,v3), beside = TRUE, legend = c('Principal Components','PB (Exact method)','PB (Ward approximation)'), names = paste0('Comp.', 1:4), args.legend = list(cex = 0.8), ylab = 'Variance')
 #'
 #' @export
 pb_basis = function(X, method, rep = 0, ordering = TRUE, ...){
