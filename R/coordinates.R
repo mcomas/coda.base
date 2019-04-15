@@ -274,8 +274,8 @@ sbp_basis = function(..., data = NULL, silent=F){
 pc_basis = function(X){
   X = as.matrix(X)
   lX =  log(X)
-  pr = stats::princomp(lX - rowMeans(lX))
-  B = pr$loadings[,-ncol(X)]
+  SVD = svd(scale(lX - rowMeans(lX), scale = FALSE))
+  B = SVD$v[,-ncol(X)]
   B
 }
 
@@ -435,8 +435,8 @@ coordinates = function(X, basis = 'ilr', label = NULL, sparse_basis = FALSE){
         }else{
           if(basis == 'pc'){
             lRAW =  log(RAW.coda)
-            pr = stats::princomp(lRAW - rowMeans(lRAW))
-            basis = pr$loadings[,-dim]
+            SVD = svd(scale(lRAW - rowMeans(lRAW), scale = FALSE))
+            basis = SVD$v[,-dim]
             COORD.coda = coordinates(RAW.coda, basis = basis, label = 'pc')
           }else{
             if(basis == 'pb'){

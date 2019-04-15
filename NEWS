@@ -1,3 +1,9 @@
+coda.base 0.1.12 (Release date: 2018-12-23)
+===============
+* coordinates function keeps row.names attribute
+* Principal components calculations are done using svd function which is faster than princomp
+* sbp_basis function does not need package to be loaded, can run as coda.base::sbp_basis()
+
 coda.base 0.1.11 (Release date: 2018-12-23)
 ===============
 * Principal components coordinates uncentered.
