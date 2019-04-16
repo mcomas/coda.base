@@ -487,7 +487,7 @@ coordinates = function(X, basis = 'ilr', label = NULL, sparse_basis = FALSE){
   }
   class(COORD) = class_type
   attr(COORD, 'basis') = basis
-  row.names(COORD) = row.names(X)
+  suppressWarnings(row.names(COORD) <- row.names(X))
   set.coda(COORD)
 }
 
@@ -567,7 +567,7 @@ composition = function(H, basis = NULL, label = 'x', sparse_basis = FALSE){
     RAW = as.data.frame(RAW)
   }
   class(RAW) = setdiff(class_type, 'coda')
-  row.names(RAW) = row.names(H)
+  suppressWarnings(row.names(RAW) <- row.names(H))
   #attr(RAW, 'basis') = basis
   RAW
 }
