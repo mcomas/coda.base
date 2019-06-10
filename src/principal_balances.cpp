@@ -227,6 +227,70 @@ arma::mat find_PB_pc_local_search(arma::mat X){
 }
 
 // [[Rcpp::export]]
+arma::mat find_PB_log(arma::mat lX){
+  arma::mat M = cov(lX);
+
+  int K = M.n_cols;
+
+  std::vector<SBP> PB;
+  arma::mat pb_mat = arma::mat(K,K-1);
+  std::vector<SBP> SOLS;
+
+  SOLS.push_back(SBP(M, default_node(K)));
+
+  SOLS.back().optimal();
+  for(int l=0;l<K-1;l++){
+    //Rcpp::Rcout << "Starting step " << l + 1 << " of " << K-1 << std::endl;
+    //print_list(SOLS);
+    double vBestSolution = 0;
+    int iBestSolution = -1;
+    for(unsigned int i =0; i< SOLS.size();i++){
+      double v = SOLS[i].var();
+      if(v > vBestSolution){
+        vBestSolution = v;
+        iBestSolution = i;
+      }
+    }
+    PB.push_back(SOLS[iBestSolution]);
+    // Rcpp::Rcout << "Best solution found" << std::endl;
+    // SOLS[iBestSolution].print_status(true,true,true);
+    pb_mat.col(l) = balance(K,PB[l]);
+
+    int n = SOLS[iBestSolution].get_n();
+    int nL = SOLS[iBestSolution].getL().n_elem;
+    int nR = SOLS[iBestSolution].getR().n_elem;
+    if(n > nL + nR){
+      //Rcpp:: Rcout << "Start top...";
+      SOLS.push_back(SOLS[iBestSolution].top());
+      SOLS.back().optimal();
+      //SOLS.back().print_status(true,true,false);
+      //Rcpp::Rcout << "End top" << std::endl;
+    }
+    if(nL > 1){
+      //Rcpp:: Rcout << "Start left..." << std::endl;
+      SOLS.push_back(SOLS[iBestSolution].left());
+      SOLS.back().optimal();
+      //SOLS.back().print_status(true,true,false);
+      //Rcpp::Rcout << "End left" << std::endl;
+    }
+    if(nR > 1){
+      //Rcpp:: Rcout << "Start right...";
+      SOLS.push_back(SOLS[iBestSolution].right());
+      SOLS.back().optimal();
+      //SOLS.back().print_status(true,true,false);
+      //Rcpp::Rcout << "End right" << std::endl;
+    }
+
+    SOLS[iBestSolution] = SOLS.back();
+    SOLS.pop_back();
+
+    Rcpp::checkUserInterrupt();
+  }
+
+  return(pb_mat);
+}
+
+// [[Rcpp::export]]
 arma::mat find_PB(arma::mat X){
   arma::mat M = cov(log(X));
 

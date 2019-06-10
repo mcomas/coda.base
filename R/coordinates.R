@@ -354,6 +354,14 @@ pb_basis = function(X, method, rep = 0, ordering = TRUE, ...){
   B
 }
 
+#' @export
+pb_basis_log = function(lX){
+  lX = as.matrix(lX)
+  B = find_PB_log(lX)
+  B = B[,order(apply(coordinates(exp(lX), B), 2, stats::var), decreasing = TRUE)]
+  B
+}
+
 #' @title Get coordinates from compositions w.r.t. an specific basis
 #'
 #' @description
