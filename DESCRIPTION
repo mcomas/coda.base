@@ -1,13 +1,15 @@
 Package: coda.base
 Type: Package
 Title: A Basic Set of Functions for Compositional Data Analysis
-Version: 0.1.14
-Date: 2019-04-15
+Version: 0.1.15
+Date: 2019-06-10
 Authors@R: c(person("Marc", "Comas-Cufí", role = c("aut", "cre"), 
                     email = "mcomas@imae.udg.edu", comment = c(ORCID = "0000-0001-9759-0622")))
 Description: A minimum set of functions to perform compositional data analysis
     using the log-ratio approach introduced by John Aitchison (1982) <http://www.jstor.org/stable/2345821>. Main functions
     have been implemented in c++ for better performance.
+URL: https://mcomas.github.io/coda.base,
+     https://github.com/mcomas/coda.base
 Depends:
     R (>= 3.0.4)
 Imports:
