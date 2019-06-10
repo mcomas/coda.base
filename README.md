@@ -1,5 +1,7 @@
 # coda.base
 
+[https://mcomas.github.io/coda.base/](https://mcomas.github.io/coda.base/)
+
 ## Installation
 
 ``` r
