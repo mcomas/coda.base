@@ -7,7 +7,7 @@ arma::mat clr_coordinates(arma::mat X);
 
 arma::mat inv_clr_coordinates(arma::mat clrX);
 
-arma::mat ilr_basis(unsigned int dim);
+arma::mat ilr_basis_default(unsigned int dim);
 
 arma::mat ilr_basis_simplex(unsigned int dim);
 
