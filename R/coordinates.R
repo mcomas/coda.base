@@ -451,7 +451,7 @@ coordinates = function(X, basis = 'ilr', label = NULL, sparse_basis = FALSE){
           }else{
             if(basis == 'pb'){
               if(ncol(RAW.coda) > 15){
-                message("Number of columns is high for 'pb' method. Depending on your system this computation can take too long. Consider using an approximate method. Consult 'pb_basis' function for more details.")
+                message("Number of columns is high for 'pb' method. Depending on your system this computation can take too long. Consider using an approximate method. Consult 'pb_basis()' function for more details.")
               }
               basis = pb_basis(RAW.coda, method = 'exact')
               COORD.coda = coordinates_basis(RAW.coda, basis, sparse = FALSE)
@@ -473,6 +473,9 @@ coordinates = function(X, basis = 'ilr', label = NULL, sparse_basis = FALSE){
     if(is.matrix(basis)){
       if(is.null(label)){
         label = 'x'
+      }
+      if(max(colSums(basis)) > .Machine$double.eps^0.5){
+        warning("Supplied basis matrix is not a log-contrast.")
       }
       dim = nrow(basis)
       coord.dim = ncol(basis)
