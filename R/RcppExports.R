@@ -61,6 +61,10 @@ find_PB_pc_local_search <- function(X) {
     .Call('_coda_base_find_PB_pc_local_search', PACKAGE = 'coda.base', X)
 }
 
+find_PB_log <- function(lX) {
+    .Call('_coda_base_find_PB_log', PACKAGE = 'coda.base', lX)
+}
+
 find_PB <- function(X) {
     .Call('_coda_base_find_PB', PACKAGE = 'coda.base', X)
 }

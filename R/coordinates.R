@@ -186,7 +186,7 @@ sbp_basis = function(..., data = NULL, silent=F){
                                    FUN = paste, collapse= ' + ')[['nm']], collapse=' ~ ')
       stats::as.formula(frm)
     }
-    return(do.call('sbp_basis', c(apply(P, 1, str_to_frm), list(data=df)), envir = as.environment('package:coda.base')))
+    return(do.call('sbp_basis', c(apply(P, 1, str_to_frm), list(data=df)))) #, envir = as.environment('package:coda.base')
   }
 
   if (!is.data.frame(data) && !is.environment(data) && ( (is.matrix(data) && !is.null(colnames(data))) | !is.null(attr(data, "class"))))
@@ -274,14 +274,14 @@ sbp_basis = function(..., data = NULL, silent=F){
 pc_basis = function(X){
   X = as.matrix(X)
   lX =  log(X)
-  pr = stats::princomp(lX - rowMeans(lX))
-  B = pr$loadings[,-ncol(X)]
+  SVD = svd(scale(lX - rowMeans(lX), scale = FALSE))
+  B = SVD$v[,-ncol(X)]
   B
 }
 
 #' Isometric log-ratio basis based on Principal Balances.
 #'
-#' Different approximations to approximate the principal balances of a compositional dataset.
+#' Exact method to calculate the principal balances of a compositional dataset. Different methods to approximate the principal balances of a compositional dataset are also included.
 #'
 #' @param X compositional dataset
 #' @param method method to be used with Principal Balances. Methods available are: 'exact', 'lsearch' or
@@ -313,7 +313,9 @@ pc_basis = function(X){
 #' # Solution obtained using Old Ward function (in R versions <= 3.0.3)
 #' apply(coordinates(X,pb_basis(X, method='ward.D')), 2, var)
 #' # Plotting the variances
-#' barplot(rbind(v1,v2,v3), beside = TRUE, legend = c('PC','PB','Ward'), args.legend = list(cex = 0.8))
+#' barplot(rbind(v1,v2,v3), beside = TRUE,
+#'         legend = c('Principal Components','PB (Exact method)','PB (Ward approximation)'),
+#'         names = paste0('Comp.', 1:4), args.legend = list(cex = 0.8), ylab = 'Variance')
 #'
 #' @export
 pb_basis = function(X, method, rep = 0, ordering = TRUE, ...){
@@ -349,6 +351,14 @@ pb_basis = function(X, method, rep = 0, ordering = TRUE, ...){
   if(ordering){
     B = B[,order(apply(coordinates(X, B), 2, stats::var), decreasing = TRUE)]
   }
+  B
+}
+
+#' @export
+pb_basis_log = function(lX){
+  lX = as.matrix(lX)
+  B = find_PB_log(lX)
+  B = B[,order(apply(coordinates(exp(lX), B), 2, stats::var), decreasing = TRUE)]
   B
 }
 
@@ -435,8 +445,8 @@ coordinates = function(X, basis = 'ilr', label = NULL, sparse_basis = FALSE){
         }else{
           if(basis == 'pc'){
             lRAW =  log(RAW.coda)
-            pr = stats::princomp(lRAW - rowMeans(lRAW))
-            basis = pr$loadings[,-dim]
+            SVD = svd(scale(lRAW - rowMeans(lRAW), scale = FALSE))
+            basis = SVD$v[,-dim]
             COORD.coda = coordinates(RAW.coda, basis = basis, label = 'pc')
           }else{
             if(basis == 'pb'){
@@ -485,6 +495,7 @@ coordinates = function(X, basis = 'ilr', label = NULL, sparse_basis = FALSE){
   }
   class(COORD) = class_type
   attr(COORD, 'basis') = basis
+  suppressWarnings(row.names(COORD) <- row.names(X))
   set.coda(COORD)
 }
 
@@ -564,13 +575,14 @@ composition = function(H, basis = NULL, label = 'x', sparse_basis = FALSE){
     RAW = as.data.frame(RAW)
   }
   class(RAW) = setdiff(class_type, 'coda')
+  suppressWarnings(row.names(RAW) <- row.names(H))
   #attr(RAW, 'basis') = basis
   RAW
 }
 
 #' Distance Matrix Computation (including Aitchison distance)
 #'
-#' This function overwrite \code{\link[stats]{dist}} function to contain Aitchison distance between
+#' This function overwrites \code{\link[stats]{dist}} function to contain Aitchison distance between
 #' compositions.
 #'
 #' @param x compositions

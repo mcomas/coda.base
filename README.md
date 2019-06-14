@@ -1,5 +1,15 @@
-## `coda.base`
+# coda.base
 
-A minimum set of functions to perform compositional data analysis
-    using the log-ratio approach introduced by John Aitchison (1982) <http://www.jstor.org/stable/2345821>. Main functions
-    have been implemented in c++ for better performance.
+[https://mcomas.github.io/coda.base/](https://mcomas.github.io/coda.base/)
+
+## Installation
+
+``` r
+# Install release version from CRAN
+install.packages("coda.base")
+```
+
+```r
+# Install development version from GitHub
+remotes::install_github("mcomas/coda.base")
+```
