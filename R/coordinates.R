@@ -38,7 +38,7 @@ variation_array = function(X, only_variation = FALSE){
 ilr_basis = function(dim, type = 'default'){
   B = ilr_basis_default(dim)
   if(type == 'pivot'){
-    return((-B)[,ncol(B):1][nrow(B):1,])
+    return((-B)[,ncol(B):1, drop = FALSE][nrow(B):1,])
   }
   if(type == 'cdp'){
     return(sbp_basis(cdp_partition(dim)))
@@ -71,10 +71,10 @@ alr_basis = function(dim, denominator = dim, numerator = which(denominator != 1:
   res = alr_basis_default(dim)
   res = cbind(res, 0)
   if(dim != denominator){
-    res[c(denominator, dim),] = res[c(dim, denominator),]
-    res[,c(denominator, dim)] = res[,c(dim, denominator)]
+    res[c(denominator, dim),, drop = FALSE] = res[c(dim, denominator),, drop = FALSE]
+    res[,c(denominator, dim), drop = FALSE] = res[,c(dim, denominator), drop = FALSE]
   }
-  res[,numerator]
+  res[,numerator, drop = FALSE]
 }
 
 fillPartition = function(partition, row, left, right){
@@ -275,7 +275,7 @@ pc_basis = function(X){
   X = as.matrix(X)
   lX =  log(X)
   SVD = svd(scale(lX - rowMeans(lX), scale = FALSE))
-  B = SVD$v[,-ncol(X)]
+  B = SVD$v[,-ncol(X), drop = FALSE]
   B
 }
 
@@ -346,10 +346,10 @@ pb_basis = function(X, method, rep = 0, ordering = TRUE, ...){
     id = seq_along(sbp)
     sbp.exp = paste(sprintf("%s = %s ~ %s", paste0('P', id), nms[,1], nms[,2]),
                     collapse=', ')
-    B = eval(parse(text = sprintf("sbp_basis(%s,data=df)", sbp.exp)))[,rev(id)]
+    B = eval(parse(text = sprintf("sbp_basis(%s,data=df)", sbp.exp)))[,rev(id), drop = FALSE]
   }
   if(ordering){
-    B = B[,order(apply(coordinates(X, B), 2, stats::var), decreasing = TRUE)]
+    B = B[,order(apply(coordinates(X, B), 2, stats::var), decreasing = TRUE), drop = FALSE]
   }
   B
 }
