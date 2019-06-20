@@ -13,4 +13,3 @@ install.packages("coda.base")
 # Install development version from GitHub
 remotes::install_github("mcomas/coda.base")
 ```
-
