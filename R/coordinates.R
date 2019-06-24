@@ -26,7 +26,7 @@ variation_array = function(X, only_variation = FALSE){
 #'Modifying parameter type (pivot or cdp) other ilr basis can be generated
 #'
 #' @param dim number of components
-#' @param type if different than `pivot` (pivot balances) or `cdp` (codapack balances) default balances are returned.
+#' @param type if different than `pivot` (pivot balances) or `cdp` (codapack balances) default balances are returned, which computes a triangular Helmert matrix as defined by Egozcue et al., 2013.
 #' @return matrix
 #' @references
 #' Egozcue, J.J., Pawlowsky-Glahn, V., Mateu-Figueras, G. and Barceló-Vidal C. (2003).
