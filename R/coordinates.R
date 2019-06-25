@@ -71,8 +71,8 @@ alr_basis = function(dim, denominator = dim, numerator = which(denominator != 1:
   res = alr_basis_default(dim)
   res = cbind(res, 0)
   if(dim != denominator){
-    res[c(denominator, dim),, drop = FALSE] = res[c(dim, denominator),, drop = FALSE]
-    res[,c(denominator, dim), drop = FALSE] = res[,c(dim, denominator), drop = FALSE]
+    res[c(denominator, dim),] = res[c(dim, denominator),, drop = FALSE]
+    res[,c(denominator, dim)] = res[,c(dim, denominator), drop = FALSE]
   }
   res[,numerator, drop = FALSE]
 }
