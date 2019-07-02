@@ -1,6 +1,7 @@
-coda.base 0.1.17
+coda.base 0.2.1
 ===============
-* _basis functions always return a matrix
+* ?_basis functions always return a matrix
+* consistencies between methods improved
 
 coda.base 0.1.12 (Release date: 2018-04-15)
 ===============
