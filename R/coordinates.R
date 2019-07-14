@@ -71,8 +71,8 @@ alr_basis = function(dim, denominator = dim, numerator = which(denominator != 1:
   res = alr_basis_default(dim)
   res = cbind(res, 0)
   if(dim != denominator){
-    res[c(denominator, dim),, drop = FALSE] = res[c(dim, denominator),, drop = FALSE]
-    res[,c(denominator, dim), drop = FALSE] = res[,c(dim, denominator), drop = FALSE]
+    res[c(denominator, dim),] = res[c(dim, denominator),, drop = FALSE]
+    res[,c(denominator, dim)] = res[,c(dim, denominator), drop = FALSE]
   }
   res[,numerator, drop = FALSE]
 }
@@ -351,14 +351,6 @@ pb_basis = function(X, method, rep = 0, ordering = TRUE, ...){
   if(ordering){
     B = B[,order(apply(coordinates(X, B), 2, stats::var), decreasing = TRUE), drop = FALSE]
   }
-  B
-}
-
-#' @export
-pb_basis_log = function(lX){
-  lX = as.matrix(lX)
-  B = find_PB_log(lX)
-  B = B[,order(apply(coordinates(exp(lX), B), 2, stats::var), decreasing = TRUE)]
   B
 }
 
