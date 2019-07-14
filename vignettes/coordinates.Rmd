@@ -30,9 +30,9 @@ data('catalan_elections_2017')
 X = parliament2017[,c('erc','jxcat','psc','cs')]
 ```
 
-## Defining log-ratio coordinates with `coda.base`
+# Defining classical log-ratio coordinates with `coda.base`
 
-###  The additive logratio (alr) coordinates
+##  The additive logratio (alr) coordinates
 
 The alr coordinates are accessible by setting the parameter `basis='alr'` or by using the building function `alr_basis()`.
 
@@ -65,7 +65,7 @@ H2.alr = coordinates(X, basis = B.alr)
 head(H2.alr)
 ```
 
-###  The centered logratio (clr) coordinates
+##  The centered logratio (clr) coordinates
 
 Building centered log-ratio coordinates can be accomplished by setting parameter `basis='clr'`:
 
@@ -74,7 +74,7 @@ H.clr = coordinates(X, basis = 'clr')
 head(H.clr)
 ```
 
-### The isometric logratio (ilr) coordinates
+## The isometric logratio (ilr) coordinates
 
 `coda.base` allows to define a wide variety of ilr-coordinates: principal components (pc) coordinates, specific user balances coordinates, principal balances (pb) coordinates, balanced coordinates (default's [CoDaPack](http://ima.udg.edu/codapack/)'s coordinates).
 
@@ -91,6 +91,8 @@ Parameter `basis` is set to `ilr` by default:
 all.equal( coordinates(X, basis = 'ilr'),
            H1.ilr )
 ```
+
+## Other ilr-coordinates: Principal Components and Principal balances
 
 Other easily accessible coordinates are the Principal Component (PC) coordinates. PC coordinates define the first coordinate as the log-contrast with highest variance, the second the one independent from the first and with highest variance and so on:
 
@@ -154,7 +156,9 @@ H4.ilr = coordinates(X, basis = 'cdp')
 head(H4.ilr)
 ```
 
-### Defining coordinates manually
+# Defining coordinates manually
+
+## Defining coordinates with an specific basis
 
 We can define the coordinates directly by providing the log-contrast matrix.
 
@@ -165,6 +169,8 @@ B = matrix(c(-1,-1,2,0,
 H1.man = coordinates(X, basis = B)
 head(H1.man)
 ```
+
+## Defining coordinates using balances
 
 We can also define balances using formula `numerator~denominator`:
 
