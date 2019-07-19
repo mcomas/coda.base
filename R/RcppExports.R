@@ -89,3 +89,8 @@ arma_sampling_without_replacement <- function(n, k) {
     .Call('_coda_base_arma_sampling_without_replacement', PACKAGE = 'coda.base', n, k)
 }
 
+#' @export
+sbp2_test_1 <- function(X) {
+    .Call('_coda_base_sbp2_test_1', PACKAGE = 'coda.base', X)
+}
+
