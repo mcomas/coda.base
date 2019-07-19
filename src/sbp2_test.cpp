@@ -32,55 +32,17 @@ public:
 
     double variance = (sL + sR + sC) / (nL+nR);
     return variance;
-    // arma::mat h = sqrt(nL*nR/(nL+nR)) * (mean(logX.cols(bal->getL()), 1) - mean(logX.cols(bal->getR()), 1));
-    //
-    // arma::mat v = var(h);
-    // return v(0,0);
   }
-  void print_state(){
-    bal->print();
-    // Rcpp::Rcout << logX.cols(bal->getL()) << std::endl;
-    // Rcpp::Rcout << logX.cols(bal->getR());
-    Rcpp::Rcout << eval() << std::endl;
-  }
-  void setOptimal(){
-    bal->init();
-    //print_state();
 
-    double best_score = eval();
-    arma::uvec L = arma::uvec(bal->getL());
-    arma::uvec R = arma::uvec(bal->getR());
-
-
-    unsigned int iter = 1;
-    while(bal->hasNext()){
-      if(iter % 10000 == 0){
-        R_CheckUserInterrupt();
-      }
-      iter++;
-      bal->nextBalance();
-      //print_state();
-
-      double score = eval();
-      if(score > best_score){
-        best_score = score;
-        L = arma::uvec(bal->getL());
-        R = arma::uvec(bal->getR());
-      }
-    }
-
-    bal->init(L, R);
-    //print_state();
-  }
 };
 
 //' @export
 // [[Rcpp::export]]
-int sbp2_test_1(arma::mat X){
+double sbp2_test_1(arma::mat X){
 
   Balance balance = Balance(default_nodes(X.n_cols));
   MaxVariance h = MaxVariance(&balance, X);
-  h.setOptimal();
+  return h.setOptimal();
 
   // balance.init();
   // balance.print();

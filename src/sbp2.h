@@ -123,7 +123,44 @@ public:
   EvaluateBalance(Balance *bal_){
     bal = bal_;
   }
-  virtual void print_state(){
-    Rcpp::Rcout << "Print method for this heuristic not defined";
+  virtual double eval(){
+    return 0;
+  }
+  void print_state(){
+    bal->print();
+    // Rcpp::Rcout << logX.cols(bal->getL()) << std::endl;
+    // Rcpp::Rcout << logX.cols(bal->getR());
+    Rcpp::Rcout << eval() << std::endl;
+  }
+
+  double setOptimal(){
+    bal->init();
+    //print_state();
+
+    double best_score = eval();
+    arma::uvec L = arma::uvec(bal->getL());
+    arma::uvec R = arma::uvec(bal->getR());
+
+
+    unsigned int iter = 1;
+    while(bal->hasNext()){
+      if(iter % 10000 == 0){
+        R_CheckUserInterrupt();
+      }
+      iter++;
+      bal->nextBalance();
+      //print_state();
+
+      double score = eval();
+      if(score > best_score){
+        best_score = score;
+        L = arma::uvec(bal->getL());
+        R = arma::uvec(bal->getR());
+      }
+    }
+
+    bal->init(L, R);
+    return best_score;
+    //print_state();
   }
 };
