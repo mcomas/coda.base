@@ -2,7 +2,7 @@
 
 // [[Rcpp::depends(RcppArmadillo)]]
 #include <RcppArmadillo.h>
-#include "sbp2.h"
+#include "balance.h"
 
 std::map<int,arma::uvec> default_nodes(int size){
   std::map<int,arma::uvec> node;
@@ -25,10 +25,11 @@ public:
   double eval(){
     double nL = bal->get_nL();
     double nR = bal->get_nR();
-
-    double sL = (nR/nL) * arma::accu(M(bal->getL(),bal->getL()));
-    double sR = (nL/nR) * arma::accu(M(bal->getR(),bal->getR()));
-    double sC = - 2*arma::accu(M(bal->getR(),bal->getL()));
+    arma::uvec uL = bal->getL();
+    arma::uvec uR = bal->getR();
+    double sL = (nR/nL) * arma::accu(M(uL,uL));
+    double sR = (nL/nR) * arma::accu(M(uR,uR));
+    double sC = - 2*arma::accu(M(uR,uL));
 
     double variance = (sL + sR + sC) / (nL+nR);
     return variance;
@@ -38,24 +39,15 @@ public:
 
 //' @export
 // [[Rcpp::export]]
-double sbp2_test_1(arma::mat X){
+arma::vec sbp2_test_1(arma::mat X){
 
   Balance balance = Balance(default_nodes(X.n_cols));
   MaxVariance h = MaxVariance(&balance, X);
-  return h.setOptimal();
+  double score = h.setOptimal();
 
-  // balance.init();
-  // balance.print();
-  // unsigned int iter = 1;
-  // while(balance.hasNext()){
-  //   if(iter % 10000 == 0){
-  //     R_CheckUserInterrupt();
-  //   }
-  //   iter++;
-  //   balance.nextBalance();
-  //   balance.print();
-  // }
-  // return iter;
-
+  arma::vec bal = arma::zeros(X.n_cols);
+  bal(balance.getL()).fill(1);
+  bal(balance.getR()).fill(-1);
+  return bal;
 
 }

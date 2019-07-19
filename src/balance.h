@@ -1,25 +1,22 @@
 #include <RcppArmadillo.h>
 
 class Balance {
-  double X;
-
-  double score = 0;
   std::map<int,arma::uvec> nodes;
+  unsigned n;
 
   arma::uvec L;
   arma::uvec R;
   unsigned int L_length;
   unsigned int R_length;
 
-  bool initialized = false;
-
 public:
   Balance (std::map<int,arma::uvec> nodes0){
     nodes = nodes0;
+    n = nodes.size();
 
-    L = arma::uvec(nodes.size());
+    L = arma::uvec(n);
     L_length = 0;
-    R = arma::uvec(nodes.size());
+    R = arma::uvec(n);
     R_length = 0;
 
   }
@@ -32,24 +29,21 @@ public:
     L.head(L0.n_elem) = L0;
     R_length = R0.n_elem;
     R.head(R0.n_elem) = R0;
-    initialized = true;
   }
   arma::uvec getL(){ return(L.head(L_length)); }
   arma::uvec getR(){ return(R.head(R_length)); }
 
   bool hasNext(){
-    int n = nodes.size();
-    arma::uvec uL = getL();
-    arma::uvec uR = getR();
+    arma::uvec uL = L.head(L_length);
+    arma::uvec uR = R.head(R_length);
     if( (uL.n_elem == 1) & (uR.n_elem + 1 == n) & (uL[0] == n-1) ){
       return(false);
     }
     return(true);
   }
   void nextBalance(){
-    int n = nodes.size();
-    arma::uvec uL = getL();
-    arma::uvec uR = getR();
+    arma::uvec uL = L.head(L_length);
+    arma::uvec uR = R.head(R_length);
     arma::uvec O = arma::zeros<arma::uvec>(n);
     O(uL).fill(1);
     O(uR).fill(2);
@@ -80,7 +74,6 @@ public:
   }
 
   void rnd_init(){
-    int n = nodes.size();
 
     int first = (int)floor(n * arma::randu(1)[0]);
     int delta = 1 + (int)floor((n-1) * arma::randu(1)[0]);
@@ -99,10 +92,6 @@ public:
   }
 
   void print(){
-    if(!initialized){
-      Rcpp::Rcout << "Balance not initilised";
-      return;
-    }
     Rcpp::Rcout << "L:";
     for(unsigned int i=0; i < L_length; i++){
       Rcpp::Rcout << " " << L[i];

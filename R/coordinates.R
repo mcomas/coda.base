@@ -186,7 +186,7 @@ sbp_basis = function(..., data = NULL, silent=F){
                                    FUN = paste, collapse= ' + ')[['nm']], collapse=' ~ ')
       stats::as.formula(frm)
     }
-    return(do.call('sbp_basis', c(apply(P, 1, str_to_frm), list(data=df)))) #, envir = as.environment('package:coda.base')
+    return(do.call('sbp_basis', c(apply(P, 1, str_to_frm), list(silent=silent), list(data=df)))) #, envir = as.environment('package:coda.base')
   }
 
   if (!is.data.frame(data) && !is.environment(data) && ( (is.matrix(data) && !is.null(colnames(data))) | !is.null(attr(data, "class"))))
