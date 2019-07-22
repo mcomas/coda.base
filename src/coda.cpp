@@ -8,6 +8,11 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
+arma::mat pinv(arma::mat X){
+  return arma::pinv(X);
+}
+
+// [[Rcpp::export]]
 arma::mat c_variation_array(arma::mat X, bool only_variation = false){
   unsigned int K = X.n_cols;
   arma::mat lX = log(X);

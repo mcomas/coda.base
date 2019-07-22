@@ -555,7 +555,7 @@ composition = function(H, basis = NULL, label = 'x', sparse_basis = FALSE){
     }
   }else{
     if(is.matrix(basis)){
-      RAW = exp(COORD %*% MASS::ginv(basis))
+      RAW = exp(COORD %*% pinv(basis))
     }else{
       stop(sprintf('Basis need to be either an string or a matrix'))
     }
