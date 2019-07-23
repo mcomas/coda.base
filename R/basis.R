@@ -98,6 +98,50 @@ pc_basis = function(X){
   B
 }
 
+#' Isometric log-ratio basis based on canonical correlations
+#'
+#'
+#' @param Y compositional dataset
+#' @param X explanatory dataset
+#' @return matrix
+#'
+#' @export
+cc_basis = function(Y, X){
+  Y = as.matrix(Y)
+  X = cbind(X)
+  B = ilr_basis(ncol(Y))
+  cc = cancor(coordinates(Y), X)
+  B %*% cc$xcoef
+}
+
+#' Balance generated from the first canonical correlation component
+#'
+#'
+#' @param Y compositional dataset
+#' @param X explanatory dataset
+#' @return matrix
+#'
+#' @export
+cbalance_approx = function(Y,X){
+  Y = as.matrix(Y)
+  X = cbind(X)
+  B = ilr_basis(ncol(Y))
+  cc1 = B %*% cancor(coordinates(Y), X)$xcoef[,1,drop=F]
+  ord = order(abs(cc1))
+  cb1_ = sign(cc1)
+  cb1 = cb1_
+  cor1 = abs(suppressWarnings(cancor(coordinates(Y,sbp_basis(cb1_)), X)$cor))
+  for(i in 1:(ncol(Y)-2)){
+    cb1_[ord[i]] = 0
+    cor1_ = abs(suppressWarnings(cancor(coordinates(Y,sbp_basis(cb1_)), X)$cor))
+    if(cor1_ > cor1){
+      cb1 = cb1_
+      cor1 = cor1_
+    }
+  }
+  suppressWarnings(sbp_basis(cb1))
+}
+
 #' Isometric log-ratio basis based on Balances
 #' Build an \code{\link{ilr_basis}} using a sequential binary partition or
 #' a generic coordinate system based on balances.
