@@ -1,5 +1,5 @@
 #' Results of catalan parliament elections in 2017 by regions.
-#'
+#' @name parliament2017
 #' @format A data frame with 42 rows and 9 variables:
 #' \describe{
 #' \item{com}{Region}
@@ -13,4 +13,4 @@
 #' \item{other}{Votes to other parties}
 #' }
 #' @source \url{http://www.idescat.cat/tema/elecc}
-"catalan_elections_2017"
+NULL
