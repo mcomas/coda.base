@@ -13,4 +13,4 @@
 #' \item{other}{Votes to other parties}
 #' }
 #' @source \url{http://www.idescat.cat/tema/elecc}
-NULL
+"parliament2017"
