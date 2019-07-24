@@ -13,4 +13,4 @@
 #' \item{other}{Votes to other parties}
 #' }
 #' @source \url{http://www.idescat.cat/tema/elecc}
-"parliament2017"
+"catalan_elections_2017"
