@@ -3,7 +3,8 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 testing/
-test/
+tests/
 .APtable
 out
 docs
+coda.base

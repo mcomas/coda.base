@@ -1,7 +1,6 @@
 packrat/lib*/
 .Rproj.user
 packrat/src/
-src/RcppExports*
 src/*.o
 src/*.so
 man

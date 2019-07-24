@@ -1,5 +1,5 @@
 #' Results of catalan parliament elections in 2017 by regions.
-#'
+#' @name parliament2017
 #' @format A data frame with 42 rows and 9 variables:
 #' \describe{
 #' \item{com}{Region}
