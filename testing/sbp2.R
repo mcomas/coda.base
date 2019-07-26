@@ -1,9 +1,17 @@
-D = 5
+D = 9
 n = 100
 Y = matrix(exp(rnorm(D*n)), ncol = D)
 x = rnorm(n)
+
 sbp_basis(find_predictive_balance(Y,x,method=1), silent = TRUE)
 sbp_basis(find_predictive_balance(Y,x,method=2), silent = TRUE)
+
+microbenchmark(
+  pb_basis(Y, method = 'exact'),
+  find_principal_balance(Y))
+
+find_principal_balance(Y)
+pb_basis(Y, method = 'exact')
 
 microbenchmark(
   sbp_basis(find_principal_balance(Y), silent = TRUE),

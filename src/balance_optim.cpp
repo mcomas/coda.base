@@ -3,6 +3,7 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 #include <RcppArmadillo.h>
 #include "balance.h"
+#include "coda.h"
 
 std::map<int,arma::uvec> default_nodes(int size){
   std::map<int,arma::uvec> node;
@@ -19,9 +20,11 @@ public:
   PrincipalBalance (Balance *bal_, arma::mat X): EvaluateBalance(bal_){
     M = cov(log(X));
   }
-  double eval(){
-    double nL = bal->get_nL();
-    double nR = bal->get_nR();
+  double eval(Balance *bal){
+    double nL = bal->L_length; //bal->get_nL();
+    double nR = bal->R_length; //bal->get_nR();
+    // Rcpp::Rcout << "nL: " << nL << std::endl;
+    // Rcpp::Rcout << "nR: " << nR << std::endl;
     arma::uvec uL = bal->getL();
     arma::uvec uR = bal->getR();
     double sL = (nR/nL) * arma::accu(M(uL,uL));
@@ -29,9 +32,13 @@ public:
     double sC = - 2*arma::accu(M(uR,uL));
 
     double variance = (sL + sR + sC) / (nL+nR);
+
+    // Rcpp::Rcout << variance << std::endl;
     return variance;
   }
 };
+
+
 
 class PredictiveBalance: public EvaluateBalance {
   arma::mat lY;
@@ -41,7 +48,7 @@ public:
     lY = log(Y);
     x = X;
   }
-  double eval(){
+  double eval(Balance *bal){
     arma::uvec uL = bal->getL();
     arma::uvec uR = bal->getR();
 
@@ -68,7 +75,7 @@ public:
     arma::mat v = var(X);
     x = (X - m(0))/sqrt(v(0));
   }
-  double eval(){
+  double eval(Balance *bal){
     arma::uvec uL = bal->getL();
     arma::uvec uR = bal->getR();
 
@@ -85,6 +92,31 @@ public:
   }
 };
 
+//' @export
+// [[Rcpp::export]]
+arma::vec find_testing(arma::mat X, arma::vec v){
+
+  Balance balance = Balance(default_nodes(X.n_cols));
+  // arma::uvec uL;
+  // uL << 1 << 2;
+  // arma::uvec uR;
+  // uR << 0 << 4;
+  // balance.init(uL, uR);
+  arma::uvec uL0 = find(v == max(v));
+  arma::uvec uR0 = find(v == min(v));
+  balance.init(uL0, uR0);
+  PrincipalBalance h = PrincipalBalance(&balance, X);
+  h.print_state();
+  h.setLocalSearch();
+  h.print_state();
+  //double score = h.setOptimal();
+
+  arma::vec bal = arma::zeros(X.n_cols);
+  bal(balance.getL()).fill(1);
+  bal(balance.getR()).fill(-1);
+  return bal;
+
+}
 
 //' @export
 // [[Rcpp::export]]
@@ -100,6 +132,7 @@ arma::vec find_principal_balance(arma::mat X){
   return bal;
 
 }
+
 
 //' @export
 // [[Rcpp::export]]

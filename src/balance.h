@@ -1,15 +1,15 @@
 #include <RcppArmadillo.h>
 
 class Balance {
-  std::map<int,arma::uvec> nodes;
-  unsigned n;
 
   arma::uvec L;
   arma::uvec R;
-  unsigned int L_length;
-  unsigned int R_length;
 
 public:
+  std::map<int,arma::uvec> nodes;
+  unsigned n;
+  unsigned int L_length;
+  unsigned int R_length;
   Balance (std::map<int,arma::uvec> nodes0){
     nodes = nodes0;
     n = nodes.size();
@@ -32,14 +32,28 @@ public:
   }
   arma::uvec getL(){ return(L.head(L_length)); }
   arma::uvec getR(){ return(R.head(R_length)); }
-
+  void addL(unsigned int I){
+    L(L_length) = I;
+    L_length++;
+  }
+  void addR(int I){
+    R(R_length) = I;
+    R_length++;
+  }
+  void removeL(int I){
+    arma::uvec uLnew = find(L.head(L_length) != I);
+    L_length--;
+    L.head(L_length) = uLnew;
+  }
+  void removeR(int I){
+    arma::uvec uRnew = find(R.head(R_length) != I);
+    R_length--;
+    R.head(R_length) = uRnew;
+  }
   bool hasNext(){
     arma::uvec uL = L.head(L_length);
     arma::uvec uR = R.head(R_length);
-    if( (uL.n_elem == 1) & (uR.n_elem + 1 == n) & (uL[0] == n-1) ){
-      return(false);
-    }
-    return(true);
+    return(!( (uL.n_elem == 1) & (uR.n_elem + 1 == n) & (uL[0] == n-1) ));
   }
   void nextBalance(){
     arma::uvec uL = L.head(L_length);
@@ -112,7 +126,10 @@ public:
   EvaluateBalance(Balance *bal_){
     bal = bal_;
   }
-  virtual double eval(){
+  double eval(){
+    return eval(bal);
+  }
+  virtual double eval(Balance *bal){
     return 0;
   }
   void print_state(){
@@ -121,14 +138,20 @@ public:
     // Rcpp::Rcout << logX.cols(bal->getR());
     Rcpp::Rcout << eval() << std::endl;
   }
-
+  double setLocalSearch(){ //arma::vec v
+    int iter = 0;
+    while(best_improve()){
+      Rcpp::checkUserInterrupt();
+    }
+    return eval();
+  }
   double setOptimal(){
     bal->init();
     //print_state();
 
     double best_score = eval();
-    arma::uvec L = arma::uvec(bal->getL());
-    arma::uvec R = arma::uvec(bal->getR());
+    arma::uvec best_L = arma::uvec(bal->getL());
+    arma::uvec best_R = arma::uvec(bal->getR());
 
 
     unsigned int iter = 1;
@@ -143,13 +166,146 @@ public:
       double score = eval();
       if(score > best_score){
         best_score = score;
-        L = arma::uvec(bal->getL());
-        R = arma::uvec(bal->getR());
+        best_L = arma::uvec(bal->getL());
+        best_R = arma::uvec(bal->getR());
       }
     }
 
-    bal->init(L, R);
+    bal->init(best_L, best_R);
     return best_score;
     //print_state();
   }
+  double v_addL(int I){
+
+    arma::uvec uLnew = arma::uvec(1+bal->L_length);
+    uLnew.head(bal->L_length) = bal->getL();
+    uLnew(bal->L_length) = I;
+    arma::uvec uRnew = arma::uvec(bal->getR());
+
+    Balance bnew = Balance(bal->nodes);
+    bnew.init(uLnew, uRnew);
+    return eval(&bnew);
+
+  }
+  double v_addR(int I){
+
+    arma::uvec uLnew = arma::uvec(bal->getL());
+    arma::uvec uRnew = arma::uvec(1+bal->R_length);
+    uRnew.head(bal->R_length) = bal->getR();
+    uRnew(bal->R_length) = I;
+
+
+    Balance bnew = Balance(bal->nodes);
+    bnew.init(uLnew, uRnew);
+    return eval(&bnew);
+
+  }
+  double v_removeL(int I){
+
+    arma::uvec uLnew = find(bal->getL() != I);
+    arma::uvec uRnew = arma::uvec(bal->getR());
+
+    Balance bnew = Balance(bal->nodes);
+    bnew.init(uLnew, uRnew);
+    return eval(&bnew);
+
+  }
+  double v_removeR(int I){
+
+    arma::uvec uLnew = arma::uvec(bal->getL());
+    arma::uvec uRnew = find(bal->getR() != I);
+
+    Balance bnew = Balance(bal->nodes);
+    bnew.init(uLnew, uRnew);
+    double score = eval(&bnew);
+    return score;
+
+  }
+  bool linear_transformation(arma::mat M){
+
+  }
+  bool best_improve(){
+    // Rcpp::Rcout << eval() << std::endl;
+    // int n = get_n();
+
+    arma::uvec best_L = arma::uvec(bal->getL());
+    arma::uvec best_R = arma::uvec(bal->getR());
+
+    arma::uvec uL = arma::uvec(bal->getL());
+    arma::uvec uR = arma::uvec(bal->getR());
+
+
+    arma::uvec O = arma::zeros<arma::uvec>(bal->n);
+    O(uL).fill(1);
+    O(uR).fill(1);
+
+
+    arma::uvec uO = find(O == 0);
+
+    double max_score = eval();
+    //Rcpp::Rcout << "Initial score: " << max_score << std::endl;
+
+    bool add = false;
+    bool left = false;
+    int which = -1;
+
+    for(unsigned int i=0; i < uO.n_elem; i++){
+      double new_score = v_addL(uO[i]);
+      if(new_score > max_score){
+        max_score = new_score;
+        add = true;
+        left = true;
+        which = uO[i];
+      }
+      new_score = v_addR(uO[i]);
+      if(new_score > max_score){
+        max_score = new_score;
+        add = true;
+        left = false;
+        which = uO[i];
+      }
+    }
+    if(uL.n_elem > 1){
+      for(unsigned int i=0; i<uL.n_elem; i++){
+        double new_score = v_removeL(uL[i]);
+        if(new_score > max_score){
+          max_score = new_score;
+          add = false;
+          left = true;
+          which = uL[i];
+        }
+      }
+    }
+    if(uR.n_elem > 1){
+      for(unsigned int i=0; i<uR.n_elem; i++){
+        double new_score = v_removeR(uR[i]);
+        if(new_score > max_score){
+          max_score = new_score;
+          add = false;
+          left = false;
+          which = uR[i];
+        }
+      }
+    }
+    //Rcpp::Rcout << "Add: " << add << " Left: " << left << " I: " << which << std::endl;
+    //Rcpp::Rcout << "Best score: " << max_score << std::endl;
+    if(which > -1){
+      if(add){
+        if(left){
+          bal->addL((unsigned int)which);
+        }else{
+          bal->addR((unsigned int)which);
+        }
+      }else{ // remove
+        if(left){
+          bal->removeL((unsigned int)which);
+        }else{
+          bal->removeR((unsigned int)which);
+        }
+      }
+      return true;
+    }
+    return false;
+  }
+
 };

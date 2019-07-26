@@ -6,6 +6,42 @@
 
 using namespace Rcpp;
 
+// find_testing
+arma::vec find_testing(arma::mat X, arma::vec v);
+RcppExport SEXP _coda_base_find_testing(SEXP XSEXP, SEXP vSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type v(vSEXP);
+    rcpp_result_gen = Rcpp::wrap(find_testing(X, v));
+    return rcpp_result_gen;
+END_RCPP
+}
+// find_principal_balance
+arma::vec find_principal_balance(arma::mat X);
+RcppExport SEXP _coda_base_find_principal_balance(SEXP XSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
+    rcpp_result_gen = Rcpp::wrap(find_principal_balance(X));
+    return rcpp_result_gen;
+END_RCPP
+}
+// find_predictive_balance
+arma::vec find_predictive_balance(arma::mat Y, arma::vec x, int method);
+RcppExport SEXP _coda_base_find_predictive_balance(SEXP YSEXP, SEXP xSEXP, SEXP methodSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type method(methodSEXP);
+    rcpp_result_gen = Rcpp::wrap(find_predictive_balance(Y, x, method));
+    return rcpp_result_gen;
+END_RCPP
+}
 // pinv
 arma::mat pinv(arma::mat X);
 RcppExport SEXP _coda_base_pinv(SEXP XSEXP) {
@@ -274,6 +310,9 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_coda_base_find_testing", (DL_FUNC) &_coda_base_find_testing, 2},
+    {"_coda_base_find_principal_balance", (DL_FUNC) &_coda_base_find_principal_balance, 1},
+    {"_coda_base_find_predictive_balance", (DL_FUNC) &_coda_base_find_predictive_balance, 3},
     {"_coda_base_pinv", (DL_FUNC) &_coda_base_pinv, 1},
     {"_coda_base_c_variation_array", (DL_FUNC) &_coda_base_c_variation_array, 2},
     {"_coda_base_alr_basis_default", (DL_FUNC) &_coda_base_alr_basis_default, 1},
