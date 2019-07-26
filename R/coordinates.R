@@ -56,6 +56,7 @@ fillPartition = function(partition, row, left, right){
 #' @export
 cdp_partition = function(ncomp) unname(t(fillPartition(matrix(0, nrow = 1, ncol = ncomp), 0, 1, ncomp)))
 
+
 #' @title Get coordinates from compositions w.r.t. an specific basis
 #'
 #' @description
