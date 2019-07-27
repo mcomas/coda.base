@@ -1,9 +1,11 @@
 library(magrittr)
 D = 5
 n = 100
-#set.seed(3)
+#set.seed(34)
 Y = matrix(exp(rnorm(D*n)), ncol = D)
-pb_basis(Y, method = 'exact')
+microbenchmark::microbenchmark(
+  find_principal_balance(Y),
+  pb_basis(Y, method = 'exact'), times = 1)
 
 M = cov(coordinates(Y, 'clr'))
 v = svd(M, nu = 1, nv = 0)$u
@@ -31,8 +33,8 @@ var(coordinates(Y, b2))
 
 
 
-
-find_principal_balance(Y)
+pb_basis(Y, method = 'exact')[,1:2]
+find_all_principal_balance(Y)
 
 
 

@@ -6,29 +6,6 @@
 
 using namespace Rcpp;
 
-// find_testing
-arma::vec find_testing(arma::mat X, arma::vec v);
-RcppExport SEXP _coda_base_find_testing(SEXP XSEXP, SEXP vSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type v(vSEXP);
-    rcpp_result_gen = Rcpp::wrap(find_testing(X, v));
-    return rcpp_result_gen;
-END_RCPP
-}
-// find_principal_balance
-arma::vec find_principal_balance(arma::mat X);
-RcppExport SEXP _coda_base_find_principal_balance(SEXP XSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
-    rcpp_result_gen = Rcpp::wrap(find_principal_balance(X));
-    return rcpp_result_gen;
-END_RCPP
-}
 // find_predictive_balance
 arma::vec find_predictive_balance(arma::mat Y, arma::vec x, int method);
 RcppExport SEXP _coda_base_find_predictive_balance(SEXP YSEXP, SEXP xSEXP, SEXP methodSEXP) {
@@ -39,6 +16,29 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
     Rcpp::traits::input_parameter< int >::type method(methodSEXP);
     rcpp_result_gen = Rcpp::wrap(find_predictive_balance(Y, x, method));
+    return rcpp_result_gen;
+END_RCPP
+}
+// find_canonical_balance_01
+arma::mat find_canonical_balance_01(arma::mat X, arma::mat Y);
+RcppExport SEXP _coda_base_find_canonical_balance_01(SEXP XSEXP, SEXP YSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Y(YSEXP);
+    rcpp_result_gen = Rcpp::wrap(find_canonical_balance_01(X, Y));
+    return rcpp_result_gen;
+END_RCPP
+}
+// find_canonical_balance_02
+arma::mat find_canonical_balance_02(arma::mat X);
+RcppExport SEXP _coda_base_find_canonical_balance_02(SEXP XSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
+    rcpp_result_gen = Rcpp::wrap(find_canonical_balance_02(X));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -201,6 +201,39 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// find_principal_balance_01
+arma::mat find_principal_balance_01(arma::mat X);
+RcppExport SEXP _coda_base_find_principal_balance_01(SEXP XSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
+    rcpp_result_gen = Rcpp::wrap(find_principal_balance_01(X));
+    return rcpp_result_gen;
+END_RCPP
+}
+// find_principal_balance_02
+arma::mat find_principal_balance_02(arma::mat X);
+RcppExport SEXP _coda_base_find_principal_balance_02(SEXP XSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
+    rcpp_result_gen = Rcpp::wrap(find_principal_balance_02(X));
+    return rcpp_result_gen;
+END_RCPP
+}
+// find_principal_balance2_01
+arma::mat find_principal_balance2_01(arma::mat X);
+RcppExport SEXP _coda_base_find_principal_balance2_01(SEXP XSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
+    rcpp_result_gen = Rcpp::wrap(find_principal_balance2_01(X));
+    return rcpp_result_gen;
+END_RCPP
+}
 // find_PB_rnd_local_search
 arma::mat find_PB_rnd_local_search(arma::mat M, int rep);
 RcppExport SEXP _coda_base_find_PB_rnd_local_search(SEXP MSEXP, SEXP repSEXP) {
@@ -310,9 +343,9 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_coda_base_find_testing", (DL_FUNC) &_coda_base_find_testing, 2},
-    {"_coda_base_find_principal_balance", (DL_FUNC) &_coda_base_find_principal_balance, 1},
     {"_coda_base_find_predictive_balance", (DL_FUNC) &_coda_base_find_predictive_balance, 3},
+    {"_coda_base_find_canonical_balance_01", (DL_FUNC) &_coda_base_find_canonical_balance_01, 2},
+    {"_coda_base_find_canonical_balance_02", (DL_FUNC) &_coda_base_find_canonical_balance_02, 1},
     {"_coda_base_pinv", (DL_FUNC) &_coda_base_pinv, 1},
     {"_coda_base_c_variation_array", (DL_FUNC) &_coda_base_c_variation_array, 2},
     {"_coda_base_alr_basis_default", (DL_FUNC) &_coda_base_alr_basis_default, 1},
@@ -327,6 +360,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_coda_base_coordinates_basis", (DL_FUNC) &_coda_base_coordinates_basis, 3},
     {"_coda_base_ilr_coordinates", (DL_FUNC) &_coda_base_ilr_coordinates, 1},
     {"_coda_base_inv_ilr_coordinates", (DL_FUNC) &_coda_base_inv_ilr_coordinates, 1},
+    {"_coda_base_find_principal_balance_01", (DL_FUNC) &_coda_base_find_principal_balance_01, 1},
+    {"_coda_base_find_principal_balance_02", (DL_FUNC) &_coda_base_find_principal_balance_02, 1},
+    {"_coda_base_find_principal_balance2_01", (DL_FUNC) &_coda_base_find_principal_balance2_01, 1},
     {"_coda_base_find_PB_rnd_local_search", (DL_FUNC) &_coda_base_find_PB_rnd_local_search, 2},
     {"_coda_base_find_PB_pc_local_search", (DL_FUNC) &_coda_base_find_PB_pc_local_search, 1},
     {"_coda_base_find_PB_log", (DL_FUNC) &_coda_base_find_PB_log, 1},
