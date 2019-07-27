@@ -1,5 +1,5 @@
-D = 5
-n = 6
+D = 50
+n = 60
 X = matrix(exp(rnorm(D*n)), ncol = D)
 microbenchmark::microbenchmark(
   MASS::ginv(cov(coordinates(X, 'clr'))),

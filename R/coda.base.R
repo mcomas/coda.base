@@ -8,7 +8,7 @@
 #' @docType package
 #' @author Marc Comas-Cufí
 #' @import Rcpp stats
-#' @useDynLib coda.base, .registration = TRUE
+#' @useDynLib coda.base
 #' @importFrom Rcpp evalCpp
 #' @name coda.base
 NULL

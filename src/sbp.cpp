@@ -712,10 +712,7 @@ SBP SBP::top(){
 
   int nV = nL+nR;
   int nI = n-(uL.n_elem+uR.n_elem);
-  // Rcpp::Rcout << " [";
-  // Rcpp::Rcout << "n:" << n << ",  nV:" << nV << ", nL:" << nL << ", nR:" << nR;
-  // Rcpp::Rcout << ", nI:" << nI;
-  // Rcpp:: Rcout << ", uL.n_elem:" << uL.n_elem << ", uR.n_elem:" << uR.n_elem << "]";
+
   arma::mat new_M = arma::zeros<arma::mat>(1+nI, 1+nI);
   // Diagonal
   new_M(0,0, arma::size(nI, nI)) = M(uI,uI);

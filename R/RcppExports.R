@@ -2,109 +2,124 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 #' @export
-find_testing <- function(X, v) {
-    .Call('_coda_base_find_testing', PACKAGE = 'coda.base', X, v)
-}
-
-#' @export
-find_principal_balance <- function(X) {
-    .Call('_coda_base_find_principal_balance', PACKAGE = 'coda.base', X)
-}
-
-#' @export
 find_predictive_balance <- function(Y, x, method = 1L) {
     .Call('_coda_base_find_predictive_balance', PACKAGE = 'coda.base', Y, x, method)
 }
 
+#' @export
+find_canonical_balance_01 <- function(X, Y) {
+    .Call('_coda_base_find_canonical_balance_01', PACKAGE = 'coda.base', X, Y)
+}
+
+#' @export
+find_canonical_balance_02 <- function(X) {
+    .Call('_coda_base_find_canonical_balance_02', PACKAGE = 'coda.base', X)
+}
+
 pinv <- function(X) {
-    .Call(`_coda_base_pinv`, X)
+    .Call('_coda_base_pinv', PACKAGE = 'coda.base', X)
 }
 
 c_variation_array <- function(X, only_variation = FALSE) {
-    .Call(`_coda_base_c_variation_array`, X, only_variation)
+    .Call('_coda_base_c_variation_array', PACKAGE = 'coda.base', X, only_variation)
 }
 
 alr_basis_default <- function(dim) {
-    .Call(`_coda_base_alr_basis_default`, dim)
+    .Call('_coda_base_alr_basis_default', PACKAGE = 'coda.base', dim)
 }
 
 clr_basis_default <- function(dim) {
-    .Call(`_coda_base_clr_basis_default`, dim)
+    .Call('_coda_base_clr_basis_default', PACKAGE = 'coda.base', dim)
 }
 
 ilr_basis_default <- function(dim) {
-    .Call(`_coda_base_ilr_basis_default`, dim)
+    .Call('_coda_base_ilr_basis_default', PACKAGE = 'coda.base', dim)
 }
 
 ilr_basis_simplex <- function(dim) {
-    .Call(`_coda_base_ilr_basis_simplex`, dim)
+    .Call('_coda_base_ilr_basis_simplex', PACKAGE = 'coda.base', dim)
 }
 
 ilr_to_alr <- function(dim) {
-    .Call(`_coda_base_ilr_to_alr`, dim)
+    .Call('_coda_base_ilr_to_alr', PACKAGE = 'coda.base', dim)
 }
 
 clr_coordinates <- function(X) {
-    .Call(`_coda_base_clr_coordinates`, X)
+    .Call('_coda_base_clr_coordinates', PACKAGE = 'coda.base', X)
 }
 
 inv_clr_coordinates <- function(clrX) {
-    .Call(`_coda_base_inv_clr_coordinates`, clrX)
+    .Call('_coda_base_inv_clr_coordinates', PACKAGE = 'coda.base', clrX)
 }
 
 coordinates_alr2 <- function(X, denominator) {
-    .Call(`_coda_base_coordinates_alr2`, X, denominator)
+    .Call('_coda_base_coordinates_alr2', PACKAGE = 'coda.base', X, denominator)
 }
 
 coordinates_alr <- function(X, denominator) {
-    .Call(`_coda_base_coordinates_alr`, X, denominator)
+    .Call('_coda_base_coordinates_alr', PACKAGE = 'coda.base', X, denominator)
 }
 
 coordinates_basis <- function(X, B, sparse = FALSE) {
-    .Call(`_coda_base_coordinates_basis`, X, B, sparse)
+    .Call('_coda_base_coordinates_basis', PACKAGE = 'coda.base', X, B, sparse)
 }
 
 ilr_coordinates <- function(X) {
-    .Call(`_coda_base_ilr_coordinates`, X)
+    .Call('_coda_base_ilr_coordinates', PACKAGE = 'coda.base', X)
 }
 
 inv_ilr_coordinates <- function(ilrX) {
-    .Call(`_coda_base_inv_ilr_coordinates`, ilrX)
+    .Call('_coda_base_inv_ilr_coordinates', PACKAGE = 'coda.base', ilrX)
+}
+
+#' @export
+find_principal_balance_01 <- function(X) {
+    .Call('_coda_base_find_principal_balance_01', PACKAGE = 'coda.base', X)
+}
+
+#' @export
+find_principal_balance_02 <- function(X) {
+    .Call('_coda_base_find_principal_balance_02', PACKAGE = 'coda.base', X)
+}
+
+#' @export
+find_principal_balance2_01 <- function(X) {
+    .Call('_coda_base_find_principal_balance2_01', PACKAGE = 'coda.base', X)
 }
 
 find_PB_rnd_local_search <- function(M, rep = 1L) {
-    .Call(`_coda_base_find_PB_rnd_local_search`, M, rep)
+    .Call('_coda_base_find_PB_rnd_local_search', PACKAGE = 'coda.base', M, rep)
 }
 
 find_PB_pc_local_search <- function(X) {
-    .Call(`_coda_base_find_PB_pc_local_search`, X)
+    .Call('_coda_base_find_PB_pc_local_search', PACKAGE = 'coda.base', X)
 }
 
 find_PB_log <- function(lX) {
-    .Call(`_coda_base_find_PB_log`, lX)
+    .Call('_coda_base_find_PB_log', PACKAGE = 'coda.base', lX)
 }
 
 find_PB <- function(X) {
-    .Call(`_coda_base_find_PB`, X)
+    .Call('_coda_base_find_PB', PACKAGE = 'coda.base', X)
 }
 
 find_PB2 <- function(M, random = 100L, optim = 0L) {
-    .Call(`_coda_base_find_PB2`, M, random, optim)
+    .Call('_coda_base_find_PB2', PACKAGE = 'coda.base', M, random, optim)
 }
 
 find_PB3 <- function(M, steps, random = 100L, optim = 0L, k = 0L) {
-    .Call(`_coda_base_find_PB3`, M, steps, random, optim, k)
+    .Call('_coda_base_find_PB3', PACKAGE = 'coda.base', M, steps, random, optim, k)
 }
 
 find_PB4 <- function(M) {
-    .Call(`_coda_base_find_PB4`, M)
+    .Call('_coda_base_find_PB4', PACKAGE = 'coda.base', M)
 }
 
 find_PB5 <- function(X) {
-    .Call(`_coda_base_find_PB5`, X)
+    .Call('_coda_base_find_PB5', PACKAGE = 'coda.base', X)
 }
 
 arma_sampling_without_replacement <- function(n, k) {
-    .Call(`_coda_base_arma_sampling_without_replacement`, n, k)
+    .Call('_coda_base_arma_sampling_without_replacement', PACKAGE = 'coda.base', n, k)
 }
 
