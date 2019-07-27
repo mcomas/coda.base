@@ -87,6 +87,11 @@ find_principal_balance2_01 <- function(X) {
     .Call('_coda_base_find_principal_balance2_01', PACKAGE = 'coda.base', X)
 }
 
+#' @export
+find_principal_balance3_01 <- function(X) {
+    .Call('_coda_base_find_principal_balance3_01', PACKAGE = 'coda.base', X)
+}
+
 find_PB_rnd_local_search <- function(M, rep = 1L) {
     .Call('_coda_base_find_PB_rnd_local_search', PACKAGE = 'coda.base', M, rep)
 }

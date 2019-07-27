@@ -234,6 +234,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// find_principal_balance3_01
+arma::mat find_principal_balance3_01(arma::mat X);
+RcppExport SEXP _coda_base_find_principal_balance3_01(SEXP XSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
+    rcpp_result_gen = Rcpp::wrap(find_principal_balance3_01(X));
+    return rcpp_result_gen;
+END_RCPP
+}
 // find_PB_rnd_local_search
 arma::mat find_PB_rnd_local_search(arma::mat M, int rep);
 RcppExport SEXP _coda_base_find_PB_rnd_local_search(SEXP MSEXP, SEXP repSEXP) {
@@ -363,6 +374,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_coda_base_find_principal_balance_01", (DL_FUNC) &_coda_base_find_principal_balance_01, 1},
     {"_coda_base_find_principal_balance_02", (DL_FUNC) &_coda_base_find_principal_balance_02, 1},
     {"_coda_base_find_principal_balance2_01", (DL_FUNC) &_coda_base_find_principal_balance2_01, 1},
+    {"_coda_base_find_principal_balance3_01", (DL_FUNC) &_coda_base_find_principal_balance3_01, 1},
     {"_coda_base_find_PB_rnd_local_search", (DL_FUNC) &_coda_base_find_PB_rnd_local_search, 2},
     {"_coda_base_find_PB_pc_local_search", (DL_FUNC) &_coda_base_find_PB_pc_local_search, 1},
     {"_coda_base_find_PB_log", (DL_FUNC) &_coda_base_find_PB_log, 1},
