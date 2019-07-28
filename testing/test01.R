@@ -2,7 +2,7 @@ suppressMessages(library(coda.base))
 library(magrittr)
 
 cat("\n\n\n# Two different approaches to find principal balances.\n\n")
-D = 9
+D = 5
 n = 100
 #set.seed(1)
 Y = matrix(exp(rnorm(D*n)), ncol = D)
@@ -11,11 +11,11 @@ find_principal_balance_01(Y) %>% ev()
 find_principal_balance2_01(Y) %>% ev()
 find_principal_balance3_01(Y) %>% ev()
 
-B2 = find_principal_balance2_01(Y)[,1:2,drop=F]
-sum(t(B2) %*% cov(coordinates(Y, 'clr')) %*% B2)
+B2 = find_principal_balance2_01(Y)[,1:3,drop=F]
+t(B2) %*% cov(coordinates(Y, 'clr')) %*% B2
 
-B3 = find_principal_balance3_01(Y)[,1:2,drop=F]
-sum(t(B3) %*% cov(coordinates(Y, 'clr')) %*% B3)
+B3 = find_principal_balance3_01(Y)[,1:3,drop=F]
+t(B3) %*% cov(coordinates(Y, 'clr')) %*% B3
 
 cor(coordinates(Y, B2))
 cor(coordinates(Y, B3))

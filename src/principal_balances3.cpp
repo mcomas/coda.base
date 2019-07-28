@@ -17,6 +17,7 @@ public:
     M = cov(clr_coordinates(X));
     PB = PB_;
     npb = PB.n_cols;
+    //Rcpp::Rcout << "Dim: " << npb << std::endl;
   }
   double eval(Balance *bal){
     arma::vec b = getBalance(bal);
@@ -28,7 +29,8 @@ public:
     B.col(npb) = b;
 
     arma::mat v = B.t() * M * B;
-    return arma::accu(v);
+    //Rcpp::Rcout << v << std::endl;
+    return arma::det(v);
   }
 };
 
@@ -59,15 +61,15 @@ arma::mat find_principal_balance3_01(arma::mat X){
     int nL = SOLS[iBestSolution].bal.L_length;
     int nR = SOLS[iBestSolution].bal.R_length;
     if(n > nL + nR){
-      SOLS.push_back(PrincipalBalance3(SOLS[iBestSolution].bal.top(), X, PB));
+      SOLS.push_back(PrincipalBalance3(SOLS[iBestSolution].bal.top(), X, PB.head_cols(l+1)));
       SOLS.back().setOptimal();
     }
     if(nL > 1){
-      SOLS.push_back(PrincipalBalance3(SOLS[iBestSolution].bal.left(), X, PB));
+      SOLS.push_back(PrincipalBalance3(SOLS[iBestSolution].bal.left(), X, PB.head_cols(l+1)));
       SOLS.back().setOptimal();
     }
     if(nR > 1){
-      SOLS.push_back(PrincipalBalance3(SOLS[iBestSolution].bal.right(), X, PB));
+      SOLS.push_back(PrincipalBalance3(SOLS[iBestSolution].bal.right(), X, PB.head_cols(l+1)));
       SOLS.back().setOptimal();
     }
     SOLS[iBestSolution] = SOLS.back();
