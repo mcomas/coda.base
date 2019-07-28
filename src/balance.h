@@ -204,6 +204,7 @@ public:
     return eval(&bal);
   }
   virtual double eval(Balance *bal){
+    Rcpp::Rcout << "Calling parent, return 0" << std::endl;
     return 0;
   }
   arma::vec getBalance(Balance *bal_){

@@ -35,10 +35,14 @@ v = apply(PC.coord, 2, var)
 cumsum(v) / sum(v)
 attr(PC.coord, 'basis')
 
-PB = pb_basis(POST, method = 'exact')
-PB.coord = coordinates(POST, PB)
-plot(PB.coord[,1], PB.coord[,2], col=gr)
-PB
+PB1 = pb_basis(POST, method = 'exact')
+PB1.coord = coordinates(POST, PB1)
+plot(PB1.coord[,1], PB1.coord[,2], col=gr)
+PB1
+PB2 = find_principal_balance3_01(POST)
+PB2.coord = coordinates(POST, PB2)
+plot(PB2.coord[,1], PB2.coord[,2], col=gr)
+PB2
 
 ##
 ##

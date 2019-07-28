@@ -1,21 +1,23 @@
 suppressMessages(library(coda.base))
 library(magrittr)
 
-cat("\n\n\n# Two different approaches to find principal balances.\n\n")
+cat("\n\n\n# Approaches to find principal balances.\n\n")
 D = 5
 n = 100
-#set.seed(1)
+
+set.seed(80)
 Y = matrix(exp(rnorm(D*n)), ncol = D)
 ev = function(B) apply(coordinates(Y, B), 2, var)
-find_principal_balance_01(Y) %>% ev()
-find_principal_balance2_01(Y) %>% ev()
-find_principal_balance3_01(Y) %>% ev()
+cat("## Two equivalent approaches. First faster, second clearer.\n")
+(PB1 <- find_principal_balance_01(Y)) %>% ev()
+(PB2 <- find_principal_balance2_01(Y)) %>% ev()
+cat("## Balances are build optimising the total variance.\n")
+(PB3 <- find_principal_balance3_01(Y)) %>% ev()
 
-B2 = find_principal_balance2_01(Y)[,1:3,drop=F]
-t(B2) %*% cov(coordinates(Y, 'clr')) %*% B2
 
-B3 = find_principal_balance3_01(Y)[,1:3,drop=F]
-t(B3) %*% cov(coordinates(Y, 'clr')) %*% B3
+det(t(PB2[,1:3, drop=F]) %*% cov(coordinates(Y, 'clr')) %*% PB2[,1:3, drop=F])
+det(t(PB3[,1:3, drop=F]) %*% cov(coordinates(Y, 'clr')) %*% PB3[,1:3, drop=F])
+
 
 cor(coordinates(Y, B2))
 cor(coordinates(Y, B3))

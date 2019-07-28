@@ -19,6 +19,10 @@ public:
     npb = PB.n_cols;
     //Rcpp::Rcout << "Dim: " << npb << std::endl;
   }
+  void setPB(arma::mat PB_){
+    PB = PB_;
+    npb = PB.n_cols;
+  }
   double eval(Balance *bal){
     arma::vec b = getBalance(bal);
     int D = b.n_elem;
@@ -29,7 +33,14 @@ public:
     B.col(npb) = b;
 
     arma::mat v = B.t() * M * B;
-    //Rcpp::Rcout << v << std::endl;
+    // if(npb==2){
+    //   Rcpp::Rcout << "B: "<< std::endl << B << std::endl;
+    //   Rcpp::Rcout << "b: "<< std::endl << b << std::endl;
+    //   // Rcpp::Rcout << "v: "<< std::endl << v << std::endl;
+    //   // Rcpp::Rcout << "M: "<< std::endl << M << std::endl;
+    //   Rcpp::Rcout << "det: " << arma::det(v) << std::endl;
+    // }
+    //
     return arma::det(v);
   }
 };
@@ -62,18 +73,22 @@ arma::mat find_principal_balance3_01(arma::mat X){
     int nR = SOLS[iBestSolution].bal.R_length;
     if(n > nL + nR){
       SOLS.push_back(PrincipalBalance3(SOLS[iBestSolution].bal.top(), X, PB.head_cols(l+1)));
-      SOLS.back().setOptimal();
+      //SOLS.back().setOptimal();
     }
     if(nL > 1){
       SOLS.push_back(PrincipalBalance3(SOLS[iBestSolution].bal.left(), X, PB.head_cols(l+1)));
-      SOLS.back().setOptimal();
+      //SOLS.back().setOptimal();
     }
     if(nR > 1){
       SOLS.push_back(PrincipalBalance3(SOLS[iBestSolution].bal.right(), X, PB.head_cols(l+1)));
-      SOLS.back().setOptimal();
+      //SOLS.back().setOptimal();
     }
     SOLS[iBestSolution] = SOLS.back();
     SOLS.pop_back();
+    for(int i=0; i < SOLS.size(); i++){
+      SOLS[i].setPB(PB.head_cols(l+1));
+      SOLS[i].setOptimal();
+    }
     Rcpp::checkUserInterrupt();
   }
   return PB;
