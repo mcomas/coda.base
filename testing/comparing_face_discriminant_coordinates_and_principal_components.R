@@ -1,6 +1,6 @@
 library(fpc)
 set.seed(1)
-face = rFace(600,dMoNo=2,dNoEy=0)
+face = rFace(600,dMoNo=2,dNoEy=0, p=8)
 X = as.data.frame(face)
 K = ncol(X)
 gr = attr(face, 'grouping')
@@ -23,22 +23,64 @@ grCovs = lapply(1:nG, function(i){
 W = Reduce(`+`, grCovs)
 B = cov(X) * (nrow(X)-6)
 
+A = chol2inv(chol(W)) %*% B
+eig = eigen(A)
+#eig = eigen(solve(W) %*% B)
+X2 = (face %*% eig$vectors)[, 1:2]
+plot(-X2[,1], -X2[,2], col = gr)
+
 library(mvtnorm)
 POST = sapply(1:nG, function(i){
-  dmvnorm(X, grMeans[i,], B)
+  dmvnorm(X, grMeans[i,], W)
 })
+logPOST = sapply(1:nG, function(i){
+  dmvnorm(X, grMeans[i,], W, log = TRUE)
+})
+POST2 = exp(scale(logPOST, scale=FALSE))
+
+MAH2 = sapply(1:nG, function(i){
+  xc = t(t(X) - grMeans[i,])
+  sapply(1:nrow(X), function(j) xc[j,] %*% chol2inv(chol(W)) %*% t(xc[j,,drop=F]))
+})
+
+## Building CLR transform
+MAH2_c = MAH2 - rowMeans(MAH2) # scale(MAH2, scale= FALSE)
 
 library(coda.base)
 PC.coord = coordinates(POST, 'pc')
 plot(PC.coord[,1], PC.coord[,2], col=gr)
+
+PC.coord2 = coordinates(POST2, 'pc')
+plot(PC.coord2[,1], PC.coord2[,2], col=gr)
+
+PC.coord3 = coordinates(exp(MAH2), 'pc')
+plot(PC.coord3[,1], PC.coord3[,2], col=gr)
+
+PC.coord4 = coordinates(exp(MAH2_c), 'pc')
+plot(PC.coord4[,1], PC.coord4[,2], col=gr)
+# head(MAH2_c) - head(coordinates(exp(MAH2_c), 'clr'))
+
+
+p = as.vector(table(gr)-1)
+Y = t(t(POST)/p)
+CLR_w = (log(Y) - rowMeans(log(Y))) %*% diag(sqrt(p+1))
+PBbasis = svd(cov(CLR_w))$u
+PBw = CLR_w %*% PBbasis[,1:2]
+plot(PBw[,1], -PBw[,2], col=gr)
+
+
 v = apply(PC.coord, 2, var)
 cumsum(v) / sum(v)
 attr(PC.coord, 'basis')
+
+
+
 
 PB1 = pb_basis(POST, method = 'exact')
 PB1.coord = coordinates(POST, PB1)
 plot(PB1.coord[,1], PB1.coord[,2], col=gr)
 PB1
+
 PB2 = find_principal_balance3_01(POST)
 PB2.coord = coordinates(POST, PB2)
 plot(PB2.coord[,1], PB2.coord[,2], col=gr)
