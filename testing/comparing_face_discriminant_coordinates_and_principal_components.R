@@ -35,13 +35,16 @@ POST = sapply(1:nG, function(i){
 })
 logPOST = sapply(1:nG, function(i){
   dmvnorm(X, grMeans[i,], W, log = TRUE)
+
 })
 POST2 = exp(scale(logPOST, scale=FALSE))
 
 MAH2 = sapply(1:nG, function(i){
   xc = t(t(X) - grMeans[i,])
   sapply(1:nrow(X), function(j) xc[j,] %*% chol2inv(chol(W)) %*% t(xc[j,,drop=F]))
+
 })
+POST2 = exp(scale(logPOST, scale = FALSE))
 
 ## Building CLR transform
 MAH2_c = MAH2 - rowMeans(MAH2) # scale(MAH2, scale= FALSE)
@@ -72,8 +75,6 @@ plot(PBw[,1], -PBw[,2], col=gr)
 v = apply(PC.coord, 2, var)
 cumsum(v) / sum(v)
 attr(PC.coord, 'basis')
-
-
 
 
 PB1 = pb_basis(POST, method = 'exact')
