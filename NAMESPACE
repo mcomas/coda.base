@@ -2,6 +2,7 @@
 
 S3method(print,coda)
 export(alr_basis)
+export(alr_coord)
 export(cbalance_approx)
 export(cc_basis)
 export(cdp_partition)

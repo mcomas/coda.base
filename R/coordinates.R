@@ -57,6 +57,19 @@ fillPartition = function(partition, row, left, right){
 cdp_partition = function(ncomp) unname(t(fillPartition(matrix(0, nrow = 1, ncol = ncomp), 0, 1, ncomp)))
 
 
+#' @export
+alr_coord = function(X, denominator = ncol(X)){
+  basis = alr_basis(ncol(X), denominator)
+  if(is.matrix(X)){
+    COORD = alr_coordinates(X, denominator)
+    attr(COORD, 'basis') = basis
+    set.coda(COORD)
+  }else{
+    coordinates(X, basis)
+  }
+}
+
+
 #' @title Get coordinates from compositions w.r.t. an specific basis
 #'
 #' @description
@@ -108,9 +121,10 @@ coordinates = function(X, basis = 'ilr', label = NULL, sparse_basis = FALSE){
   if(is_vector){
     class_type = 'double'
     RAW = matrix(X, nrow=1)
-  }
-  if(is_data_frame){
-    RAW = as.matrix(X)
+  }else{
+    if(is_data_frame){
+      RAW = as.matrix(X)
+    }
   }
   non_compositional = rowSums(is.na(RAW) | RAW <= 0)
   if(sum(non_compositional) > 0){
@@ -131,7 +145,7 @@ coordinates = function(X, basis = 'ilr', label = NULL, sparse_basis = FALSE){
     }else{
       if(basis == 'alr'){
         basis = alr_basis(dim)
-        COORD.coda = coordinates_alr(RAW.coda, 0)
+        COORD.coda = alr_coordinates(RAW.coda, 0)
       }else{
         if(basis == 'clr'){
           coord.dim = ncol(RAW.coda)

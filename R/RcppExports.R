@@ -37,12 +37,8 @@ inv_clr_coordinates <- function(clrX) {
     .Call(`_coda_base_inv_clr_coordinates`, clrX)
 }
 
-coordinates_alr2 <- function(X, denominator) {
-    .Call(`_coda_base_coordinates_alr2`, X, denominator)
-}
-
-coordinates_alr <- function(X, denominator) {
-    .Call(`_coda_base_coordinates_alr`, X, denominator)
+alr_coordinates <- function(X, denominator) {
+    .Call(`_coda_base_alr_coordinates`, X, denominator)
 }
 
 coordinates_basis <- function(X, B, sparse = FALSE) {

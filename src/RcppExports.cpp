@@ -106,27 +106,15 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// coordinates_alr2
-arma::mat coordinates_alr2(arma::mat X, int denominator);
-RcppExport SEXP _coda_base_coordinates_alr2(SEXP XSEXP, SEXP denominatorSEXP) {
+// alr_coordinates
+arma::mat alr_coordinates(arma::mat& X, int denominator);
+RcppExport SEXP _coda_base_alr_coordinates(SEXP XSEXP, SEXP denominatorSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type X(XSEXP);
     Rcpp::traits::input_parameter< int >::type denominator(denominatorSEXP);
-    rcpp_result_gen = Rcpp::wrap(coordinates_alr2(X, denominator));
-    return rcpp_result_gen;
-END_RCPP
-}
-// coordinates_alr
-arma::mat coordinates_alr(arma::mat X, int denominator);
-RcppExport SEXP _coda_base_coordinates_alr(SEXP XSEXP, SEXP denominatorSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
-    Rcpp::traits::input_parameter< int >::type denominator(denominatorSEXP);
-    rcpp_result_gen = Rcpp::wrap(coordinates_alr(X, denominator));
+    rcpp_result_gen = Rcpp::wrap(alr_coordinates(X, denominator));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -283,8 +271,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_coda_base_ilr_to_alr", (DL_FUNC) &_coda_base_ilr_to_alr, 1},
     {"_coda_base_clr_coordinates", (DL_FUNC) &_coda_base_clr_coordinates, 1},
     {"_coda_base_inv_clr_coordinates", (DL_FUNC) &_coda_base_inv_clr_coordinates, 1},
-    {"_coda_base_coordinates_alr2", (DL_FUNC) &_coda_base_coordinates_alr2, 2},
-    {"_coda_base_coordinates_alr", (DL_FUNC) &_coda_base_coordinates_alr, 2},
+    {"_coda_base_alr_coordinates", (DL_FUNC) &_coda_base_alr_coordinates, 2},
     {"_coda_base_coordinates_basis", (DL_FUNC) &_coda_base_coordinates_basis, 3},
     {"_coda_base_ilr_coordinates", (DL_FUNC) &_coda_base_ilr_coordinates, 1},
     {"_coda_base_inv_ilr_coordinates", (DL_FUNC) &_coda_base_inv_ilr_coordinates, 1},

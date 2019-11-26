@@ -4,15 +4,20 @@ library(compositions)
 library(robCompositions)
 library(easyCODA)
 
-K = 10
-X = as.data.frame(matrix(exp(rnorm(K*100)), nrow=100, ncol=K))
-aX = acomp(X)
-microbenchmark(
-  coordinates(X, 'alr'),
-  alr(aX),
-  addLR(X),
-  ALR(X), times = 1000
+K = 5
+N = 100
+X = as.data.frame(matrix(exp(rnorm(K*N)), nrow=N, ncol=K))
+mX = as.matrix(X)
+aX = acomp(mX)
+alr_results = microbenchmark(
+  coda.base::coordinates(mX, 'alr'),
+  coda.base::alr_coord(mX),
+  compositions::alr(aX),
+  robCompositions::addLR(mX),
+  easyCODA::ALR(mX), times = 1000
 )
+autoplot(alr_results)
+
 
 microbenchmark(
   coordinates(X, 'clr'),

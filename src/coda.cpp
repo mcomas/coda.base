@@ -138,20 +138,10 @@ arma::mat inv_clr_coordinates(arma::mat clrX){
 }
 
 // [[Rcpp::export]]
-arma::mat coordinates_alr2(arma::mat X, int denominator){
+arma::mat alr_coordinates(arma::mat &X, int denominator){
+  int idenom = X.n_cols-1;
+  arma::mat res(X.n_rows, idenom);
   arma::mat logX = log(X);
-  arma::mat res = logX(arma::span::all, arma::span(0,X.n_cols-2));
-  for(unsigned int i = 0; i < res.n_cols; i++){
-    res(arma::span::all, i) -= logX(arma::span::all,X.n_cols-1);
-  }
-  return(res);
-}
-
-// [[Rcpp::export]]
-arma::mat coordinates_alr(arma::mat X, int denominator){
-  arma::mat logX = log(X);
-  arma::mat res(logX.n_rows, logX.n_cols-1);
-  int idenom = logX.n_cols-1;
   for(unsigned int j = 0; j < res.n_cols; j++){
     for(unsigned int i = 0; i< res.n_rows; i++){
       res(i,j) = logX(i,j) - logX(i,idenom);
