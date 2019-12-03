@@ -117,12 +117,14 @@ arma::mat ilr_to_alr(unsigned int dim){
 }
 
 // [[Rcpp::export]]
-arma::mat clr_coordinates(arma::mat X){
+arma::mat clr_coordinates(arma::mat &X){
   arma::mat LOGX = log(X);
+  arma::mat m = mean(LOGX, 1);
 
-  for(unsigned int i = 0; i < X.n_rows; i++){
-    LOGX.row(i) = LOGX.row(i) - mean(LOGX.row(i));
-  }
+  LOGX.each_col() -= m;
+   // for(unsigned int i = 0; i < X.n_rows; i++){
+   //   LOGX.row(i) = LOGX.row(i) - mean(LOGX.row(i));
+   // }
 
   return(LOGX);
 }
@@ -154,6 +156,11 @@ arma::mat alr_coordinates(arma::mat &X, int denominator){
 }
 
 // [[Rcpp::export]]
+arma::mat matrix_coordinates(arma::mat X, arma::mat B){
+    return(log(X) * B);
+}
+
+// [[Rcpp::export]]
 arma::mat coordinates_basis(arma::mat X, arma::mat B, bool sparse = false){
   if(sparse){
     arma::sp_mat sB(B);
@@ -166,7 +173,7 @@ arma::mat coordinates_basis(arma::mat X, arma::mat B, bool sparse = false){
 }
 
 // [[Rcpp::export]]
-arma::mat ilr_coordinates(arma::mat X){
+arma::mat ilr_coordinates(arma::mat &X){
   arma::mat logX = log(X);
   arma::mat B = ilr_basis_default(X.n_cols);
   return(logX * B);

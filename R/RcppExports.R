@@ -41,6 +41,10 @@ alr_coordinates <- function(X, denominator) {
     .Call(`_coda_base_alr_coordinates`, X, denominator)
 }
 
+matrix_coordinates <- function(X, B) {
+    .Call(`_coda_base_matrix_coordinates`, X, B)
+}
+
 coordinates_basis <- function(X, B, sparse = FALSE) {
     .Call(`_coda_base_coordinates_basis`, X, B, sparse)
 }

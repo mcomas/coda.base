@@ -3,36 +3,47 @@ library(coda.base)
 library(compositions)
 library(robCompositions)
 library(easyCODA)
+library(RcppCoDA)
 
-K = 5
+K = 10
 N = 100
-X = as.data.frame(matrix(exp(rnorm(K*N)), nrow=N, ncol=K))
-mX = as.matrix(X)
+# ALR default transformation
+mX = matrix(exp(rnorm(K*N)), nrow=N, ncol=K)
+dX = as.data.frame(mX)
 aX = acomp(mX)
+B = alr_basis(K)
 alr_results = microbenchmark(
   coda.base::coordinates(mX, 'alr'),
-  coda.base::alr_coord(mX),
+  coda.base::coordinates2(mX, 'alr'),
   compositions::alr(aX),
   robCompositions::addLR(mX),
-  easyCODA::ALR(mX), times = 1000
+  easyCODA::ALR(mX),
+  RcppCoDA::alr(mX),
+  times = 100
 )
 autoplot(alr_results)
 
 
-microbenchmark(
-  coordinates(X, 'clr'),
-  clr(aX),
-  cenLR(X),
-  CLR(X), times = 1000
+clr_results = microbenchmark(
+  coda.base::coordinates(mX, 'clr'),
+  coda.base::coordinates2(mX, 'clr'),
+  compositions::clr(aX),
+  RcppCoDA::clr(mX),
+  robCompositions::cenLR(mX),
+  easyCODA::CLR(mX), times = 100
 )
+autoplot(clr_results)
 
-microbenchmark(
-  coordinates(X, 'ilr'),
-  ilr(aX),
-  isomLR(X, fast=T),
-  pivotCoord(X, fast=T),
-  PLR(X), times = 1000
+ilr_results = microbenchmark(
+  coda.base::coordinates(mX),
+  coda.base::coordinates2(mX),
+  compositions::ilr(aX),
+  RcppCoDA::ilr(mX),
+  # robCompositions::isomLR(mX, fast=T),
+  robCompositions::pivotCoord(mX, fast=T),
+  easyCODA::PLR(mX), times = 100
 )
+autoplot(ilr_results)
 
 B = sbp_basis(b1 = V1~V2,
               b2 = b1~V3,

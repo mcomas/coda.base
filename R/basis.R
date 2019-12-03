@@ -334,3 +334,28 @@ pb_basis = function(X, method, rep = 0, ordering = TRUE, ...){
   }
   B
 }
+
+#'
+#' @export
+cdp_basis = function(dim, wR = 1:ceiling(dim/2), wL = ceiling(dim/2) + 1:floor(dim/2)){
+  R = length(wR)
+  L = length(wL)
+  D = R + L
+  v = rep(0, dim)
+  v[wR] = +sqrt(L/R/D)
+  v[wL] = -sqrt(R/L/D)
+  if(R == 1 & L == 1){
+    return(v)
+  }
+  if(R == 1){
+    return(cbind(v,
+                 Recall(dim, wR = wL[1:ceiling(L/2)], wL = wL[ceiling(L/2) + 1:floor(L/2)])))
+  }
+  if(L == 1){
+    return(cbind(v,
+                 Recall(dim, wR = wR[1:ceiling(R/2)], wL = wR[ceiling(R/2) + 1:floor(R/2)])))
+  }
+  cbind(v,
+        Recall(dim, wR = wR[1:ceiling(R/2)], wL = wR[ceiling(R/2) + 1:floor(R/2)]),
+        Recall(dim, wR = wL[1:ceiling(L/2)], wL = wL[ceiling(L/2) + 1:floor(L/2)]))
+}

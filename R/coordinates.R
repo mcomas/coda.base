@@ -56,19 +56,51 @@ fillPartition = function(partition, row, left, right){
 #' @export
 cdp_partition = function(ncomp) unname(t(fillPartition(matrix(0, nrow = 1, ncol = ncomp), 0, 1, ncomp)))
 
-
-#' @export
-alr_coord = function(X, denominator = ncol(X)){
-  basis = alr_basis(ncol(X), denominator)
-  if(is.matrix(X)){
-    COORD = alr_coordinates(X, denominator)
-    attr(COORD, 'basis') = basis
-    set.coda(COORD)
-  }else{
-    coordinates(X, basis)
-  }
+alr = function(X){
+  COORD = alr_coordinates(X, ncol(X))
+  attr(COORD, 'basis') = alr_basis(ncol(X))
+  COORD
 }
 
+ilr = function(X){
+  COORD = ilr_coordinates(X)
+  attr(COORD, 'basis') = ilr_basis(ncol(X))
+  COORD
+}
+
+clr = function(X){
+  COORD = clr_coordinates(X)
+  attr(COORD, 'basis') = clr_basis(ncol(X))
+  COORD
+}
+
+pc = function(X){
+  lX =  log(X)
+  SVD = svd(scale(lX - rowMeans(lX), scale = FALSE))
+  B = SVD$v[,-ncol(SVD$v)]
+  COORD = matrix_coordinates(X, B)
+  attr(COORD, 'basis') = B
+  COORD
+}
+
+cdp = function(X){
+  B = cdp_basis(ncol(X))
+  COORD = matrix_coordinates(X, B)
+  attr(COORD, 'basis') = B
+  COORD
+}
+
+#' @description
+#' Obtain coordinates basis
+#' @export
+basis = function(X) attr(X, 'basis')
+
+pb = function(X){
+  B = pb_basis(X, method = 'exact')
+  COORD = matrix_coordinates(X, B)
+  attr(COORD, 'basis') = B
+  COORD
+}
 
 #' @title Get coordinates from compositions w.r.t. an specific basis
 #'
@@ -102,15 +134,45 @@ alr_coord = function(X, denominator = ncol(X)){
 #' # basis is shown if 'coda.base.basis' option is set to TRUE
 #' options('coda.base.basis' = TRUE)
 #' coordinates(c(1,2,3,4,5))
-#' # Setting sparse_basi to TRUE can improve performance if log-ratio basis is sparse.
+#' # Default transformation improves performance.
 #' N = 100
 #' K = 1000
 #' X = matrix(exp(rnorm(N*K)), nrow=N, ncol=K)
-#' system.time(coordinates(X, alr_basis(K), sparse_basis = FALSE))
-#' system.time(coordinates(X, alr_basis(K), sparse_basis = TRUE))
+#' system.time(coordinates(X, alr_basis(K)))
 #' system.time(coordinates(X, 'alr'))
 #' @export
-coordinates = function(X, basis = 'ilr', label = NULL, sparse_basis = FALSE){
+coordinates = function(X, basis = 'ilr', label = ifelse(is.character(basis), basis, 'h')){
+  if(is.matrix(X)){
+    if(is.character(basis)){
+      COORD = get(basis)(X)
+    }else{
+      COORD = matrix_coordinates(X, basis)
+      attr(COORD, 'basis') = basis
+    }
+    colnames(COORD) = sprintf(sprintf('%s%%0%dd', label, 1+floor(log(ncol(COORD), 10))),1:ncol(COORD))
+  }else{
+
+    if(is.atomic(X) & !is.list(X)){ # vector
+      COORD = Recall(matrix(X, nrow = 1), basis, label)
+      B = attr(COORD, 'basis')
+      COORD = COORD[1,]
+      attr(COORD, 'basis') = B
+    }else{
+      class_type = class(X)
+
+      if(inherits(X, 'data.frame')){
+        COORD = as.data.frame(Recall(as.matrix(X), basis, label))
+      }
+
+      class(COORD) = class_type
+    }
+
+  }
+  set.coda(COORD)
+}
+
+
+coordinates2 = function(X, basis = 'ilr', label = NULL, sparse_basis = FALSE){
   class_type = class(X)
   is_vector = is.atomic(X) & !is.list(X) & !is.matrix(X)
   is_data_frame = inherits(X, 'data.frame')
