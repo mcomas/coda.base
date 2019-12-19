@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Introducing coda.base</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Marc Comas-Cufí" />
+    <meta name="date" content="2019-09-26" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Introducing <code>coda.base</code>
+### Marc Comas-Cufí
+### 2019-09-26
+
+---
+
+
+
+
+---
+class: inverse, center, middle
+
+# Getting Started
+
+---
+class: middle
+
+# A composition
+
+
+```r
+library(coda.base)
+X = as.data.frame(exp(matrix(rnorm(5*6), ncol = 5)))
+X
+```
+
+```
+#&gt;            V1        V2        V3        V4        V5
+#&gt;   1 0.5344838 1.6281250 0.5372775 2.2732743 1.8586041
+#&gt;   2 1.2015872 2.0924271 0.1091863 1.8110401 0.9454174
+#&gt;   3 0.4336018 1.7785196 3.0800041 2.5067256 0.8557342
+#&gt;   4 4.9297132 0.7368371 0.9560610 2.1861375 0.2297526
+#&gt;   5 1.3902836 4.5348008 0.9839401 1.0774154 0.6199292
+#&gt;   6 0.4402254 1.4767493 2.5698209 0.1367841 1.5188319
+```
+
+---
+class: inverse, center, middle
+
+# Clasical coordinates
+
+---
+
+### ALR
+
+
+```r
+coordinates(X, basis = 'alr')
+```
+
+```
+#&gt;           alr1        alr2       alr3       alr4
+#&gt;   1 -1.2462796 -0.13239670 -1.2410663  0.2013954
+#&gt;   2  0.2397721  0.79445344 -2.1585711  0.6500301
+#&gt;   3 -0.6798331  0.73157686  1.2807264  1.0747729
+#&gt;   4  3.0660332  1.16536400  1.4258188  2.2528887
+#&gt;   5  0.8076578  1.98993122  0.4619598  0.5527150
+#&gt;   6 -1.2384099 -0.02809832  0.5258947 -2.4072933
+```
+
+---
+
+### CLR
+
+
+```r
+coordinates(X, basis = 'clr')
+```
+
+```
+#&gt;            clr1       clr2       clr3       clr4        clr5
+#&gt;   1 -0.76261013  0.3512727 -0.7573969  0.6850649  0.48366943
+#&gt;   2  0.33463518  0.8893166 -2.0637080  0.7448932  0.09486312
+#&gt;   3 -1.16128172  0.2501282  0.7992778  0.5933243 -0.48144861
+#&gt;   4  1.48401226 -0.4166569 -0.1562022  0.6708678 -1.58202093
+#&gt;   5  0.04520505  1.2274784 -0.3004930 -0.2097377 -0.76245278
+#&gt;   6 -0.60882857  0.6014831  1.1554760 -1.7777119  0.62958137
+```
+
+---
+
+### ILR (default)
+
+
+```r
+coordinates(X, basis = 'ilr')
+```
+
+```
+#&gt;           ilr1       ilr2       ilr3       ilr4
+#&gt;   1 -0.7876341  0.4504842 -0.9306681 -0.5407589
+#&gt;   2 -0.3922190  2.1846868 -0.8875132 -0.1060602
+#&gt;   3 -0.9980176 -1.0245844 -0.5461296  0.5382759
+#&gt;   4  1.3439761  0.5632845 -0.3179613  1.7687532
+#&gt;   5 -0.8359935  0.7649224  0.4622854  0.8524481
+#&gt;   6 -0.8558196 -0.9464410  1.8709804 -0.7038934
+```
+
+```r
+all.equal(coordinates(X, basis = 'ilr'),
+          coordinates(X))
+```
+
+```
+#&gt;   [1] TRUE
+```
+
+---
+class: inverse, center, middle
+
+# Performance
+
+
+
+---
+
+### ALR performance
+
+&lt;img src="intro_coda.base_files/figure-html/unnamed-chunk-6-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+---
+
+### CLR performance
+
+&lt;img src="intro_coda.base_files/figure-html/unnamed-chunk-7-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+---
+
+### ILR performance
+
+&lt;img src="intro_coda.base_files/figure-html/unnamed-chunk-8-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+---
+
+### Matrix based tranformation performance
+
+&lt;img src="intro_coda.base_files/figure-html/unnamed-chunk-9-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+---
+class: inverse, center, middle
+
+# Coordinates using basis matrix
+
+---
+
+### ALR matrix (1)
+
+
+```r
+B.alr = alr_basis(5)
+B.alr
+```
+
+```
+#&gt;        [,1] [,2] [,3] [,4]
+#&gt;   [1,]    1    0    0    0
+#&gt;   [2,]    0    1    0    0
+#&gt;   [3,]    0    0    1    0
+#&gt;   [4,]    0    0    0    1
+#&gt;   [5,]   -1   -1   -1   -1
+```
+
+```r
+coordinates(X, B.alr)
+```
+
+```
+#&gt;             x1          x2         x3         x4
+#&gt;   1 -1.2462796 -0.13239670 -1.2410663  0.2013954
+#&gt;   2  0.2397721  0.79445344 -2.1585711  0.6500301
+#&gt;   3 -0.6798331  0.73157686  1.2807264  1.0747729
+#&gt;   4  3.0660332  1.16536400  1.4258188  2.2528887
+#&gt;   5  0.8076578  1.98993122  0.4619598  0.5527150
+#&gt;   6 -1.2384099 -0.02809832  0.5258947 -2.4072933
+```
+
+---
+
+### ALR matrix (2)
+
+
+```r
+B.alr = alr_basis(5, denominator = 3, numerator = c(2,1,5,4))
+B.alr
+```
+
+```
+#&gt;        [,1] [,2] [,3] [,4]
+#&gt;   [1,]    0    1    0    0
+#&gt;   [2,]    1    0    0    0
+#&gt;   [3,]   -1   -1   -1   -1
+#&gt;   [4,]    0    0    0    1
+#&gt;   [5,]    0    0    1    0
+```
+
+```r
+coordinates(X, B.alr)
+```
+
+```
+#&gt;             x1          x2         x3          x4
+#&gt;   1  1.1086696 -0.00521323  1.2410663  1.44246178
+#&gt;   2  2.9530246  2.39834321  2.1585711  2.80860121
+#&gt;   3 -0.5491496 -1.96055953 -1.2807264 -0.20595355
+#&gt;   4 -0.2604548  1.64021441 -1.4258188  0.82706991
+#&gt;   5  1.5279714  0.34569803 -0.4619598  0.09075525
+#&gt;   6 -0.5539930 -1.76430459 -0.5258947 -2.93318791
+```
+
+---
+
+### ILR matrix
+
+
+```r
+ilr_basis(5, type = 'default')
+```
+
+```
+#&gt;              [,1]       [,2]       [,3]       [,4]
+#&gt;   [1,]  0.7071068  0.4082483  0.2886751  0.2236068
+#&gt;   [2,] -0.7071068  0.4082483  0.2886751  0.2236068
+#&gt;   [3,]  0.0000000 -0.8164966  0.2886751  0.2236068
+#&gt;   [4,]  0.0000000  0.0000000 -0.8660254  0.2236068
+#&gt;   [5,]  0.0000000  0.0000000  0.0000000 -0.8944272
+```
+
+---
+
+### ILR matrix (pivot)
+
+
+```r
+ilr_basis(5, type = 'pivot')
+```
+
+```
+#&gt;              [,1]       [,2]       [,3]       [,4]
+#&gt;   [1,]  0.8944272  0.0000000  0.0000000  0.0000000
+#&gt;   [2,] -0.2236068  0.8660254  0.0000000  0.0000000
+#&gt;   [3,] -0.2236068 -0.2886751  0.8164966  0.0000000
+#&gt;   [4,] -0.2236068 -0.2886751 -0.4082483  0.7071068
+#&gt;   [5,] -0.2236068 -0.2886751 -0.4082483 -0.7071068
+```
+
+---
+
+### ILR matrix (CoDaPack)
+
+
+```r
+ilr_basis(5, type = 'cdp')
+```
+
+```
+#&gt;            [,1]       [,2]       [,3]       [,4]
+#&gt;   V1  0.3651484  0.4082483  0.7071068  0.0000000
+#&gt;   V2  0.3651484  0.4082483 -0.7071068  0.0000000
+#&gt;   V3  0.3651484 -0.8164966  0.0000000  0.0000000
+#&gt;   V4 -0.5477226  0.0000000  0.0000000  0.7071068
+#&gt;   V5 -0.5477226  0.0000000  0.0000000 -0.7071068
+```
+
+---
+class: inverse, center, middle
+
+# Balances
+
+---
+
+### Sequential binary partition
+
+
+```r
+bp = matrix(c(+1,+1,-1,-1, 0,
+              +1,+1,+1,+1,-1,
+              +1,-1, 0, 0, 0,
+               0, 0,+1,-1, 0), ncol = 4)
+sbp_basis(bp)
+```
+
+```
+#&gt;      [,1]       [,2]       [,3]       [,4]
+#&gt;   V1  0.5  0.2236068  0.7071068  0.0000000
+#&gt;   V2  0.5  0.2236068 -0.7071068  0.0000000
+#&gt;   V3 -0.5  0.2236068  0.0000000  0.7071068
+#&gt;   V4 -0.5  0.2236068  0.0000000 -0.7071068
+#&gt;   V5  0.0 -0.8944272  0.0000000  0.0000000
+```
+
+---
+
+### Sequential binary partition
+
+
+```r
+sbp_basis(V1+V2~V3+V4,
+          V1+V2+V3+V4~V5,
+          V1~V2,
+          V3~V4, data = X)
+```
+
+```
+#&gt;      [,1]       [,2]       [,3]       [,4]
+#&gt;   V1  0.5  0.2236068  0.7071068  0.0000000
+#&gt;   V2  0.5  0.2236068 -0.7071068  0.0000000
+#&gt;   V3 -0.5  0.2236068  0.0000000  0.7071068
+#&gt;   V4 -0.5  0.2236068  0.0000000 -0.7071068
+#&gt;   V5  0.0 -0.8944272  0.0000000  0.0000000
+```
+
+---
+
+### Sequential binary partition
+
+
+```r
+sbp_basis(b1 = b3~b4,
+          b2 = b1~V5,
+          b3 = V1~V2,
+          b4 = V3~V4, data = X)
+```
+
+```
+#&gt;        b1         b2         b3         b4
+#&gt;   V1  0.5  0.2236068  0.7071068  0.0000000
+#&gt;   V2  0.5  0.2236068 -0.7071068  0.0000000
+#&gt;   V3 -0.5  0.2236068  0.0000000  0.7071068
+#&gt;   V4 -0.5  0.2236068  0.0000000 -0.7071068
+#&gt;   V5  0.0 -0.8944272  0.0000000  0.0000000
+```
+
+---
+class: inverse, center, middle
+
+# Other coordinates
+
+---
+
+# Principal components
+
+
+```r
+H.pc = coordinates(X, basis = 'pc')
+attr(H.pc, 'basis')
+```
+
+```
+#&gt;               [,1]        [,2]       [,3]        [,4]
+#&gt;   [1,]  0.44382508  0.45685457  0.5750938 -0.25213165
+#&gt;   [2,] -0.06542786 -0.32684558  0.3014130  0.77333135
+#&gt;   [3,] -0.64159490  0.55567756 -0.2803630  0.03122545
+#&gt;   [4,]  0.55139520 -0.07770625 -0.6993949  0.02778287
+#&gt;   [5,] -0.28819753 -0.60798031  0.1032511 -0.58020802
+```
+
+```r
+apply(H.pc, 2, var)
+```
+
+```
+#&gt;         pc1       pc2       pc3       pc4 
+#&gt;   2.2002544 1.1971387 0.6400994 0.2130423
+```
+
+---
+
+# Principal balances
+
+
+```r
+H.pb = coordinates(X, basis = 'pb')
+attr(H.pb, 'basis')
+```
+
+```
+#&gt;        [,1]       [,2]       [,3]       [,4]
+#&gt;   [1,] -0.5  0.0000000  0.7071068 -0.2236068
+#&gt;   [2,]  0.0  0.0000000  0.0000000  0.8944272
+#&gt;   [3,]  0.5  0.7071068  0.0000000 -0.2236068
+#&gt;   [4,] -0.5  0.0000000 -0.7071068 -0.2236068
+#&gt;   [5,]  0.5 -0.7071068  0.0000000 -0.2236068
+```
+
+```r
+apply(H.pb, 2, var)
+```
+
+```
+#&gt;         pb1       pb2       pb3       pb4 
+#&gt;   2.1001274 1.0348386 0.7119840 0.4035848
+```
+
+* Variations: Ward method, local search optimisation, simulated annealing, tabu search.
+* Other optimality measures: discriminant balances, canonical balances, ...
+
+---
+class: inverse, center, middle
+
+# Obtaining `coda.base`
+
+---
+
+# Installation
+
+### From CRAN
+
+
+```r
+install.packages()
+```
+
+### From Github
+
+
+```r
+# install.packages('remotes')
+remotes::install_github('mcomas/coda.base')
+```
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

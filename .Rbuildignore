@@ -2,7 +2,7 @@
 ^\.Rprofile$
 ^.*\.Rproj$
 ^\.Rproj\.user$
-testing/
+scripts_and_docs/
 tests/
 .APtable
 out

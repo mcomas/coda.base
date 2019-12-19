@@ -56,37 +56,37 @@ fillPartition = function(partition, row, left, right){
 #' @export
 cdp_partition = function(ncomp) unname(t(fillPartition(matrix(0, nrow = 1, ncol = ncomp), 0, 1, ncomp)))
 
-alr = function(X){
+alr = function(X, basis_return){
   COORD = alr_coordinates(X, ncol(X))
-  attr(COORD, 'basis') = alr_basis(ncol(X))
+  if(basis_return) attr(COORD, 'basis') = alr_basis(ncol(X))
   COORD
 }
 
-ilr = function(X){
+ilr = function(X, basis_return){
   COORD = ilr_coordinates(X)
-  attr(COORD, 'basis') = ilr_basis(ncol(X))
+  if(basis_return) attr(COORD, 'basis') = ilr_basis(ncol(X))
   COORD
 }
 
-clr = function(X){
+clr = function(X, basis_return){
   COORD = clr_coordinates(X)
-  attr(COORD, 'basis') = clr_basis(ncol(X))
+  if(basis_return) attr(COORD, 'basis') = clr_basis(ncol(X))
   COORD
 }
 
-pc = function(X){
+pc = function(X, basis_return){
   lX =  log(X)
   SVD = svd(scale(lX - rowMeans(lX), scale = FALSE))
   B = SVD$v[,-ncol(SVD$v)]
   COORD = matrix_coordinates(X, B)
-  attr(COORD, 'basis') = B
+  if(basis_return) attr(COORD, 'basis') = B
   COORD
 }
 
-cdp = function(X){
+cdp = function(X, basis_return){
   B = cdp_basis(ncol(X))
   COORD = matrix_coordinates(X, B)
-  attr(COORD, 'basis') = B
+  if(basis_return) attr(COORD, 'basis') = B
   COORD
 }
 
@@ -95,10 +95,10 @@ cdp = function(X){
 #' @export
 basis = function(X) attr(X, 'basis')
 
-pb = function(X){
+pb = function(X, basis_return){
   B = pb_basis(X, method = 'exact')
   COORD = matrix_coordinates(X, B)
-  attr(COORD, 'basis') = B
+  if(basis_return) attr(COORD, 'basis') = B
   COORD
 }
 
@@ -118,8 +118,7 @@ pb = function(X){
 #' Accepted values for strings are: 'ilr' (default), 'clr', 'alr', 'pc', 'pb' and 'cdp'. If \code{basis} is a matrix, it is expected
 #' to have log-ratio basis given in columns.
 #' @param label name given to the coordinates
-#' @param sparse_basis Is the given matrix basis sparse? If TRUE calculation are carried
-#' taking into an account sparsity (default `FALSE`)
+#' @param basis_return Should the basis be returned as attribute? (default: \code{TRUE})
 #'
 #' @return
 #' Coordinates of composition \code{X} with respect the given \code{basis}.
@@ -141,19 +140,20 @@ pb = function(X){
 #' system.time(coordinates(X, alr_basis(K)))
 #' system.time(coordinates(X, 'alr'))
 #' @export
-coordinates = function(X, basis = 'ilr', label = ifelse(is.character(basis), basis, 'h')){
+coordinates = function(X, basis = 'ilr', label = ifelse(is.character(basis), basis, 'h'),
+                       basis_return = TRUE){
   if(is.matrix(X)){
     if(is.character(basis)){
-      COORD = get(basis)(X)
+      COORD = get(basis)(X, basis_return)
     }else{
-      COORD = matrix_coordinates(X, basis)
+      COORD = matrix_coordinates(X, basis, basis_return)
       attr(COORD, 'basis') = basis
     }
     colnames(COORD) = sprintf(sprintf('%s%%0%dd', label, 1+floor(log(ncol(COORD), 10))),1:ncol(COORD))
   }else{
 
     if(is.atomic(X) & !is.list(X)){ # vector
-      COORD = Recall(matrix(X, nrow = 1), basis, label)
+      COORD = Recall(matrix(X, nrow = 1), basis, label, basis_return)
       B = attr(COORD, 'basis')
       COORD = COORD[1,]
       attr(COORD, 'basis') = B
@@ -161,7 +161,7 @@ coordinates = function(X, basis = 'ilr', label = ifelse(is.character(basis), bas
       class_type = class(X)
 
       if(inherits(X, 'data.frame')){
-        COORD = as.data.frame(Recall(as.matrix(X), basis, label))
+        COORD = as.data.frame(Recall(as.matrix(X), basis, label, basis_return))
       }
 
       class(COORD) = class_type
@@ -171,107 +171,6 @@ coordinates = function(X, basis = 'ilr', label = ifelse(is.character(basis), bas
   set.coda(COORD)
 }
 
-
-coordinates2 = function(X, basis = 'ilr', label = NULL, sparse_basis = FALSE){
-  class_type = class(X)
-  is_vector = is.atomic(X) & !is.list(X) & !is.matrix(X)
-  is_data_frame = inherits(X, 'data.frame')
-  RAW = X
-  if(is.list(basis) & !is.data.frame(basis)){
-    basis = do.call('sbp_basis', args = c(basis, list(data = X)), envir = as.environment('package:coda.base'))
-  }
-  if(is_vector){
-    class_type = 'double'
-    RAW = matrix(X, nrow=1)
-  }else{
-    if(is_data_frame){
-      RAW = as.matrix(X)
-    }
-  }
-  non_compositional = rowSums(is.na(RAW) | RAW <= 0)
-  if(sum(non_compositional) > 0){
-    warning("Some observations are not compositional (either missing or non-strictly positive). They are returned as missing values.",
-            call. = FALSE)
-  }
-  sel_compositional = non_compositional == 0
-  if(is.character(basis)){
-    if(is.null(label)){
-      label = basis
-    }
-    dim = ncol(RAW)
-    RAW.coda = matrix(RAW[sel_compositional, ], ncol = dim)
-    coord.dim = dim - 1
-    if(basis == 'ilr'){
-      basis = ilr_basis(dim)
-      COORD.coda = coordinates_basis(RAW.coda, ilr_basis(dim), sparse = FALSE)
-    }else{
-      if(basis == 'alr'){
-        basis = alr_basis(dim)
-        COORD.coda = alr_coordinates(RAW.coda, 0)
-      }else{
-        if(basis == 'clr'){
-          coord.dim = ncol(RAW.coda)
-          basis = clr_basis(dim)
-          COORD.coda = coordinates_basis(RAW.coda, clr_basis(dim), sparse = FALSE)
-        }else{
-          if(basis == 'pc'){
-            lRAW =  log(RAW.coda)
-            SVD = svd(scale(lRAW - rowMeans(lRAW), scale = FALSE))
-            basis = SVD$v[,-dim]
-            COORD.coda = coordinates(RAW.coda, basis = basis, label = 'pc')
-          }else{
-            if(basis == 'pb'){
-              if(ncol(RAW.coda) > 15){
-                message("Number of columns is high for 'pb' method. Depending on your system this computation can take too long. Consider using an approximate method. Consult 'pb_basis()' function for more details.")
-              }
-              basis = pb_basis(RAW.coda, method = 'exact')
-              COORD.coda = coordinates_basis(RAW.coda, basis, sparse = FALSE)
-            }else{
-              if(basis == 'cdp'){
-                basis = sbp_basis(cdp_partition(dim))
-                COORD.coda = coordinates(RAW.coda, basis = basis, label = 'cdp')
-              }else{
-                stop(sprintf('Basis %d not recognized'))
-              }
-            }
-          }
-        }
-      }
-    }
-    COORD = matrix(NA_real_, ncol = coord.dim, nrow = nrow(RAW))
-    COORD[sel_compositional,] = COORD.coda
-  }else{
-    if(is.matrix(basis)){
-      if(is.null(label)){
-        label = 'x'
-      }
-      if(max(colSums(basis)) > .Machine$double.eps^0.5){
-        warning("Supplied basis matrix is not a log-contrast.")
-      }
-      dim = nrow(basis)
-      coord.dim = ncol(basis)
-      RAW.coda = matrix(RAW[sel_compositional, ], ncol = dim)
-      COORD.coda = coordinates_basis(RAW.coda, basis, sparse_basis)
-      COORD = matrix(NA_real_, ncol = coord.dim, nrow = nrow(RAW))
-      COORD[sel_compositional,] = COORD.coda
-    }else{
-      stop(sprintf('Basis need to be either an string or a matrix'))
-    }
-  }
-
-  colnames(COORD) = sprintf(sprintf('%s%%0%dd',label, 1+floor(log(ncol(COORD), 10))),1:ncol(COORD))
-  if(is_vector){
-    COORD = COORD[1,]
-    names(COORD) = sprintf(sprintf('%s%%0%dd', label, 1+floor(log(length(COORD), 10))),1:length(COORD))
-  }
-  if(is_data_frame){
-    COORD = as.data.frame(COORD)
-  }
-  class(COORD) = class_type
-  attr(COORD, 'basis') = basis
-  suppressWarnings(row.names(COORD) <- row.names(X))
-  set.coda(COORD)
-}
 
 #' Get composition from coordinates w.r.t.  an specific basis
 #'

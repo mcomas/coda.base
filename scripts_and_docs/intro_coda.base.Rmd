@@ -1,0 +1,247 @@
+---
+title: "Introducing `coda.base`"
+author: "Marc Comas-Cufí"
+date: "2019-09-26"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+set.seed(1)
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(echo = TRUE, comment = "#>  ", fig.retina = 4)
+```
+
+---
+class: inverse, center, middle
+
+# Getting Started
+
+---
+class: middle
+
+# A composition
+
+```{r, message=FALSE}
+library(coda.base)
+X = as.data.frame(exp(matrix(rnorm(5*6), ncol = 5)))
+X
+```
+
+---
+class: inverse, center, middle
+
+# Clasical coordinates
+
+---
+
+### ALR
+
+```{r}
+coordinates(X, basis = 'alr')
+```
+
+---
+
+### CLR
+
+```{r}
+coordinates(X, basis = 'clr')
+```
+
+---
+
+### ILR (default)
+
+```{r}
+coordinates(X, basis = 'ilr')
+all.equal(coordinates(X, basis = 'ilr'),
+          coordinates(X))
+```
+
+---
+class: inverse, center, middle
+
+# Performance
+
+```{r, include=FALSE}
+library(ggplot2)
+theme_set(theme_minimal())
+library(microbenchmark)
+load('bench.RData')
+```
+
+---
+
+### ALR performance
+
+```{r, echo=FALSE, fig.width=6, fig.height=4, message=FALSE, fig.align='center', out.width= "80%"}
+autoplot(alr_bench) + labs(title = 'ALR coordinates performance')
+```
+
+---
+
+### CLR performance
+
+```{r, echo=FALSE, fig.width=6, fig.height=4, message=FALSE, fig.align='center', out.width= "80%"}
+autoplot(clr_bench) + labs(title = 'CLR coordinates performance')
+```
+
+---
+
+### ILR performance
+
+```{r, echo=FALSE, fig.width=6, fig.height=4, message=FALSE, fig.align='center', out.width= "80%"}
+autoplot(ilr_bench) + labs(title = 'ILR coordinates performance')
+```
+
+---
+
+### Matrix based tranformation performance
+
+```{r, echo=FALSE, fig.width=6, fig.height=4, message=FALSE, fig.align='center', out.width= "80%"}
+autoplot(matrix_bench) + labs(title = 'Coordinates performance')
+```
+
+---
+class: inverse, center, middle
+
+# Coordinates using basis matrix
+
+---
+
+### ALR matrix (1)
+
+```{r}
+B.alr = alr_basis(5)
+B.alr
+coordinates(X, B.alr)
+```
+
+---
+
+### ALR matrix (2)
+
+```{r}
+B.alr = alr_basis(5, denominator = 3, numerator = c(2,1,5,4))
+B.alr
+coordinates(X, B.alr)
+```
+
+---
+
+### ILR matrix
+
+```{r}
+ilr_basis(5, type = 'default')
+```
+
+---
+
+### ILR matrix (pivot)
+
+```{r}
+ilr_basis(5, type = 'pivot')
+```
+
+---
+
+### ILR matrix (CoDaPack)
+
+```{r}
+ilr_basis(5, type = 'cdp')
+```
+
+---
+class: inverse, center, middle
+
+# Balances
+
+---
+
+### Sequential binary partition
+
+```{r}
+bp = matrix(c(+1,+1,-1,-1, 0,
+              +1,+1,+1,+1,-1,
+              +1,-1, 0, 0, 0,
+               0, 0,+1,-1, 0), ncol = 4)
+sbp_basis(bp)
+```
+
+---
+
+### Sequential binary partition
+
+```{r}
+sbp_basis(V1+V2~V3+V4,
+          V1+V2+V3+V4~V5,
+          V1~V2,
+          V3~V4, data = X)
+```
+
+---
+
+### Sequential binary partition
+
+```{r}
+sbp_basis(b1 = b3~b4,
+          b2 = b1~V5,
+          b3 = V1~V2,
+          b4 = V3~V4, data = X)
+```
+
+---
+class: inverse, center, middle
+
+# Other coordinates
+
+---
+
+# Principal components
+
+```{r}
+H.pc = coordinates(X, basis = 'pc')
+attr(H.pc, 'basis')
+apply(H.pc, 2, var)
+```
+
+---
+
+# Principal balances
+
+```{r}
+H.pb = coordinates(X, basis = 'pb')
+attr(H.pb, 'basis')
+apply(H.pb, 2, var)
+```
+
+* Variations: Ward method, local search optimisation, simulated annealing, tabu search.
+* Other optimality measures: discriminant balances, canonical balances, ...
+
+---
+class: inverse, center, middle
+
+# Obtaining `coda.base`
+
+---
+
+# Installation
+
+### From CRAN
+
+```{r, eval=FALSE}
+install.packages()
+```
+
+### From Github
+
+```{r, eval=FALSE}
+# install.packages('remotes')
+remotes::install_github('mcomas/coda.base')
+```
