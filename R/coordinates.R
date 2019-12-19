@@ -146,8 +146,8 @@ coordinates = function(X, basis = 'ilr', label = ifelse(is.character(basis), bas
     if(is.character(basis)){
       COORD = get(basis)(X, basis_return)
     }else{
-      COORD = matrix_coordinates(X, basis, basis_return)
-      attr(COORD, 'basis') = basis
+      COORD = matrix_coordinates(X, basis)
+      if(basis_return) attr(COORD, 'basis') = basis
     }
     colnames(COORD) = sprintf(sprintf('%s%%0%dd', label, 1+floor(log(ncol(COORD), 10))),1:ncol(COORD))
   }else{
