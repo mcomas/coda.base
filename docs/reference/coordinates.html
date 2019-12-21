@@ -66,7 +66,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">coda.base</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.3.2</span>
       </span>
     </div>
 
@@ -126,7 +126,8 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>coordinates</span>(<span class='no'>X</span>, <span class='kw'>basis</span> <span class='kw'>=</span> <span class='st'>"ilr"</span>, <span class='kw'>label</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>sparse_basis</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>coordinates</span>(<span class='no'>X</span>, <span class='kw'>basis</span> <span class='kw'>=</span> <span class='st'>"ilr"</span>, <span class='kw'>label</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/character.html'>is.character</a></span>(<span class='no'>basis</span>),
+  <span class='no'>basis</span>, <span class='st'>"h"</span>), <span class='kw'>basis_return</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -146,9 +147,8 @@ to have log-ratio basis given in columns.</p></td>
       <td><p>name given to the coordinates</p></td>
     </tr>
     <tr>
-      <th>sparse_basis</th>
-      <td><p>Is the given matrix basis sparse? If TRUE calculation are carried
-taking into an account sparsity (default `FALSE`)</p></td>
+      <th>basis_return</th>
+      <td><p>Should the basis be returned as attribute? (default: <code>TRUE</code>)</p></td>
     </tr>
     </table>
     
@@ -184,14 +184,13 @@ a compositions from given coordinates.</p></div>
 #&gt; [2,] -0.7071068  0.4082483  0.2886751  0.2236068
 #&gt; [3,]  0.0000000 -0.8164966  0.2886751  0.2236068
 #&gt; [4,]  0.0000000  0.0000000 -0.8660254  0.2236068
-#&gt; [5,]  0.0000000  0.0000000  0.0000000 -0.8944272</div><div class='input'><span class='co'># Setting sparse_basi to TRUE can improve performance if log-ratio basis is sparse.</span>
+#&gt; [5,]  0.0000000  0.0000000  0.0000000 -0.8944272</div><div class='input'><span class='co'># Default transformation improves performance.</span>
 <span class='no'>N</span> <span class='kw'>=</span> <span class='fl'>100</span>
 <span class='no'>K</span> <span class='kw'>=</span> <span class='fl'>1000</span>
 <span class='no'>X</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='no'>N</span>*<span class='no'>K</span>)), <span class='kw'>nrow</span><span class='kw'>=</span><span class='no'>N</span>, <span class='kw'>ncol</span><span class='kw'>=</span><span class='no'>K</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/system.time.html'>system.time</a></span>(<span class='fu'>coordinates</span>(<span class='no'>X</span>, <span class='fu'><a href='alr_basis.html'>alr_basis</a></span>(<span class='no'>K</span>), <span class='kw'>sparse_basis</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>))</div><div class='output co'>#&gt;    user  system elapsed 
-#&gt;   0.091   0.010   0.101 </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/system.time.html'>system.time</a></span>(<span class='fu'>coordinates</span>(<span class='no'>X</span>, <span class='fu'><a href='alr_basis.html'>alr_basis</a></span>(<span class='no'>K</span>), <span class='kw'>sparse_basis</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>))</div><div class='output co'>#&gt;    user  system elapsed 
-#&gt;   0.024   0.003   0.027 </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/system.time.html'>system.time</a></span>(<span class='fu'>coordinates</span>(<span class='no'>X</span>, <span class='st'>'alr'</span>))</div><div class='output co'>#&gt;    user  system elapsed 
-#&gt;   0.015   0.003   0.018 </div></pre>
+<span class='fu'><a href='https://rdrr.io/r/base/system.time.html'>system.time</a></span>(<span class='fu'>coordinates</span>(<span class='no'>X</span>, <span class='fu'><a href='alr_basis.html'>alr_basis</a></span>(<span class='no'>K</span>)))</div><div class='output co'>#&gt;    user  system elapsed 
+#&gt;   0.079   0.010   0.090 </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/system.time.html'>system.time</a></span>(<span class='fu'>coordinates</span>(<span class='no'>X</span>, <span class='st'>'alr'</span>))</div><div class='output co'>#&gt;    user  system elapsed 
+#&gt;   0.009   0.003   0.012 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

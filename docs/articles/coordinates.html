@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">coda.base</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.3.2</span>
       </span>
     </div>
 
@@ -83,7 +83,7 @@
 </h1>
                         <h4 class="author">Marc Comas-Cufí</h4>
             
-            <h4 class="date">2019-07-14</h4>
+            <h4 class="date">2019-12-21</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/mcomas/coda.base/blob/master/vignettes/coordinates.Rmd"><code>vignettes/coordinates.Rmd</code></a></small>
       <div class="hidden name"><code>coordinates.Rmd</code></div>
@@ -97,7 +97,7 @@
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(coda.base)</a>
 <a class="sourceLine" id="cb1-2" data-line-number="2"><span class="co"># By default basis is not shown, in this vignette we turn on basis showing.</span></a>
 <a class="sourceLine" id="cb1-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/base/options.html">options</a></span>(<span class="st">'coda.base.basis'</span> =<span class="st"> </span><span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">'catalan_elections_2017'</span>)</a>
+<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">'parliament2017'</span>)</a>
 <a class="sourceLine" id="cb1-5" data-line-number="5">X =<span class="st"> </span>parliament2017[,<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'erc'</span>,<span class="st">'jxcat'</span>,<span class="st">'psc'</span>,<span class="st">'cs'</span>)]</a></code></pre></div>
 <div id="defining-classical-log-ratio-coordinates-with-coda-base" class="section level1">
 <h1 class="hasAnchor">
@@ -142,7 +142,7 @@
 <p>The log-contrast matrix can be used in <code>basis</code> parameter:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">H2.alr =<span class="st"> </span><span class="kw"><a href="../reference/coordinates.html">coordinates</a></span>(X, <span class="dt">basis =</span> B.alr)</a>
 <a class="sourceLine" id="cb5-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(H2.alr)</a>
-<a class="sourceLine" id="cb5-3" data-line-number="3"><span class="co">#&gt;            x1          x2         x3</span></a>
+<a class="sourceLine" id="cb5-3" data-line-number="3"><span class="co">#&gt;            h1          h2         h3</span></a>
 <a class="sourceLine" id="cb5-4" data-line-number="4"><span class="co">#&gt; 1 -0.23864536  0.20785827 -0.9588371</span></a>
 <a class="sourceLine" id="cb5-5" data-line-number="5"><span class="co">#&gt; 2  0.10388120  0.32073928 -0.9434918</span></a>
 <a class="sourceLine" id="cb5-6" data-line-number="6"><span class="co">#&gt; 3 -0.36723896  0.17477121 -0.8993065</span></a>
@@ -150,7 +150,7 @@
 <a class="sourceLine" id="cb5-8" data-line-number="8"><span class="co">#&gt; 5 -0.54918649 -0.07187721 -0.6520672</span></a>
 <a class="sourceLine" id="cb5-9" data-line-number="9"><span class="co">#&gt; 6  0.09742133  0.10027776 -0.5884051</span></a>
 <a class="sourceLine" id="cb5-10" data-line-number="10"><span class="co">#&gt;  Basis:</span></a>
-<a class="sourceLine" id="cb5-11" data-line-number="11"><span class="co">#&gt;    x1 x2 x3</span></a>
+<a class="sourceLine" id="cb5-11" data-line-number="11"><span class="co">#&gt;    h1 h2 h3</span></a>
 <a class="sourceLine" id="cb5-12" data-line-number="12"><span class="co">#&gt; P1 -1 -1 -1</span></a>
 <a class="sourceLine" id="cb5-13" data-line-number="13"><span class="co">#&gt; P2  0  1  0</span></a>
 <a class="sourceLine" id="cb5-14" data-line-number="14"><span class="co">#&gt; P3  0  0  1</span></a>
@@ -267,8 +267,8 @@
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1">PC_approx =<span class="st"> </span><span class="kw"><a href="../reference/coordinates.html">coordinates</a></span>(X100, <span class="kw"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span>(<span class="kw"><a href="../reference/pc_basis.html">pc_basis</a></span>(X100)[,<span class="dv">1</span>], PB1.ward[,<span class="dv">1</span>], PB1.lsearch[,<span class="dv">1</span>]))</a>
 <a class="sourceLine" id="cb16-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(PC_approx) =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'PC'</span>, <span class="st">'Ward'</span>, <span class="st">'Local Search'</span>)</a>
 <a class="sourceLine" id="cb16-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/base/apply.html">apply</a></span>(PC_approx, <span class="dv">2</span>, var)</a>
-<a class="sourceLine" id="cb16-4" data-line-number="4"><span class="co">#&gt;       x1       x2       x3 </span></a>
-<a class="sourceLine" id="cb16-5" data-line-number="5"><span class="co">#&gt; 1.670548 1.327163 1.540167</span></a></code></pre></div>
+<a class="sourceLine" id="cb16-4" data-line-number="4"><span class="co">#&gt;       h1       h2       h3 </span></a>
+<a class="sourceLine" id="cb16-5" data-line-number="5"><span class="co">#&gt; 1.756795 1.403323 1.658375</span></a></code></pre></div>
 <p>Finally, <code>coda.base</code> allows to define the default CoDaPack basis which consists in defining well balanced balances, i.e. equal number of branches in each balance.</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1">H4.ilr =<span class="st"> </span><span class="kw"><a href="../reference/coordinates.html">coordinates</a></span>(X, <span class="dt">basis =</span> <span class="st">'cdp'</span>)</a>
 <a class="sourceLine" id="cb17-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(H4.ilr)</a>
@@ -299,7 +299,7 @@
 <a class="sourceLine" id="cb18-3" data-line-number="3">             <span class="fl">-0.5</span>,<span class="fl">0.5</span>,<span class="dv">0</span>,<span class="dv">0</span>), <span class="dt">ncol =</span> <span class="dv">3</span>)</a>
 <a class="sourceLine" id="cb18-4" data-line-number="4">H1.man =<span class="st"> </span><span class="kw"><a href="../reference/coordinates.html">coordinates</a></span>(X, <span class="dt">basis =</span> B)</a>
 <a class="sourceLine" id="cb18-5" data-line-number="5"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(H1.man)</a>
-<a class="sourceLine" id="cb18-6" data-line-number="6"><span class="co">#&gt;          x1        x2          x3</span></a>
+<a class="sourceLine" id="cb18-6" data-line-number="6"><span class="co">#&gt;          h1        h2          h3</span></a>
 <a class="sourceLine" id="cb18-7" data-line-number="7"><span class="co">#&gt; 1 -2.125532 0.5987412  0.10392914</span></a>
 <a class="sourceLine" id="cb18-8" data-line-number="8"><span class="co">#&gt; 2 -2.207723 0.4198053  0.16036964</span></a>
 <a class="sourceLine" id="cb18-9" data-line-number="9"><span class="co">#&gt; 3 -1.973384 0.6332727  0.08738560</span></a>
@@ -307,7 +307,7 @@
 <a class="sourceLine" id="cb18-11" data-line-number="11"><span class="co">#&gt; 5 -1.232257 0.6006268 -0.03593861</span></a>
 <a class="sourceLine" id="cb18-12" data-line-number="12"><span class="co">#&gt; 6 -1.277088 0.2454919  0.05013888</span></a>
 <a class="sourceLine" id="cb18-13" data-line-number="13"><span class="co">#&gt;  Basis:</span></a>
-<a class="sourceLine" id="cb18-14" data-line-number="14"><span class="co">#&gt;    x1   x2   x3</span></a>
+<a class="sourceLine" id="cb18-14" data-line-number="14"><span class="co">#&gt;    h1   h2   h3</span></a>
 <a class="sourceLine" id="cb18-15" data-line-number="15"><span class="co">#&gt; P1 -1  1.0 -0.5</span></a>
 <a class="sourceLine" id="cb18-16" data-line-number="16"><span class="co">#&gt; P2 -1  0.0  0.5</span></a>
 <a class="sourceLine" id="cb18-17" data-line-number="17"><span class="co">#&gt; P3  2 -0.5  0.0</span></a>
@@ -330,7 +330,7 @@
 <a class="sourceLine" id="cb20-4" data-line-number="4"><span class="co">#&gt; partition is not a basis</span></a>
 <a class="sourceLine" id="cb20-5" data-line-number="5">H3.man =<span class="st"> </span><span class="kw"><a href="../reference/coordinates.html">coordinates</a></span>(X, <span class="dt">basis =</span> B)</a>
 <a class="sourceLine" id="cb20-6" data-line-number="6"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(H3.man)</a>
-<a class="sourceLine" id="cb20-7" data-line-number="7"><span class="co">#&gt;          x1</span></a>
+<a class="sourceLine" id="cb20-7" data-line-number="7"><span class="co">#&gt;          h1</span></a>
 <a class="sourceLine" id="cb20-8" data-line-number="8"><span class="co">#&gt; 1 0.7026704</span></a>
 <a class="sourceLine" id="cb20-9" data-line-number="9"><span class="co">#&gt; 2 0.5801749</span></a>
 <a class="sourceLine" id="cb20-10" data-line-number="10"><span class="co">#&gt; 3 0.7206583</span></a>
@@ -338,7 +338,7 @@
 <a class="sourceLine" id="cb20-12" data-line-number="12"><span class="co">#&gt; 5 0.5646882</span></a>
 <a class="sourceLine" id="cb20-13" data-line-number="13"><span class="co">#&gt; 6 0.2956308</span></a>
 <a class="sourceLine" id="cb20-14" data-line-number="14"><span class="co">#&gt;  Basis:</span></a>
-<a class="sourceLine" id="cb20-15" data-line-number="15"><span class="co">#&gt;      x1</span></a>
+<a class="sourceLine" id="cb20-15" data-line-number="15"><span class="co">#&gt;      h1</span></a>
 <a class="sourceLine" id="cb20-16" data-line-number="16"><span class="co">#&gt; P1  0.5</span></a>
 <a class="sourceLine" id="cb20-17" data-line-number="17"><span class="co">#&gt; P2  0.5</span></a>
 <a class="sourceLine" id="cb20-18" data-line-number="18"><span class="co">#&gt; P3 -0.5</span></a>
@@ -353,7 +353,7 @@
 <a class="sourceLine" id="cb21-7" data-line-number="7"><span class="co">#&gt; + : Given basis is not orthogonal</span></a>
 <a class="sourceLine" id="cb21-8" data-line-number="8">H4.man =<span class="st"> </span><span class="kw"><a href="../reference/coordinates.html">coordinates</a></span>(X, <span class="dt">basis =</span> B)</a>
 <a class="sourceLine" id="cb21-9" data-line-number="9"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(H4.man)</a>
-<a class="sourceLine" id="cb21-10" data-line-number="10"><span class="co">#&gt;            x1        x2         x3          x4</span></a>
+<a class="sourceLine" id="cb21-10" data-line-number="10"><span class="co">#&gt;            h1        h2         h3          h4</span></a>
 <a class="sourceLine" id="cb21-11" data-line-number="11"><span class="co">#&gt; 1 -0.01011597 0.5256940 -0.8214898  0.01011597</span></a>
 <a class="sourceLine" id="cb21-12" data-line-number="12"><span class="co">#&gt; 2 -0.26973693 0.5201431 -0.9396653  0.26973693</span></a>
 <a class="sourceLine" id="cb21-13" data-line-number="13"><span class="co">#&gt; 3  0.10888296 0.5169765 -0.7232616 -0.10888296</span></a>
@@ -361,7 +361,7 @@
 <a class="sourceLine" id="cb21-15" data-line-number="15"><span class="co">#&gt; 5  0.26662472 0.2845246 -0.3854211 -0.26662472</span></a>
 <a class="sourceLine" id="cb21-16" data-line-number="16"><span class="co">#&gt; 6 -0.22527958 0.2285779 -0.5666446  0.22527958</span></a>
 <a class="sourceLine" id="cb21-17" data-line-number="17"><span class="co">#&gt;  Basis:</span></a>
-<a class="sourceLine" id="cb21-18" data-line-number="18"><span class="co">#&gt;            x1         x2         x3         x4</span></a>
+<a class="sourceLine" id="cb21-18" data-line-number="18"><span class="co">#&gt;            h1         h2         h3         h4</span></a>
 <a class="sourceLine" id="cb21-19" data-line-number="19"><span class="co">#&gt; P1  0.2886751 -0.2886751 -0.2886751 -0.2886751</span></a>
 <a class="sourceLine" id="cb21-20" data-line-number="20"><span class="co">#&gt; P2  0.2886751  0.8660254 -0.2886751 -0.2886751</span></a>
 <a class="sourceLine" id="cb21-21" data-line-number="21"><span class="co">#&gt; P3  0.2886751 -0.2886751  0.8660254 -0.2886751</span></a>
@@ -373,7 +373,7 @@
 <a class="sourceLine" id="cb22-4" data-line-number="4">B =<span class="st"> </span><span class="kw"><a href="../reference/sbp_basis.html">sbp_basis</a></span>(P)</a>
 <a class="sourceLine" id="cb22-5" data-line-number="5">H5.man =<span class="st"> </span><span class="kw"><a href="../reference/coordinates.html">coordinates</a></span>(X, <span class="dt">basis =</span> B)</a>
 <a class="sourceLine" id="cb22-6" data-line-number="6"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(H5.man)</a>
-<a class="sourceLine" id="cb22-7" data-line-number="7"><span class="co">#&gt;          x1          x2          x3</span></a>
+<a class="sourceLine" id="cb22-7" data-line-number="7"><span class="co">#&gt;          h1          h2          h3</span></a>
 <a class="sourceLine" id="cb22-8" data-line-number="8"><span class="co">#&gt; 1 0.7026704 -0.14697799 -0.50925247</span></a>
 <a class="sourceLine" id="cb22-9" data-line-number="9"><span class="co">#&gt; 2 0.5801749 -0.22679692 -0.74060456</span></a>
 <a class="sourceLine" id="cb22-10" data-line-number="10"><span class="co">#&gt; 3 0.7206583 -0.12358191 -0.37622854</span></a>
@@ -381,7 +381,7 @@
 <a class="sourceLine" id="cb22-12" data-line-number="12"><span class="co">#&gt; 5 0.5646882  0.05082486 -0.07274761</span></a>
 <a class="sourceLine" id="cb22-13" data-line-number="13"><span class="co">#&gt; 6 0.2956308 -0.07090708 -0.48495254</span></a>
 <a class="sourceLine" id="cb22-14" data-line-number="14"><span class="co">#&gt;  Basis:</span></a>
-<a class="sourceLine" id="cb22-15" data-line-number="15"><span class="co">#&gt;      x1         x2         x3</span></a>
+<a class="sourceLine" id="cb22-15" data-line-number="15"><span class="co">#&gt;      h1         h2         h3</span></a>
 <a class="sourceLine" id="cb22-16" data-line-number="16"><span class="co">#&gt; P1  0.5  0.7071068  0.0000000</span></a>
 <a class="sourceLine" id="cb22-17" data-line-number="17"><span class="co">#&gt; P2  0.5 -0.7071068  0.0000000</span></a>
 <a class="sourceLine" id="cb22-18" data-line-number="18"><span class="co">#&gt; P3 -0.5  0.0000000  0.7071068</span></a>

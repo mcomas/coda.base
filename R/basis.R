@@ -1,3 +1,15 @@
+#' @title Coordinates basis
+#'
+#' @description
+#' Obtain coordinates basis
+#' @param H coordinates for which basis should be shown
+#' @return basis used to create coordinates H
+#' @export
+basis = function(H){
+  if(is.null(attr(H, 'basis'))) return(message('No basis specified'))
+  attr(H, 'basis')
+}
+
 #' Default Isometric log-ratio basis
 #'
 #' Build an isometric log-ratio basis for a composition with k+1 parts
@@ -335,9 +347,18 @@ pb_basis = function(X, method, rep = 0, ordering = TRUE, ...){
   B
 }
 
+#' Isometric log-ratio basis based on Balances.
 #'
+#' The function return default balances used in CoDaPack software.
+#'
+#' @param dim dimension to build the ILR basis based on balanced balances
+#' @return matrix
 #' @export
-cdp_basis = function(dim, wR = 1:ceiling(dim/2), wL = ceiling(dim/2) + 1:floor(dim/2)){
+cdp_basis = function(dim){
+  cdp_basis_(dim)
+}
+
+cdp_basis_ = function(dim, wR = 1:ceiling(dim/2), wL = ceiling(dim/2) + 1:floor(dim/2)){
   R = length(wR)
   L = length(wL)
   D = R + L
