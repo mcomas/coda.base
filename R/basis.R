@@ -330,7 +330,7 @@ pb_basis = function(X, method, rep = 0, ordering = TRUE, ...){
     B = eval(parse(text = sprintf("sbp_basis(%s,data=df)", sbp.exp)))[,rev(id), drop = FALSE]
   }
   if(ordering){
-    B = B[,order(apply(coordinates(X, B), 2, stats::var), decreasing = TRUE), drop = FALSE]
+    B = B[,order(apply(coordinates(X, B, basis_return = FALSE), 2, stats::var), decreasing = TRUE), drop = FALSE]
   }
   B
 }
