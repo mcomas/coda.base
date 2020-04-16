@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">coda.base</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.3.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.2</span>
       </span>
     </div>
 
@@ -83,7 +83,7 @@
 </h1>
                         <h4 class="author">Marc Comas-Cufí</h4>
             
-            <h4 class="date">2019-12-21</h4>
+            <h4 class="date">2020-04-16</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/mcomas/coda.base/blob/master/vignettes/coordinates.Rmd"><code>vignettes/coordinates.Rmd</code></a></small>
       <div class="hidden name"><code>coordinates.Rmd</code></div>
@@ -268,7 +268,7 @@
 <a class="sourceLine" id="cb16-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(PC_approx) =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'PC'</span>, <span class="st">'Ward'</span>, <span class="st">'Local Search'</span>)</a>
 <a class="sourceLine" id="cb16-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/base/apply.html">apply</a></span>(PC_approx, <span class="dv">2</span>, var)</a>
 <a class="sourceLine" id="cb16-4" data-line-number="4"><span class="co">#&gt;       h1       h2       h3 </span></a>
-<a class="sourceLine" id="cb16-5" data-line-number="5"><span class="co">#&gt; 1.756795 1.403323 1.658375</span></a></code></pre></div>
+<a class="sourceLine" id="cb16-5" data-line-number="5"><span class="co">#&gt; 1.704016 1.369470 1.572558</span></a></code></pre></div>
 <p>Finally, <code>coda.base</code> allows to define the default CoDaPack basis which consists in defining well balanced balances, i.e. equal number of branches in each balance.</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1">H4.ilr =<span class="st"> </span><span class="kw"><a href="../reference/coordinates.html">coordinates</a></span>(X, <span class="dt">basis =</span> <span class="st">'cdp'</span>)</a>
 <a class="sourceLine" id="cb17-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(H4.ilr)</a>

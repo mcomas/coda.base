@@ -30,12 +30,12 @@ basis = function(H){
 #' ilr_basis(5)
 #' @export
 ilr_basis = function(dim, type = 'default'){
+  if(type == 'cdp'){
+    return(cdp_basis_(dim))
+  }
   B = ilr_basis_default(dim)
   if(type == 'pivot'){
     return((-B)[,ncol(B):1, drop = FALSE][nrow(B):1,])
-  }
-  if(type == 'cdp'){
-    return(sbp_basis(cdp_partition(dim)))
   }
   B
 }
@@ -287,9 +287,9 @@ sbp_basis = function(..., data = NULL, silent=F){
 #' @param ... parameters passed to hclust function
 #' @return matrix
 #' @references
-#' Pawlowsky-Glahn, V., Egozcue, J.J., Tolosana-Delgado R. (2011).
-#' \emph{Principal balances}.
-#' in proceeding of the 4th International Workshop on Compositional Data Analysis (CODAWORK'11) (available online at \url{http://www-ma3.upc.edu/users/ortego/codawork11-Proceedings/Admin/Files/FilePaper/p55.pdf})
+#' Martín-Fernández, J.A., Pawlowsky-Glahn, V., Egozcue, J.J., Tolosana-Delgado R. (2018).
+#' Advances in Principal Balances for Compositional Data.
+#' \emph{Mathematical Geosciencies}, 50, 273-298.
 #' @examples
 #' set.seed(1)
 #' X = matrix(exp(rnorm(5*100)), nrow=100, ncol=5)

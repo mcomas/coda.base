@@ -1,6 +1,7 @@
 coda.base 0.2.2
 ===============
 * MASS dependence removed
+* Code reorganised to avoid repetition.
 
 coda.base 0.2.1
 ===============
