@@ -24,7 +24,9 @@ public:
   }
   // Initialiasation ready to iterate all elements sequentially
   void init(){
-    arma::uvec L0 = {0}, R0 = {1};
+    arma::uvec L0(1), R0(1);
+    L0(0) = 0;
+    R0(0) = 1;
     init(L0,R0);
   }
   void init(arma::uvec L0, arma::uvec R0){
