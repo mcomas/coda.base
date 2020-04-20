@@ -64,11 +64,11 @@ arma::vec find_predictive_balance(arma::mat Y, arma::vec x, int method = 1){
   EvaluateBalance h;
   if(method == 1){
     h = PredictiveBalance(Y, x);
-    double score = h.setOptimal();
+    h.setOptimal();
   }
   if(method == 2){
     h = PredictiveBalance2(Y, x);
-    double score = h.setOptimal();
+    h.setOptimal();
   }
 
 
