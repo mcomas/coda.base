@@ -36,6 +36,14 @@ public:
     R(R_length) = I;
     R_length++;
   }
+  void setL(arma::uvec uL){
+    L_length = uL.size();
+    for(int i=0;i< L_length;i++) L(i) = uL(i);
+  }
+  void setR(arma::uvec uR){
+    R_length = uR.size();
+    for(int i=0;i< R_length;i++) R(i) = uR(i);
+  }
   void approximateLogContrast(arma::vec LC){
     arma::vec V = arma::zeros(n_nodes);
     for(int i=0; i < n_nodes; i++){
@@ -43,8 +51,6 @@ public:
         V(i) += LC(j);
       }
     }
-    print();
-    Rcout << "Before:" << std::endl << getBalance() << std::endl;
     int imin = index_min(V);
     int imax = index_max(V);
     V(imin) = 0;
@@ -67,18 +73,48 @@ public:
     }
   }
   arma::vec getBalance(){
-    double nL = 0;
+    double nL = 0, nR = 0;
     for(unsigned int i = 0; i< L_length; i++) nL+=nodes[L[i]].size();
-    double nR = 0;
     for(unsigned int i = 0; i< R_length; i++) nR+=nodes[R[i]].size();
 
     arma::vec b = arma::zeros(D);
-    // Rcout << L_length << " " << R_length << std::endl;
-    for(unsigned int i = 0; i< L_length; i++){
-      // Rcout << L[i] << std::endl;
-      // Rcout<< nodes[L[i]]  << std::endl;
-      b(nodes[L[i]]).fill(-1/nL * sqrt(nL*nR/(nL+nR)));
-    }
+    for(unsigned int i = 0; i< L_length; i++) b(nodes[L[i]]).fill(-1/nL * sqrt(nL*nR/(nL+nR)));
+    for(unsigned int i = 0; i< R_length; i++) b(nodes[R[i]]).fill(+1/nR * sqrt(nL*nR/(nL+nR)));
+    return(b);
+  }
+  arma::vec getBalanceIfAdd(arma::uvec uL, arma::uvec uR){
+    double nL = 0, nR = 0;
+    for(unsigned int i = 0; i< L_length; i++) nL+=nodes[L[i]].size();
+    for(unsigned int i = 0; i< uL.size(); i++) nL+=nodes[uL[i]].size();
+    for(unsigned int i = 0; i< R_length; i++) nR+=nodes[R[i]].size();
+    for(unsigned int i = 0; i< uR.size(); i++) nR+=nodes[uR[i]].size();
+
+    arma::vec b = arma::zeros(D);
+    for(unsigned int i = 0; i< L_length; i++) b(nodes[L[i]]).fill(-1/nL * sqrt(nL*nR/(nL+nR)));
+    for(unsigned int i = 0; i< uL.size(); i++) b(nodes[uL[i]]).fill(-1/nL * sqrt(nL*nR/(nL+nR)));
+    for(unsigned int i = 0; i< R_length; i++) b(nodes[R[i]]).fill(+1/nR * sqrt(nL*nR/(nL+nR)));
+    for(unsigned int i = 0; i< uR.size(); i++) b(nodes[uR[i]]).fill(+1/nR * sqrt(nL*nR/(nL+nR)));
+    return(b);
+  }
+  arma::vec getBalanceIfAddL(unsigned iL){
+    double nL = nodes[iL].size(), nR = 0;
+    for(unsigned int i = 0; i< L_length; i++) nL+=nodes[L[i]].size();
+    for(unsigned int i = 0; i< R_length; i++) nR+=nodes[R[i]].size();
+
+    arma::vec b = arma::zeros(D);
+    b(nodes[iL]).fill(-1/nL * sqrt(nL*nR/(nL+nR)));
+    for(unsigned int i = 0; i< L_length; i++) b(nodes[L[i]]).fill(-1/nL * sqrt(nL*nR/(nL+nR)));
+    for(unsigned int i = 0; i< R_length; i++) b(nodes[R[i]]).fill(+1/nR * sqrt(nL*nR/(nL+nR)));
+    return(b);
+  }
+  arma::vec getBalanceIfAddR(unsigned iR){
+    double nL = 0, nR = nodes[iR].size();
+    for(unsigned int i = 0; i< L_length; i++) nL+=nodes[L[i]].size();
+    for(unsigned int i = 0; i< R_length; i++) nR+=nodes[R[i]].size();
+
+    arma::vec b = arma::zeros(D);
+    b(nodes[iR]).fill(+1/nR * sqrt(nL*nR/(nL+nR)));
+    for(unsigned int i = 0; i< L_length; i++) b(nodes[L[i]]).fill(-1/nL * sqrt(nL*nR/(nL+nR)));
     for(unsigned int i = 0; i< R_length; i++) b(nodes[R[i]]).fill(+1/nR * sqrt(nL*nR/(nL+nR)));
     return(b);
   }

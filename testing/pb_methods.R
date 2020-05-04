@@ -1,3 +1,4 @@
+library(magrittr)
 X = parliament2017[,-1]
 
 pb_basis(X, method = 'exact')
