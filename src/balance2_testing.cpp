@@ -15,14 +15,18 @@
 void testing_01(arma::mat X, arma::vec V) {
   std::map<int,arma::uvec> nodes;
   nodes[0] << 0 << 4;
-  nodes[1] << 1;
+  nodes[1] << 1 << 3;
   nodes[2] << 2;
-  Balance2 balance = Balance2(nodes);
-  balance.addL(0);
-  balance.addR(1);
-  balance.print();
-  balance = Balance2(nodes);
+  nodes[3] << 5;
+  nodes[4] << 6;
+  Balance2 balance = Balance2(7, nodes);
   balance.approximateLogContrast(V);
+  // clock_t t1 = clock();
+  // Rcout << "Balance:" << std::endl << balance.getBalance();
+  // clock_t t2 = clock();
+  // Rcout << "Balance Alt.:" << std::endl << balance.getBalance2();
+  // clock_t t3 = clock();
+  // Rcout << t2-t1 << std::endl << t3-t2 << std::endl;
   balance.print();
 }
 
@@ -33,7 +37,7 @@ void testing_01(arma::mat X, arma::vec V) {
 
 /*** R
 set.seed(1)
-X = matrix(rlnorm(10*5), ncol = 5)
+X = matrix(rlnorm(10*7), ncol = 7)
 PC1 = coda.base::pc_basis(X)[,1,drop=FALSE]
 testing_01(X, PC1)
 */

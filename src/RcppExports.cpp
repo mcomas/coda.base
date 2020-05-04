@@ -7,12 +7,13 @@
 using namespace Rcpp;
 
 // testing_01
-void testing_01(int n);
-RcppExport SEXP _coda_base_testing_01(SEXP nSEXP) {
+void testing_01(arma::mat X, arma::vec V);
+RcppExport SEXP _coda_base_testing_01(SEXP XSEXP, SEXP VSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type n(nSEXP);
-    testing_01(n);
+    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type V(VSEXP);
+    testing_01(X, V);
     return R_NilValue;
 END_RCPP
 }
@@ -341,7 +342,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_coda_base_testing_01", (DL_FUNC) &_coda_base_testing_01, 1},
+    {"_coda_base_testing_01", (DL_FUNC) &_coda_base_testing_01, 2},
     {"_coda_base_find_predictive_balance", (DL_FUNC) &_coda_base_find_predictive_balance, 3},
     {"_coda_base_pinv", (DL_FUNC) &_coda_base_pinv, 1},
     {"_coda_base_c_variation_array", (DL_FUNC) &_coda_base_c_variation_array, 2},

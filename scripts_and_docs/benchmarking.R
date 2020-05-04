@@ -21,7 +21,7 @@ alr_results = microbenchmark(
   times = 500
 )
 autoplot(alr_results)
-
+(res <- summary(alr_results)[,c('expr', 'lq', 'median', 'uq')])[order(res$median),]
 
 clr_results = microbenchmark(
   coda.base::coordinates(mX, 'clr', basis_return = FALSE),
@@ -31,6 +31,7 @@ clr_results = microbenchmark(
   easyCODA::CLR(mX), times = 500
 )
 autoplot(clr_results)
+(res <- summary(clr_results)[,c('expr', 'lq', 'median', 'uq')])[order(res$median),]
 
 ilr_results = microbenchmark(
   coda.base::coordinates(mX),
@@ -41,6 +42,7 @@ ilr_results = microbenchmark(
   easyCODA::PLR(mX), times = 500
 )
 autoplot(ilr_results)
+(res <- summary(ilr_results)[,c('expr', 'lq', 'median', 'uq')])[order(res$median),]
 
 B = sbp_basis(b1 = V1~V2,
               b2 = b1~V3,
