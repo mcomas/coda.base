@@ -90,11 +90,6 @@ cdp = function(X, basis_return){
   COORD
 }
 
-#' @description
-#' Obtain coordinates basis
-#' @export
-basis = function(X) attr(X, 'basis')
-
 pb = function(X, basis_return){
   B = pb_basis(X, method = 'exact')
   COORD = matrix_coordinates(X, B)
@@ -161,7 +156,9 @@ coordinates = function(X, basis = 'ilr', label = ifelse(is.character(basis), bas
       class_type = class(X)
 
       if(inherits(X, 'data.frame')){
-        COORD = as.data.frame(Recall(as.matrix(X), basis, label, basis_return))
+        mCOORD = Recall(as.matrix(X), basis, label, basis_return)
+        COORD = as.data.frame(mCOORD)
+        attr(COORD, 'basis') = attr(mCOORD, 'basis')
       }
 
       class(COORD) = class_type

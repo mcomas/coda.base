@@ -67,7 +67,7 @@ the linearly dependant centered log-ratio coordinates." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">coda.base</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.2</span>
       </span>
     </div>
 
@@ -117,7 +117,7 @@ the linearly dependant centered log-ratio coordinates." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Centered log-ratio basis</h1>
-    <small class="dont-index">Source: <a href='https://github.com/mcomas/coda.base/blob/master/R/coordinates.R'><code>R/coordinates.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/mcomas/coda.base/blob/master/R/basis.R'><code>R/basis.R</code></a></small>
     <div class="hidden name"><code>clr_basis.Rd</code></div>
     </div>
 
@@ -157,7 +157,7 @@ Monographs on Statistics and Applied Probability. Chapman &amp; Hall Ltd., Londo
 #&gt; [3,] -0.2 -0.2  0.8 -0.2 -0.2
 #&gt; [4,] -0.2 -0.2 -0.2  0.8 -0.2
 #&gt; [5,] -0.2 -0.2 -0.2 -0.2  0.8</div><div class='input'><span class='co'># CLR coordinates are linearly dependant coordinates.</span>
-(<span class='no'>clr_coordinates</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='coordinates.html'>coordinates</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>3</span>,<span class='fl'>4</span>,<span class='fl'>5</span>), <span class='no'>B</span>))</div><div class='output co'>#&gt;         x1         x2         x3         x4         x5 
+(<span class='no'>clr_coordinates</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='coordinates.html'>coordinates</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>3</span>,<span class='fl'>4</span>,<span class='fl'>5</span>), <span class='no'>B</span>))</div><div class='output co'>#&gt;         h1         h2         h3         h4         h5 
 #&gt; -0.9574983 -0.2643512  0.1411139  0.4287960  0.6519396 </div><div class='input'><span class='co'># The sum of all coordinates equal to zero</span>
 <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span>(<span class='no'>clr_coordinates</span>) <span class='kw'>&lt;</span> <span class='fl'>1e-15</span></div><div class='output co'>#&gt; [1] TRUE</div></pre>
   </div>

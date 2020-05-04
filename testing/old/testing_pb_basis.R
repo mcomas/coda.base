@@ -1,0 +1,15 @@
+library(coda.base)
+set.seed(1)
+
+X = matrix(exp(rnorm(10*100)), nrow=100, ncol=10)
+apply(coordinates(X, 'pc'), 2, var)
+apply(coordinates(X,pb_basis(X, method='lsearch')), 2, var)
+apply(coordinates(X,pb_basis(X, method='ward.D2')), 2, var)
+apply(coordinates(X,pb_basis(X, method='ward.D')), 2, var)
+apply(coordinates(X,pb_basis(X, method='single')), 2, var)
+apply(coordinates(X,pb_basis(X, method='complete')), 2, var)
+apply(coordinates(X,pb_basis(X, method='average')), 2, var)
+apply(coordinates(X,pb_basis(X, method='mcquitty')), 2, var)
+apply(coordinates(X,pb_basis(X, method='median')), 2, var)
+apply(coordinates(X,pb_basis(X, method='centroid')), 2, var)
+
