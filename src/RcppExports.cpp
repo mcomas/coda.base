@@ -6,6 +6,16 @@
 
 using namespace Rcpp;
 
+// testing_01
+void testing_01(int n);
+RcppExport SEXP _coda_base_testing_01(SEXP nSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    testing_01(n);
+    return R_NilValue;
+END_RCPP
+}
 // find_predictive_balance
 arma::vec find_predictive_balance(arma::mat Y, arma::vec x, int method);
 RcppExport SEXP _coda_base_find_predictive_balance(SEXP YSEXP, SEXP xSEXP, SEXP methodSEXP) {
@@ -331,6 +341,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_coda_base_testing_01", (DL_FUNC) &_coda_base_testing_01, 1},
     {"_coda_base_find_predictive_balance", (DL_FUNC) &_coda_base_find_predictive_balance, 3},
     {"_coda_base_pinv", (DL_FUNC) &_coda_base_pinv, 1},
     {"_coda_base_c_variation_array", (DL_FUNC) &_coda_base_c_variation_array, 2},

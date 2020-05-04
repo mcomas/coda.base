@@ -195,7 +195,8 @@ sbp_basis = function(..., data = NULL, silent=F){
                                    FUN = paste, collapse= ' + ')[['nm']], collapse=' ~ ')
       stats::as.formula(frm)
     }
-    return(do.call('sbp_basis', c(apply(P, 1, str_to_frm), list(data=df)))) #, envir = as.environment('package:coda.base')
+    return(do.call('sbp_basis', c(apply(P, 1, str_to_frm), list(data=df,
+                                                                silent = silent)))) #, envir = as.environment('package:coda.base')
   }
 
   if (!is.data.frame(data) && !is.environment(data) && ( (is.matrix(data) && !is.null(colnames(data))) | !is.null(attr(data, "class"))))
@@ -277,7 +278,7 @@ sbp_basis = function(..., data = NULL, silent=F){
 #' Exact method to calculate the principal balances of a compositional dataset. Different methods to approximate the principal balances of a compositional dataset are also included.
 #'
 #' @param X compositional dataset
-#' @param method method to be used with Principal Balances. Methods available are: 'exact', 'lsearch' or
+#' @param method method to be used with Principal Balances. Methods available are: 'exact', 'constrained', 'lsearch' or
 #' method to be passed to hclust function (for example `ward.D` or `ward.D2` to use Ward method).
 #' @param rep Number of restartings to be used with the local search algorithm. If zero is supplied
 #' (default), one local search is performed using an starting point close to the principal component
@@ -316,9 +317,12 @@ pb_basis = function(X, method, rep = 0, ordering = TRUE, ...){
   if(!(all(X > 0))){
     stop("All components must be strictly positive.", call. = FALSE)
   }
-  if(method %in% c('lsearch', 'exact')){
+  if(method %in% c('constrained', 'lsearch', 'exact')){
     if(method == 'exact'){
       B = find_PB(X)
+    }
+    if(method == 'constrained'){
+      B = t(fBalChip(X)$bal)
     }
     if(method == 'lsearch'){
       if(rep == 0){
