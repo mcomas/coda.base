@@ -1,5 +1,6 @@
 #include <RcppArmadillo.h>
 #include "balance2.h"
+#include "coda.h"
 
 // This is a simple example of exporting a C++ function to R. You can
 // source this function into an R session using the Rcpp::sourceCpp
@@ -63,23 +64,60 @@ void testing_03() {
   balance.addL(0);
   balance.setR(uR);
   balance.print();
-  Rcout << balance.getBalanceIfAddL(3) << std::endl;
-  Rcout << balance.getBalanceIfAddR(3) << std::endl;
+  Rcout << balance.getBalanceIfAddL(3).t() << std::endl;
+  Rcout << balance.getBalanceIfAddR(3).t() << std::endl;
   arma::uvec iL;
   arma::uvec iR(1);
   iL << 3 << 1; iR(0) = 4;
-  Rcout << balance.getBalanceIfAdd(iL, iR);
+  Rcout << balance.getBalanceIfAdd(iL, iR).t();
 }
-// You can include R code blocks in C++ files processed with sourceCpp
-// (useful for testing and development). The R code will be automatically
-// run after the compilation.
-//
+
+// [[Rcpp::export]]
+arma::vec testing_04(arma::mat X, arma::vec V) {
+  int D = X.n_cols;
+  Balance2 balance = Balance2(D);
+  balance.approximateLogContrast(V);
+  balance.print();
+
+  arma::mat B1 = ilr_basis_default(D);
+  arma::mat Q, R;
+  qr(Q,R,B1.t() * balance.getBalance());
+  arma::mat B2 = Q.tail_cols(D-2);
+  arma::mat S2 = cov(matrix_coordinates(X, B1 * B2));
+
+  arma::vec eigval;
+  arma::mat eigvec;
+  arma::eig_sym( eigval, eigvec, S2);
+  V = B1 * B2 * eigvec.tail_cols(1);
+
+  Rcout << "Top:" << std::endl;
+  Balance2 bal_ = balance.top();
+  bal_.print();
+  bal_.approximateLogContrast(V);
+  bal_.print();
+
+  Rcout << "Left:" << std::endl;
+  bal_ = balance.left();
+  bal_.print();
+  bal_.approximateLogContrast(V);
+  bal_.print();
+
+  Rcout << "Right:" << std::endl;
+  bal_ = balance.right();
+  bal_.print();
+  bal_.approximateLogContrast(V);
+  bal_.print();
+
+  return(balance.getBalance());
+}
 
 /*** R
-set.seed(1)
+set.seed(2)
 X = matrix(rlnorm(10*7), ncol = 7)
 PC1 = coda.base::pc_basis(X)[,1,drop=FALSE]
-testing_01(X, PC1)
-testing_02()
-testing_03()
+# testing_01(X, PC1)
+# testing_02()
+# testing_03()
+V = testing_04(X, PC1)
+V
 */

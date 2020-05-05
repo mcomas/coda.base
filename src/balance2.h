@@ -16,7 +16,19 @@ public:
 
   std::map<int,arma::uvec> nodes;
   int n_nodes;
+  Balance2(int D0){
+    D = D0;
+    for(int i=0;i<D;i++){
+      nodes[i] = arma::uvec(1);
+      nodes[i][0] = i;
+    }
+    n_nodes = D;
 
+    L = arma::uvec(n_nodes);
+    L_length = 0;
+    R = arma::uvec(n_nodes);
+    R_length = 0;
+  }
   Balance2(int D0, std::map<int,arma::uvec> nodes0){
     D = D0;
 
@@ -44,33 +56,68 @@ public:
     R_length = uR.size();
     for(int i=0;i< R_length;i++) R(i) = uR(i);
   }
-  void approximateLogContrast(arma::vec LC){
-    arma::vec V = arma::zeros(n_nodes);
-    for(int i=0; i < n_nodes; i++){
-      for(int j: nodes[i]){
-        V(i) += LC(j);
-      }
+  // Number of parts in left side
+  int get_nL(){
+    double nL = 0;
+    for(unsigned int i=0; i<L_length;nL+=nodes[L[i++]].n_elem);
+    return(nL);
+  }
+  // Number of parts in right side
+  int get_nR(){
+    double nR = 0;
+    for(unsigned int i=0; i<R_length;nR+=nodes[R[i++]].n_elem);
+    return(nR);
+  }
+  Balance2 top(){
+    arma::uvec O = arma::zeros<arma::uvec>(nodes.size());
+    O(L.head(L_length)).fill(1);
+    O(R.head(R_length)).fill(1);
+
+    arma::uvec uV = find(O == 1);
+    arma::uvec uI = find(O == 0);
+
+
+    int nI = uI.n_elem;
+    // Rcpp::Rcout << "uV" << uV;
+    // Rcpp::Rcout << "uI" << uI;
+    // New nodes pointers
+    std::map<int,arma::uvec> node0;
+    for(int i = 0; i<nI; i++){
+      node0[i] = nodes[uI[i]];
     }
-    int imin = index_min(V);
-    int imax = index_max(V);
-    V(imin) = 0;
-    V(imax) = 0;
-    Rcout << "Min:" << imin << std::endl;
-    Rcout << "Max:" << imax << std::endl;
-    addL(imin);
-    addR(imax);
-    print();
-    Rcout << "Min/Max:" << std::endl << getBalance() << std::endl;
-    arma::uvec ord = sort_index(abs(V), "descend");
-    for(int i = 0; i < n_nodes-2; i++){
-      if(V(ord[i]) < 0){
-        addL(ord[i]);
-      }else{
-        addR(ord[i]);
-      }
-      print();
-      Rcout << "Node included:" << std::endl << getBalance() << std::endl;
+
+    int nV = get_nL() + get_nR();
+    arma::uvec V(nV);
+    int k = 0;
+    for(unsigned int i= 0; i < L_length; i++)
+      for(unsigned int j= 0; j < nodes[L[i]].n_elem; j++, k++)
+        V(k) = nodes[L[i]][j];
+    for(unsigned int i=0; i < R_length; i++)
+      for(unsigned int j=0; j < nodes[R[i]].n_elem; j++, k++)
+        V(k) = nodes[R[i]][j];
+    node0[nI] = V;
+    Balance2 balance(D, node0);
+    return(balance);
+  }
+  Balance2 left(){
+    arma::uvec uL = L.head(L_length);
+    arma::uvec uR = R.head(R_length);
+    std::map<int,arma::uvec> node0;
+    for(unsigned int i = 0; i<uL.n_elem; i++){
+      node0[i] = arma::uvec(nodes[uL[i]]);
     }
+    Balance2 balance(D, node0);
+    return(balance);
+  }
+  Balance2 right(){
+    arma::uvec uL = L.head(L_length);
+    arma::uvec uR = R.head(R_length);
+    std::map<int,arma::uvec> node0;
+    for(unsigned int i = 0; i<uR.n_elem; i++){
+      node0[i] = arma::uvec(nodes[uR[i]]);
+    }
+    Balance2 balance(D, node0);
+    return(balance);
   }
   arma::vec getBalance(){
     double nL = 0, nR = 0;
@@ -118,6 +165,63 @@ public:
     for(unsigned int i = 0; i< R_length; i++) b(nodes[R[i]]).fill(+1/nR * sqrt(nL*nR/(nL+nR)));
     return(b);
   }
+  double approximateLogContrast(arma::vec LC){
+    arma::vec V = arma::zeros(n_nodes);
+    for(int i=0; i < n_nodes; i++){
+      for(int j: nodes[i]){
+        V(i) += LC(j);
+      }
+    }
+    int imin = index_min(V);
+    int imax = index_max(V);
+    V(imin) = 0;
+    V(imax) = 0;
+    Rcout << "\nApproximating V = " << LC.t();
+    // Rcout << "Min:" << imin << std::endl;
+    // Rcout << "Max:" << imax << std::endl;
+    print();
+
+    addL(imin);
+    addR(imax);
+
+    arma::vec bal = getBalance();
+    Rcout << "b:" << bal.t();
+    Rcout << "b x V = " << dot(bal,LC) << std::endl << std::endl;
+
+    arma::uvec ord = sort_index(abs(V), "descend");
+    arma::uvec uL(ord.size()), uR(ord.size());
+    int nL = 0, nR = 0;
+    int mL = 0, mR = 0;
+    double dpMax = dot(bal,LC);
+    for(int i = 0; i < n_nodes-2; i++){
+      if(V(ord[i]) < 0){
+        // addL(ord[i]);
+        uL(nL++) = ord[i];
+      }else{
+        uR(nR++) = ord[i];
+        // addR(ord[i]);
+      }
+      arma::vec bal = getBalanceIfAdd(uL.head(nL), uR.head(nR));
+      double dp = abs(dot(bal,LC));
+      // Rcout << "dp:" << dp << " " << "dpMax:" << dpMax << std::endl;
+      if(dp > dpMax){
+        dpMax = dp;
+        mL = nL;
+        mR = nR;
+      }
+      Rcout << "b:" << bal.t();
+      Rcout << "b x V = " << dot(bal,LC) << std::endl << std::endl;
+      // print();
+      // Rcout << "Node included:" << getBalance().t() << std::endl;
+    }
+    // Rcout << mL << " " << mR;
+    for(int i=0; i < mL; i++) addL(uL(i));
+    for(int i=0; i < mR; i++) addR(uR(i));
+    Rcout << "Best approximation:" << getBalance().t() << std::endl << std::endl;
+    return(dpMax);
+  }
+
+
   void print(){
     Rcout << "Elements: ";
     for(unsigned int i=0; i<n_nodes;i++){
@@ -134,6 +238,9 @@ public:
       Rcout << " " << R[i];
     }
     Rcout << std::endl;
+    if(L_length > 0 & R_length > 0){
+      Rcout << getBalance().t() << std::endl;
+    }
   }
 
 };

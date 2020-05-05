@@ -13,7 +13,7 @@ arma::mat ilr_basis_simplex(unsigned int dim);
 
 arma::mat ilr_coordinates(arma::mat &X);
 
-arma::mat ilr_coordinates_with_basis(arma::mat X, arma::mat B);
+arma::mat matrix_coordinates(arma::mat X, arma::mat B);
 
 arma::mat inv_ilr_coordinates(arma::mat ilrX);
 
