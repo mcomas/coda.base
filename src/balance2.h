@@ -40,6 +40,9 @@ public:
     R = arma::uvec(n_nodes);
     R_length = 0;
   }
+  int size(){
+    return(nodes.size());
+  }
   void addL(unsigned I){
     L(L_length) = I;
     L_length++;
@@ -55,6 +58,14 @@ public:
   void setR(arma::uvec uR){
     R_length = uR.size();
     for(int i=0;i< R_length;i++) R(i) = uR(i);
+  }
+  void setL(int iL){
+    L_length = 1;
+    L(0) = iL;
+  }
+  void setR(int iR){
+    R_length = 1;
+    R(0) = iR;
   }
   // Number of parts in left side
   int get_nL(){
@@ -165,7 +176,7 @@ public:
     for(unsigned int i = 0; i< R_length; i++) b(nodes[R[i]]).fill(+1/nR * sqrt(nL*nR/(nL+nR)));
     return(b);
   }
-  double approximateLogContrast(arma::vec LC){
+  double approximateLogContrast(arma::vec LC, arma::mat *lX = NULL){
     arma::vec V = arma::zeros(n_nodes);
     for(int i=0; i < n_nodes; i++){
       for(int j: nodes[i]){
@@ -181,18 +192,24 @@ public:
     // Rcout << "Max:" << imax << std::endl;
     print();
 
-    addL(imin);
-    addR(imax);
+    setL(imin);
+    setR(imax);
 
     arma::vec bal = getBalance();
     Rcout << "b:" << bal.t();
-    Rcout << "b x V = " << dot(bal,LC) << std::endl << std::endl;
+    Rcout << "b x V = " << dot(bal,LC) << std::endl;
+    if(lX){
+      Rcout << "Variance(lX b) = " << var((*lX) * bal) << std::endl << std::endl;
+    }
 
     arma::uvec ord = sort_index(abs(V), "descend");
     arma::uvec uL(ord.size()), uR(ord.size());
     int nL = 0, nR = 0;
     int mL = 0, mR = 0;
-    double dpMax = dot(bal,LC);
+    double score_max = dot(bal,LC);
+    if(lX){
+      score_max = var((*lX) * bal);
+    }
     for(int i = 0; i < n_nodes-2; i++){
       if(V(ord[i]) < 0){
         // addL(ord[i]);
@@ -202,23 +219,29 @@ public:
         // addR(ord[i]);
       }
       arma::vec bal = getBalanceIfAdd(uL.head(nL), uR.head(nR));
-      double dp = abs(dot(bal,LC));
+      double score = fabs(dot(bal,LC));
+      if(lX){
+        score = var((*lX) * bal);
+      }
       // Rcout << "dp:" << dp << " " << "dpMax:" << dpMax << std::endl;
-      if(dp > dpMax){
-        dpMax = dp;
+      if(score > score_max){
+        score_max = score;
         mL = nL;
         mR = nR;
       }
       Rcout << "b:" << bal.t();
-      Rcout << "b x V = " << dot(bal,LC) << std::endl << std::endl;
+      Rcout << "b x V = " << dot(bal,LC) << std::endl;
+      if(lX){
+        Rcout << "Variance(lX b) = " << var((*lX) * bal) << std::endl << std::endl;
+      }
       // print();
       // Rcout << "Node included:" << getBalance().t() << std::endl;
     }
-    // Rcout << mL << " " << mR;
+    // Rcout << mL << " " << mR << std::endl;
     for(int i=0; i < mL; i++) addL(uL(i));
     for(int i=0; i < mR; i++) addR(uR(i));
-    Rcout << "Best approximation:" << getBalance().t() << std::endl << std::endl;
-    return(dpMax);
+    Rcout << "Best approximation:\n" << getBalance().t() << std::endl << std::endl;
+    return(score_max);
   }
 
 

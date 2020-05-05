@@ -73,21 +73,28 @@ void testing_03() {
 }
 
 // [[Rcpp::export]]
-arma::vec testing_04(arma::mat X, arma::vec V) {
+arma::vec testing_04(arma::mat X) {
   int D = X.n_cols;
+  arma::mat lX = log(X);
+  arma::vec eigval, V;
+  arma::mat eigvec;
+  arma::mat S;
+
+  arma::mat B1 = ilr_basis_default(D);
+  S = cov(lX * B1);
+  arma::eig_sym( eigval, eigvec, S);
+  V = B1 * eigvec.tail_cols(1);
+
   Balance2 balance = Balance2(D);
   balance.approximateLogContrast(V);
   balance.print();
 
-  arma::mat B1 = ilr_basis_default(D);
   arma::mat Q, R;
-  qr(Q,R,B1.t() * balance.getBalance());
-  arma::mat B2 = Q.tail_cols(D-2);
-  arma::mat S2 = cov(matrix_coordinates(X, B1 * B2));
+  qr(Q, R, B1.t() * balance.getBalance());
 
-  arma::vec eigval;
-  arma::mat eigvec;
-  arma::eig_sym( eigval, eigvec, S2);
+  arma::mat B2 = Q.tail_cols(D-2);
+  S = cov(lX * B1 * B2);
+  arma::eig_sym( eigval, eigvec, S);
   V = B1 * B2 * eigvec.tail_cols(1);
 
   Rcout << "Top:" << std::endl;
@@ -111,13 +118,241 @@ arma::vec testing_04(arma::mat X, arma::vec V) {
   return(balance.getBalance());
 }
 
+// [[Rcpp::export]]
+arma::mat testing_05(arma::mat X){
+  int D = X.n_cols;
+  arma::mat lX = log(X);
+  arma::vec eigval, V;
+  arma::mat eigvec;
+  arma::mat S;
+  arma::mat Q, R;
+
+  std::vector<Balance2> balance_candidates;
+  arma::mat pb_mat = arma::zeros(D,D-1);
+
+  Balance2 balance = Balance2(D);
+  balance_candidates.push_back(balance);
+
+  // ITERATION 1
+  arma::mat B1 = ilr_basis_default(D);
+
+  S = cov(lX * B1);
+  arma::eig_sym( eigval, eigvec, S);
+  V = B1 * eigvec.tail_cols(1);
+
+  int best_balance = 0;
+  double best_dp = 0;
+  for(int i=0; i < balance_candidates.size(); i++){
+    double dp = balance_candidates[i].approximateLogContrast(V, &lX);
+    balance_candidates[i].print();
+    if(dp > best_dp){
+      best_balance = i;
+    }
+  }
+  pb_mat.col(0) = balance_candidates[best_balance].getBalance();
+
+  balance = balance_candidates[best_balance].top();
+  if(balance.size() > 1) balance_candidates.push_back(balance);
+  balance = balance_candidates[best_balance].left();
+  if(balance.size() > 1) balance_candidates.push_back(balance);
+  balance = balance_candidates[best_balance].right();
+  if(balance.size() > 1) balance_candidates.push_back(balance);
+
+  // Balance removed from the partitions available
+  balance_candidates.erase(balance_candidates.begin()+best_balance);
+
+  Rcout << "Current list:" << std::endl;
+  for(Balance2 balance: balance_candidates){
+    balance.print();
+  }
+
+  // ITERATION 2
+  qr(Q, R, B1.t() * pb_mat.head_cols(1));
+  arma::mat B2 = Q.tail_cols(D-2);
+
+  S = cov(lX * B1 * B2);
+  arma::eig_sym( eigval, eigvec, S);
+  V = B1 * B2 * eigvec.tail_cols(1);
+
+  best_balance = 0;
+  best_dp = 0;
+  for(int i=0; i < balance_candidates.size(); i++){
+    double dp = balance_candidates[i].approximateLogContrast(V, &lX);
+    balance_candidates[i].print();
+    if(dp > best_dp){
+      best_dp = dp;
+      best_balance = i;
+    }
+  }
+  pb_mat.col(1) = balance_candidates[best_balance].getBalance();
+
+  balance = balance_candidates[best_balance].top();
+  if(balance.size() > 1) balance_candidates.push_back(balance);
+  balance = balance_candidates[best_balance].left();
+  if(balance.size() > 1) balance_candidates.push_back(balance);
+  balance = balance_candidates[best_balance].right();
+  if(balance.size() > 1) balance_candidates.push_back(balance);
+
+  // Balance removed from the partitions available
+  balance_candidates.erase(balance_candidates.begin()+best_balance);
+
+  Rcout << "Current list:" << std::endl;
+  for(Balance2 balance: balance_candidates){
+    balance.print();
+  }
+
+  // ITERATION 3
+  qr(Q, R, (B1*B2).t() * pb_mat.head_cols(2));
+  arma::mat B3 = Q.tail_cols(D-3);
+
+  S = cov(lX * B1 * B2 * B3);
+  arma::eig_sym( eigval, eigvec, S);
+  V = B1 * B2 * B3 * eigvec.tail_cols(1);
+
+  best_balance = 0;
+  best_dp = 0;
+  for(int i=0; i < balance_candidates.size(); i++){
+    double dp = balance_candidates[i].approximateLogContrast(V, &lX);
+    balance_candidates[i].print();
+    if(dp > best_dp){
+      best_dp = dp;
+      best_balance = i;
+    }
+  }
+  pb_mat.col(2) = balance_candidates[best_balance].getBalance();
+
+  balance = balance_candidates[best_balance].top();
+  if(balance.size() > 1) balance_candidates.push_back(balance);
+  balance = balance_candidates[best_balance].left();
+  if(balance.size() > 1) balance_candidates.push_back(balance);
+  balance = balance_candidates[best_balance].right();
+  if(balance.size() > 1) balance_candidates.push_back(balance);
+
+  // Balance removed from the partitions available
+  balance_candidates.erase(balance_candidates.begin()+best_balance);
+
+  Rcout << "Current list:" << std::endl;
+  for(Balance2 balance: balance_candidates){
+    balance.print();
+  }
+
+  // ITERATION 4
+  qr(Q, R, (B1*B2*B3).t() * pb_mat.head_cols(3));
+  arma::mat B4 = Q.tail_cols(D-4);
+
+  S = cov(lX * B1 * B2 * B3 * B4);
+  arma::eig_sym( eigval, eigvec, S);
+  V = B1 * B2 * B3 * B4 * eigvec.tail_cols(1);
+
+  best_balance = 0;
+  best_dp = 0;
+  for(int i=0; i < balance_candidates.size(); i++){
+    double dp = balance_candidates[i].approximateLogContrast(V, &lX);
+    balance_candidates[i].print();
+    if(dp > best_dp){
+      best_dp = dp;
+      best_balance = i;
+    }
+  }
+
+  pb_mat.col(3) = balance_candidates[best_balance].getBalance();
+
+  balance = balance_candidates[best_balance].top();
+  if(balance.size() > 1) balance_candidates.push_back(balance);
+  balance = balance_candidates[best_balance].left();
+  if(balance.size() > 1) balance_candidates.push_back(balance);
+  balance = balance_candidates[best_balance].right();
+  if(balance.size() > 1) balance_candidates.push_back(balance);
+
+  // Balance removed from the partitions available
+  balance_candidates.erase(balance_candidates.begin()+best_balance);
+
+  Rcout << "Current list:" << std::endl;
+  for(Balance2 balance: balance_candidates){
+    balance.print();
+  }
+
+  // ITERATION 5
+  qr(Q, R, (B1*B2*B3*B4).t() * pb_mat.head_cols(4));
+  arma::mat B5 = Q.tail_cols(D-5);
+
+  S = cov(lX * B1 * B2 * B3 * B4 * B5);
+  arma::eig_sym( eigval, eigvec, S);
+  V = B1 * B2 * B3 * B4 * B5 * eigvec.tail_cols(1);
+
+  best_balance = 0;
+  best_dp = 0;
+  for(int i=0; i < balance_candidates.size(); i++){
+    double dp = balance_candidates[i].approximateLogContrast(V, &lX);
+    balance_candidates[i].print();
+    if(dp > best_dp){
+      best_dp = dp;
+      best_balance = i;
+    }
+  }
+
+  pb_mat.col(4) = balance_candidates[best_balance].getBalance();
+
+  balance = balance_candidates[best_balance].top();
+  if(balance.size() > 1) balance_candidates.push_back(balance);
+  balance = balance_candidates[best_balance].left();
+  if(balance.size() > 1) balance_candidates.push_back(balance);
+  balance = balance_candidates[best_balance].right();
+  if(balance.size() > 1) balance_candidates.push_back(balance);
+
+  // Balance removed from the partitions available
+  balance_candidates.erase(balance_candidates.begin()+best_balance);
+
+  Rcout << "Current list:" << std::endl;
+  for(Balance2 balance: balance_candidates){
+    balance.print();
+  }
+
+  // ITERATION 6
+  qr(Q, R, (B1*B2*B3*B4*B5).t() * pb_mat.head_cols(5));
+  arma::mat B6 = Q.tail_cols(D-6);
+
+  S = cov(lX * B1 * B2 * B3 * B4 * B5 * B6);
+  arma::eig_sym( eigval, eigvec, S);
+  V = B1 * B2 * B3 * B4 * B5 * B6 * eigvec.tail_cols(1);
+
+  best_balance = 0;
+  best_dp = 0;
+  for(int i=0; i < balance_candidates.size(); i++){
+    double dp = balance_candidates[i].approximateLogContrast(V, &lX);
+    balance_candidates[i].print();
+    if(dp > best_dp){
+      best_dp = dp;
+      best_balance = i;
+    }
+  }
+
+  pb_mat.col(5) = balance_candidates[best_balance].getBalance();
+
+  balance = balance_candidates[best_balance].top();
+  if(balance.size() > 1) balance_candidates.push_back(balance);
+  balance = balance_candidates[best_balance].left();
+  if(balance.size() > 1) balance_candidates.push_back(balance);
+  balance = balance_candidates[best_balance].right();
+  if(balance.size() > 1) balance_candidates.push_back(balance);
+
+  // Balance removed from the partitions available
+  balance_candidates.erase(balance_candidates.begin()+best_balance);
+
+  Rcout << "Current list:" << std::endl;
+  for(Balance2 balance: balance_candidates){
+    balance.print();
+  }
+
+  return(pb_mat);
+}
+
 /*** R
-set.seed(2)
+set.seed(3)
 X = matrix(rlnorm(10*7), ncol = 7)
-PC1 = coda.base::pc_basis(X)[,1,drop=FALSE]
 # testing_01(X, PC1)
 # testing_02()
 # testing_03()
-V = testing_04(X, PC1)
-V
+testing_05(X)
+pb_basis(X, method = 'exact')
 */
