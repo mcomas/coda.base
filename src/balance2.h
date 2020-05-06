@@ -183,25 +183,29 @@ public:
         V(i) += LC(j);
       }
     }
+
     int imin = index_min(V);
     int imax = index_max(V);
-    V(imin) = 0;
-    V(imax) = 0;
-    Rcout << "\nApproximating V = " << LC.t();
+
+    // Rcout << "\nApproximating V = " << LC.t();
+    // Rcout << V.t() << std::endl;
     // Rcout << "Min:" << imin << std::endl;
     // Rcout << "Max:" << imax << std::endl;
-    print();
+    // print();
 
     setL(imin);
     setR(imax);
 
+    // print();
     arma::vec bal = getBalance();
-    Rcout << "b:" << bal.t();
-    Rcout << "b x V = " << dot(bal,LC) << std::endl;
-    if(lX){
-      Rcout << "Variance(lX b) = " << var((*lX) * bal) << std::endl << std::endl;
-    }
+    // Rcout << "b:" << bal.t();
+    // Rcout << "b x V = " << dot(bal,LC) << std::endl;
+    // if(lX){
+    //   Rcout << "Variance(lX b) = " << var((*lX) * bal) << std::endl << std::endl;
+    // }
 
+    V(imin) = 0;
+    V(imax) = 0;
     arma::uvec ord = sort_index(abs(V), "descend");
     arma::uvec uL(ord.size()), uR(ord.size());
     int nL = 0, nR = 0;
@@ -229,18 +233,18 @@ public:
         mL = nL;
         mR = nR;
       }
-      Rcout << "b:" << bal.t();
-      Rcout << "b x V = " << dot(bal,LC) << std::endl;
-      if(lX){
-        Rcout << "Variance(lX b) = " << var((*lX) * bal) << std::endl << std::endl;
-      }
+      // Rcout << "b:" << bal.t();
+      // Rcout << "b x V = " << dot(bal,LC) << std::endl;
+      // if(lX){
+      //   Rcout << "Variance(lX b) = " << var((*lX) * bal) << std::endl << std::endl;
+      // }
       // print();
       // Rcout << "Node included:" << getBalance().t() << std::endl;
     }
     // Rcout << mL << " " << mR << std::endl;
     for(int i=0; i < mL; i++) addL(uL(i));
     for(int i=0; i < mR; i++) addR(uR(i));
-    Rcout << "Best approximation:\n" << getBalance().t() << std::endl << std::endl;
+    // Rcout << "Best approximation:\n" << getBalance().t() << std::endl << std::endl;
     return(score_max);
   }
 

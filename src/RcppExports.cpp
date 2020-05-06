@@ -17,6 +17,57 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// testing_02
+void testing_02();
+RcppExport SEXP _coda_base_testing_02() {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    testing_02();
+    return R_NilValue;
+END_RCPP
+}
+// testing_03
+void testing_03();
+RcppExport SEXP _coda_base_testing_03() {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    testing_03();
+    return R_NilValue;
+END_RCPP
+}
+// testing_04
+arma::vec testing_04(arma::mat X);
+RcppExport SEXP _coda_base_testing_04(SEXP XSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
+    rcpp_result_gen = Rcpp::wrap(testing_04(X));
+    return rcpp_result_gen;
+END_RCPP
+}
+// testing_05
+Rcpp::List testing_05(arma::mat X);
+RcppExport SEXP _coda_base_testing_05(SEXP XSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
+    rcpp_result_gen = Rcpp::wrap(testing_05(X));
+    return rcpp_result_gen;
+END_RCPP
+}
+// testing_06
+Rcpp::List testing_06(arma::mat X);
+RcppExport SEXP _coda_base_testing_06(SEXP XSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
+    rcpp_result_gen = Rcpp::wrap(testing_06(X));
+    return rcpp_result_gen;
+END_RCPP
+}
 // find_predictive_balance
 arma::vec find_predictive_balance(arma::mat Y, arma::vec x, int method);
 RcppExport SEXP _coda_base_find_predictive_balance(SEXP YSEXP, SEXP xSEXP, SEXP methodSEXP) {
@@ -343,6 +394,11 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_coda_base_testing_01", (DL_FUNC) &_coda_base_testing_01, 2},
+    {"_coda_base_testing_02", (DL_FUNC) &_coda_base_testing_02, 0},
+    {"_coda_base_testing_03", (DL_FUNC) &_coda_base_testing_03, 0},
+    {"_coda_base_testing_04", (DL_FUNC) &_coda_base_testing_04, 1},
+    {"_coda_base_testing_05", (DL_FUNC) &_coda_base_testing_05, 1},
+    {"_coda_base_testing_06", (DL_FUNC) &_coda_base_testing_06, 1},
     {"_coda_base_find_predictive_balance", (DL_FUNC) &_coda_base_find_predictive_balance, 3},
     {"_coda_base_pinv", (DL_FUNC) &_coda_base_pinv, 1},
     {"_coda_base_c_variation_array", (DL_FUNC) &_coda_base_c_variation_array, 2},
