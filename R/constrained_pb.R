@@ -57,7 +57,7 @@ fBPMaxOrthNewChip<-function(Y,angle=TRUE)
   V<-res$varbal
   # if necessary GO UP to complete
   if (sum(B==0)>0){
-    res<-fBPUpChi(Y,B)
+    res<-fBPUpChi(Y,B)   # <- Balances are completed forcing parents
     B=rbind(B,res$bal)
     V=cbind(V,res$varbal)
   }
@@ -104,7 +104,7 @@ fBPMaxOrthNewChip<-function(Y,angle=TRUE)
 
   # return results
   #
-  V<-as.matrix(V,1,lenght(V))
+  V<-as.matrix(V,1,length(V))
   #
   return(list(bal=B,varbal=V))
 

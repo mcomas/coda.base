@@ -1,3 +1,7 @@
+coda.base 0.2.3
+===============
+* PB constrained approximation available. Code provided by J.A.Martín-Fernández.
+
 coda.base 0.2.2
 ===============
 * MASS dependence removed
