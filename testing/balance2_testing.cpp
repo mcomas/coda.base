@@ -187,6 +187,10 @@ arma::mat testing_05(arma::mat X){
   return(pb_mat);
 }
 
+
+/*
+ * Approximation using the variance
+ */
 // [[Rcpp::export]]
 arma::mat testing_06(arma::mat X){
   int D = X.n_cols;
@@ -229,9 +233,7 @@ arma::mat testing_06(arma::mat X){
   balance_candidates.erase(balance_candidates.begin()+best_balance);
   for(int k=1; k < D-1; k++){
     qr(Q, R, B.t() * pb_mat.head_cols(k));
-    // Rcout << Q.tail_cols(D-k-1) << std::endl;
     arma::mat B_orth = B * Q.tail_cols(D-k-1);
-    // Rcout << B;
     S = cov(lX * B_orth);
     arma::eig_sym( eigval, eigvec, S);
     V = B_orth * eigvec.tail_cols(1);
@@ -266,6 +268,9 @@ arma::mat testing_06(arma::mat X){
   return(pb_mat);
 }
 
+/*
+ * Approximation using the angle
+ */
 // [[Rcpp::export]]
 arma::mat testing_07(arma::mat X){
   int D = X.n_cols;
@@ -345,6 +350,9 @@ arma::mat testing_07(arma::mat X){
   return(pb_mat);
 }
 
+/*
+ * Approximation using the angle, only the first balance
+ */
 // [[Rcpp::export]]
 arma::vec testing_08(arma::mat X){
   int D = X.n_cols;
@@ -377,6 +385,85 @@ arma::vec testing_08(arma::mat X){
 
 
   return(pb1);
+}
+
+// [[Rcpp::export]]
+arma::mat testing_09(arma::mat X){
+  int D = X.n_cols;
+  arma::mat lX = log(X);
+
+  arma::mat eigvec, S, Q, R;
+  arma::vec eigval;
+  std::vector<Balance2> balance_candidates;
+  arma::mat pb_mat = arma::zeros(D,D-1), v_mat = arma::zeros(D,D-1);
+
+  // Quality of a balance
+  MaximumVariance1 ebalance1 = MaximumVariance1(X);
+  MaximumVariance2 ebalance2 = MaximumVariance2(X);
+  MaximumVariance3 ebalance3 = MaximumVariance3(X);
+  // ITERATION 1
+  arma::mat B = ilr_basis_default(D);
+
+  // First principal component obtention
+  S = cov(lX * B);
+  arma::eig_sym( eigval, eigvec, S);
+  arma::vec V = B * eigvec.tail_cols(1);
+
+
+  // Complete tree structure included as first search
+  Balance2 balance = Balance2(D);
+  balance_candidates.push_back(balance);
+
+  int best_balance = 0;
+  double best_dp = 0;
+  for(int i=0; i < balance_candidates.size(); i++){
+    double dp = balance_candidates[i].iterateLogContrast<MaximumVariance3>(V, &ebalance3);
+    if(dp > best_dp){
+      best_balance = i;
+    }
+  }
+  v_mat.col(0) = arma::mat(V);
+  pb_mat.col(0) = balance_candidates[best_balance].getBalance();
+
+  balance = balance_candidates[best_balance].top();
+  if(balance.size() > 1) balance_candidates.push_back(balance);
+  balance = balance_candidates[best_balance].left();
+  if(balance.size() > 1) balance_candidates.push_back(balance);
+  balance = balance_candidates[best_balance].right();
+  if(balance.size() > 1) balance_candidates.push_back(balance);
+
+  // Balance removed from the partitions available
+  balance_candidates.erase(balance_candidates.begin()+best_balance);
+  for(int k=1; k < D-1; k++){
+    qr(Q, R, B.t() * pb_mat.head_cols(k));
+    arma::mat B_orth = B * Q.tail_cols(D-k-1);
+    S = cov(lX * B_orth);
+    arma::eig_sym( eigval, eigvec, S);
+    V = B_orth * eigvec.tail_cols(1);
+
+    best_balance = 0;
+    best_dp = 0;
+    for(int i=0; i < balance_candidates.size(); i++){
+      double dp = balance_candidates[i].iterateLogContrast<MaximumVariance3>(V, &ebalance3);
+      if(dp > best_dp){
+        best_dp = dp;
+        best_balance = i;
+      }
+    }
+    v_mat.col(k) = arma::mat(V);
+    pb_mat.col(k) = balance_candidates[best_balance].getBalance();
+
+    balance = balance_candidates[best_balance].top();
+    if(balance.size() > 1) balance_candidates.push_back(balance);
+    balance = balance_candidates[best_balance].left();
+    if(balance.size() > 1) balance_candidates.push_back(balance);
+    balance = balance_candidates[best_balance].right();
+    if(balance.size() > 1) balance_candidates.push_back(balance);
+
+    // Balance removed from the partitions available
+    balance_candidates.erase(balance_candidates.begin()+best_balance);
+  }
+  return(pb_mat);
 }
 
 /*** R
