@@ -1,7 +1,6 @@
 #include <RcppArmadillo.h>
-#include "balance2.h"
-#include "coda.h"
-
+#include "../src/balance2.h"
+#include "../src/coda.h"
 
 // [[Rcpp::export]]
 void testing_01(arma::mat X, arma::vec V) {
@@ -344,6 +343,40 @@ arma::mat testing_07(arma::mat X){
   }
   // List::create(pb_mat, v_mat)
   return(pb_mat);
+}
+
+// [[Rcpp::export]]
+arma::vec testing_08(arma::mat X){
+  int D = X.n_cols;
+  arma::mat lX = log(X), eigvec, S, Q, R;
+  arma::vec eigval, V;
+  std::vector<Balance2> balance_candidates;
+  arma::vec pb1 = arma::zeros(D);
+  Balance2 balance = Balance2(D);
+
+
+  balance_candidates.push_back(balance);
+
+  // ITERATION 1
+  arma::mat B = ilr_basis_default(D);
+
+  S = cov(lX * B);
+  arma::eig_sym( eigval, eigvec, S);
+  V = B * eigvec.tail_cols(1);
+
+  int best_balance = 0;
+  double best_dp = 0;
+  for(int i=0; i < balance_candidates.size(); i++){
+    double dp = balance_candidates[i].approximateLogContrast(V);
+    // balance_candidates[i].print();
+    if(dp > best_dp){
+      best_balance = i;
+    }
+  }
+  pb1 = balance_candidates[best_balance].getBalance();
+
+
+  return(pb1);
 }
 
 /*** R

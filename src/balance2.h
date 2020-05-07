@@ -4,6 +4,8 @@
 #include <RcppArmadillo.h>
 
 using namespace Rcpp;
+class Balance2;
+class EvaluateBalance2;
 
 class Balance2 {
 public:
@@ -247,7 +249,44 @@ public:
     // Rcout << "Best approximation:\n" << getBalance().t() << std::endl << std::endl;
     return(score_max);
   }
+  template <class EB>
+  double iterateLogContrast(arma::vec LC, EB *ebalance){
+    arma::vec V = arma::zeros(n_nodes);
+    for(int i=0; i < n_nodes; i++){
+      for(int j: nodes[i]){
+        V(i) += LC(j);
+      }
+    }
 
+    int imin = index_min(V);
+    int imax = index_max(V);
+
+    setL(imin);
+    setR(imax);
+
+    V(imin) = 0;
+    V(imax) = 0;
+    arma::uvec ord = sort_index(abs(V), "descend");
+    arma::uvec uL(ord.size()), uR(ord.size());
+    int nL = 0, nR = 0;
+    int mL = 0, mR = 0;
+    double score_max = ebalance->eval(this);
+    for(int i = 0; i < n_nodes-2; i++){
+      if(V(ord[i]) < 0) uL(nL++) = ord[i];
+      else uR(nR++) = ord[i];
+
+      double score = ebalance->evalIfAdd(this, uL.head(nL), uR.head(nR));
+      if(score > score_max){
+        score_max = score;
+        mL = nL;
+        mR = nR;
+      }
+    }
+    for(int i=0; i < mL; i++) addL(uL(i));
+    for(int i=0; i < mR; i++) addR(uR(i));
+
+    return(score_max);
+  }
 
   void print(){
     Rcout << "Elements: ";
@@ -270,6 +309,28 @@ public:
     }
   }
 
+};
+
+class EvaluateBalance2 {
+
+public:
+  EvaluateBalance2(){ }
+
+  virtual double evalBalance(arma::vec balance){
+    return(-1);
+  }
+  double eval(Balance2 *bal){
+    return(evalBalance(bal->getBalance()));
+  }
+  double evalIfAddL(Balance2 *bal, unsigned iL){
+    return(evalBalance(bal->getBalanceIfAddL(iL)));
+  }
+  double evalIfAddR(Balance2 *bal, unsigned iR){
+    return(evalBalance(bal->getBalanceIfAddR(iR)));
+  }
+  double evalIfAdd(Balance2 *bal, arma::uvec uL, arma::uvec uR){
+    return(evalBalance(bal->getBalanceIfAdd(uL, uR)));
+  }
 };
 
 #endif
