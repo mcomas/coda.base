@@ -227,6 +227,37 @@ public:
     return(score_max);
   }
   template <class EB>
+  double exhaustiveIteration(){
+
+    arma::uvec uL = arma::zeros<arma::uvec>(D);
+    arma::uvec uR = arma::zeros<arma::uvec>(D);
+
+    do{
+      unsigned posL = 0;
+      unsigned posR = 0;
+      while(){
+        uL
+      }
+    } while (true);
+      // arma::uvec uL = L.head(L_length);
+      // arma::uvec uR = R.head(R_length);
+      // arma::uvec O = arma::zeros<arma::uvec>(N);
+      // O(uL).fill(1);
+      // O(uR).fill(2);
+      // do{
+      //   int pos = 0;
+      //   while(O[pos] == 2){
+      //     O[pos] = 0;
+      //     pos++;
+      //   }
+      //   O[pos]++;
+      //   uL = find(O == 1);
+      //   uR = find(O == 2);
+      // } while ( (uL.n_elem == 0) | (uR.n_elem == 0) );
+      // init(uL,uR);
+
+  }
+  template <class EB>
   double iterateLogContrast(arma::vec LC, EB *ebalance){
     arma::vec V = arma::zeros(n_nodes);
     for(int i=0; i < n_nodes; i++){
