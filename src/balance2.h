@@ -189,22 +189,10 @@ public:
     int imin = index_min(V);
     int imax = index_max(V);
 
-    // Rcout << "\nApproximating V = " << LC.t();
-    // Rcout << V.t() << std::endl;
-    // Rcout << "Min:" << imin << std::endl;
-    // Rcout << "Max:" << imax << std::endl;
-    // print();
-
     setL(imin);
     setR(imax);
 
-    // print();
     arma::vec bal = getBalance();
-    // Rcout << "b:" << bal.t();
-    // Rcout << "b x V = " << dot(bal,LC) << std::endl;
-    // if(lX){
-    //   Rcout << "Variance(lX b) = " << var((*lX) * bal) << std::endl << std::endl;
-    // }
 
     V(imin) = 0;
     V(imax) = 0;
@@ -217,37 +205,57 @@ public:
       score_max = var((*lX) * bal);
     }
     for(int i = 0; i < n_nodes-2; i++){
-      if(V(ord[i]) < 0){
-        // addL(ord[i]);
-        uL(nL++) = ord[i];
-      }else{
-        uR(nR++) = ord[i];
-        // addR(ord[i]);
-      }
+
+      if(V(ord[i]) < 0) uL(nL++) = ord[i];
+      else uR(nR++) = ord[i];
+
       arma::vec bal = getBalanceIfAdd(uL.head(nL), uR.head(nR));
       double score = fabs(dot(bal,LC));
       if(lX){
         score = var((*lX) * bal);
       }
-      // Rcout << "dp:" << dp << " " << "dpMax:" << dpMax << std::endl;
       if(score > score_max){
         score_max = score;
         mL = nL;
         mR = nR;
       }
-      // Rcout << "b:" << bal.t();
-      // Rcout << "b x V = " << dot(bal,LC) << std::endl;
-      // if(lX){
-      //   Rcout << "Variance(lX b) = " << var((*lX) * bal) << std::endl << std::endl;
-      // }
-      // print();
-      // Rcout << "Node included:" << getBalance().t() << std::endl;
     }
-    // Rcout << mL << " " << mR << std::endl;
+
     for(int i=0; i < mL; i++) addL(uL(i));
     for(int i=0; i < mR; i++) addR(uR(i));
-    // Rcout << "Best approximation:\n" << getBalance().t() << std::endl << std::endl;
+
     return(score_max);
+  }
+  template <class EB>
+  double exhaustiveIteration(){
+
+    arma::uvec uL = arma::zeros<arma::uvec>(D);
+    arma::uvec uR = arma::zeros<arma::uvec>(D);
+
+    do{
+      unsigned posL = 0;
+      unsigned posR = 0;
+      while(){
+        uL
+      }
+    } while (true);
+      // arma::uvec uL = L.head(L_length);
+      // arma::uvec uR = R.head(R_length);
+      // arma::uvec O = arma::zeros<arma::uvec>(N);
+      // O(uL).fill(1);
+      // O(uR).fill(2);
+      // do{
+      //   int pos = 0;
+      //   while(O[pos] == 2){
+      //     O[pos] = 0;
+      //     pos++;
+      //   }
+      //   O[pos]++;
+      //   uL = find(O == 1);
+      //   uR = find(O == 2);
+      // } while ( (uL.n_elem == 0) | (uR.n_elem == 0) );
+      // init(uL,uR);
+
   }
   template <class EB>
   double iterateLogContrast(arma::vec LC, EB *ebalance){
@@ -313,12 +321,14 @@ public:
 
 class EvaluateBalance2 {
 
-public:
-  EvaluateBalance2(){ }
-
+protected:
   virtual double evalBalance(arma::vec balance){
     return(-1);
   }
+
+public:
+  EvaluateBalance2(){ }
+
   double eval(Balance2 *bal){
     return(evalBalance(bal->getBalance()));
   }
@@ -332,5 +342,163 @@ public:
     return(evalBalance(bal->getBalanceIfAdd(uL, uR)));
   }
 };
+
+class MaximumDotProduct: public EvaluateBalance2 {
+
+  arma::vec V;
+public:
+  MaximumDotProduct(arma::vec V0){
+    V = V0;
+  }
+  double evalBalance(arma::vec balance){
+    return(fabs(dot(balance, V)));
+  }
+};
+
+// Better when N small
+class MaximumVariance1: public EvaluateBalance2 {
+  arma::mat lX;
+public:
+  MaximumVariance1(arma::mat X){
+    lX = log(X);
+  }
+  double evalBalance(arma::vec balance){
+    return(var(lX * balance));
+  }
+};
+
+// Better when N>>0, D small
+class MaximumVariance2: public EvaluateBalance2 {
+
+  arma::mat M;
+public:
+  MaximumVariance2(arma::mat X){
+    M = cov(log(X));
+  }
+  double evalBalance(arma::vec balance){
+    return( arma::accu((balance.t() * M * balance)) );
+  }
+};
+
+// Better when N>>0 or D>>0, small number of parts.
+class MaximumVariance3: public EvaluateBalance2 {
+
+  arma::mat M;
+public:
+  MaximumVariance3(arma::mat X){
+    M = cov(log(X));
+  }
+
+  double eval(Balance2 *bal){
+    std::map<int,arma::uvec> nodes = bal->nodes;
+    arma::uvec L = bal->L;
+    arma::uvec R = bal->R;
+
+    double nL = bal->get_nL();
+    double nR = bal->get_nR();
+    double variance = 0;
+
+    for(int i=0;i<bal->L_length;i++){
+      for(int j=0;j<bal->L_length;j++){
+        variance += (nR/nL) * arma::accu(M(nodes[L[i]],nodes[L[j]]));
+      }
+      for(int j=0;j<bal->R_length;j++){
+        variance += - 2 * arma::accu(M(nodes[L[i]],nodes[R[j]]));
+      }
+    }
+    for(int i=0;i<bal->R_length;i++){
+      for(int j=0;j<bal->R_length;j++){
+        variance += (nL/nR) * arma::accu(M(nodes[R[i]],nodes[R[j]]));
+      }
+    }
+    return variance / (nL+nR);
+  }
+  double evalIfAddL(Balance2 *bal, unsigned iL){
+    std::map<int,arma::uvec> nodes = bal->nodes;
+    arma::uvec L = bal->L;
+    arma::uvec R = bal->R;
+
+    double nL = bal->get_nL() + nodes[iL].size();
+    double nR = bal->get_nR();
+    double variance = 0;
+
+    // Node iL
+    variance += (nR/nL) * arma::accu(M(nodes[iL],nodes[iL]));
+    for(int j=0;j<bal->L_length;j++){
+      variance += 2 * (nR/nL) * arma::accu(M(nodes[iL],nodes[L[j]]));
+    }
+    for(int j=0;j<bal->R_length;j++){
+      variance += - 2 * arma::accu(M(nodes[iL],nodes[R[j]]));
+    }
+
+    for(int i=0;i<bal->L_length;i++){
+      variance += (nR/nL) * arma::accu(M(nodes[L[i]],nodes[L[i]]));
+      for(int j=0;j<bal->R_length;j++){
+        variance += - 2 * arma::accu(M(nodes[L[i]],nodes[R[j]]));
+      }
+    }
+    for(int i=0;i<bal->R_length;i++){
+      variance += (nL/nR) * arma::accu(M(nodes[R[i]],nodes[R[i]]));
+    }
+    return variance / (nL+nR);
+  }
+  double evalIfAddR(Balance2 *bal, unsigned iR){
+    std::map<int,arma::uvec> nodes = bal->nodes;
+    arma::uvec L = bal->L;
+    arma::uvec R = bal->R;
+
+    double nL = bal->get_nL();
+    double nR = bal->get_nR() + nodes[iR].size();
+    double variance = 0;
+
+    // Node iR
+    variance += (nL/nR) * arma::accu(M(nodes[iR],nodes[iR]));
+    for(int j=0;j<bal->L_length;j++){
+      variance += - 2 * arma::accu(M(nodes[iR],nodes[L[j]]));
+    }
+    for(int j=0;j<bal->R_length;j++){
+      variance += 2 * (nL/nR) * arma::accu(M(nodes[iR],nodes[R[j]]));
+    }
+
+    for(int i=0;i<bal->L_length;i++){
+      variance += (nR/nL) * arma::accu(M(nodes[L[i]],nodes[L[i]]));
+      for(int j=0;j<bal->R_length;j++){
+        variance += - 2 * arma::accu(M(nodes[L[i]],nodes[R[j]]));
+      }
+    }
+    for(int i=0;i<bal->R_length;i++){
+      variance += (nL/nR) * arma::accu(M(nodes[R[i]],nodes[R[i]]));
+    }
+    return variance / (nL+nR);
+  }
+  double evalIfAdd(Balance2 *bal, arma::uvec uL, arma::uvec uR){
+    std::map<int,arma::uvec> nodes = bal->nodes;
+
+    double nL = bal->get_nL();
+    for(unsigned int i = 0; i< uL.size(); i++) nL+=nodes[uL[i]].size();
+    double nR = bal->get_nR();
+    for(unsigned int i = 0; i< uR.size(); i++) nR+=nodes[uR[i]].size();
+    double variance = 0;
+
+    arma::uvec joinL = join_cols(uL, bal->L.head(bal->L_length));
+    arma::uvec joinR = join_cols(uR, bal->R.head(bal->R_length));
+
+    for(int i=0;i<joinL.size();i++){
+      for(int j=0;j<joinL.size();j++){
+        variance += (nR/nL) * arma::accu(M(nodes[joinL[i]],nodes[joinL[j]]));
+      }
+      for(int j=0;j<joinR.size();j++){
+        variance += - 2 * arma::accu(M(nodes[joinL[i]],nodes[joinR[j]]));
+      }
+    }
+    for(int i=0;i<joinR.size();i++){
+      for(int j=0;j<joinR.size();j++){
+        variance += (nL/nR) * arma::accu(M(nodes[joinR[i]],nodes[joinR[j]]));
+      }
+    }
+    return variance / (nL+nR);
+  }
+};
+
 
 #endif
