@@ -8,11 +8,13 @@ def algorithm_u(ns, m):
     else:
       f(mu - 1, nu - 1, (mu + sigma) % 2, n, a)
     if nu == mu + 1:
+      # print("A")
       a[mu] = mu - 1
       visit(n, a)
       while a[nu] > 0:
         a[nu] = a[nu] - 1
         visit(n, a)
+      # print("B")
     elif nu > mu + 1:
       if (mu + sigma) % 2 == 1:
         a[nu - 1] = mu - 1
@@ -35,6 +37,7 @@ def algorithm_u(ns, m):
         a[nu] = a[nu] + 1
       visit(n, a)
       a[mu] = 0
+      # print("D")
     elif nu > mu + 1:
       if (a[nu] + sigma) % 2 == 1:
         f(mu, nu - 1, 0, n, a)
@@ -50,6 +53,7 @@ def algorithm_u(ns, m):
         a[nu - 1] = 0
       else:
         a[mu] = 0
+    # print("C")
     if mu == 2:
       visit(n, a)
     else:
@@ -60,4 +64,4 @@ def algorithm_u(ns, m):
     a[n - m + j] = j - 1
   return f(m, n, 0, n, a)
 
-algorithm_u([1, 2, 3, 4], 3)
+algorithm_u([1, 2, 3, 4, 5], 3)

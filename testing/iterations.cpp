@@ -1,31 +1,91 @@
 #include <RcppArmadillo.h>
 
+void f(int mu, int nu, int sigma, arma::uvec& I, arma::uvec& A);
+void b(int mu, int nu, int sigma, arma::uvec& I, arma::uvec& A);
 
-void f(int mu, int nu, int sigma, arma::uvec A){
+void f(int mu, int nu, int sigma, arma::uvec& I, arma::uvec& A){
   if(mu == 2){
-    Rcpp::Rcout << A.t() << std::endl;
+    Rcpp::Rcout << "A: " << A.t();
   }else{
-    f(mu-1, nu-1, mu+sigma % 2, A);
+    f(mu-1, nu-1, (mu+sigma) % 2, I, A);
   }
   if(nu == mu + 1){
-
+    // Rcpp::Rcout << "a" << std::endl;
+    A[mu] = mu - 1;
+    Rcpp::Rcout << "A: " << A.t();
+    while(A[nu] > 0){
+      A[nu] = A[nu] - 1;
+      Rcpp::Rcout << "A: " << A.t();
+    }
+    // Rcpp::Rcout << "b" << std::endl;
+  }else if(nu > mu + 1){ // nu > mu + 1
+    if( (mu + sigma) % 2 ){
+      A[nu-1] = mu - 1;
+    }else{
+      A[mu] = mu - 1;
+    }
+    if( (A[nu] + sigma) % 2 ){
+      b(mu, nu - 1, 0, I, A);
+    }else{
+      f(mu, nu - 1, 0, I, A);
+    }
+    while( A[nu] > 0){
+      A[nu] = A[nu] - 1;
+      if( (A[nu] + sigma) % 2 ){
+        b(mu, nu - 1, 0, I, A);
+      }else{
+        f(mu, nu - 1, 0, I, A);
+      }
+    }
   }
 }
 
-void b(int mu, int nu, int sigma){
-
+void b(int mu, int nu, int sigma, arma::uvec& I, arma::uvec& A){
+  if( nu == mu + 1){
+    while(A[nu] < mu - 1){
+      Rcpp::Rcout << "A: " << A.t();
+      A[nu] = A[nu] + 1;
+    }
+    Rcpp::Rcout << "A: " << A.t();
+    A[mu] = 0;
+    // Rcpp::Rcout << "d" << std::endl;
+  }else if(nu > mu + 1){ // nu > mu + 1:
+    if( (A[nu] + sigma) % 2 ){
+      f(mu, nu - 1, 0, I, A);
+    }else{
+      b(mu, nu - 1, 0, I, A);
+    }
+    while(A[nu] < mu - 1){
+      A[nu] = A[nu] + 1;
+      if( (A[nu] + sigma) % 2 ){
+        f(mu, nu - 1, 0, I, A);
+      }else{
+        b(mu, nu - 1, 0, I, A);
+      }
+    }
+    if( (mu + sigma) % 2 ){
+      A[nu-1] = 0;
+    }else{
+      A[mu] = 0;
+    }
+  }
+  // Rcpp::Rcout << "a" << std::endl;
+  if(mu == 2){
+    Rcpp::Rcout << "A: " << A.t();
+  }else{
+    b(mu - 1, nu - 1, (mu + sigma) % 2, I, A);
+  }
 }
 
 // [[Rcpp::export]]
-arma::uvec combinations(unsigned n) {
-  unsigned m = 3;
-  arma::uvec A = arma::uvec(n);
+void combinations(unsigned n) {
+  arma::uvec I = arma::uvec(n+1);
+  arma::uvec A = arma::uvec(n+1);
+
   A.fill(0);
-  for(int i = 0; i < m; i++){
-    A(n-m+i) = i;
-  }
-  f(m, n, 0, A);
-  return(A);
+  A[n-1] = 1;
+  A[n] = 2;
+  f(3, n, 0, I, A);
 }
 
 
@@ -35,5 +95,5 @@ arma::uvec combinations(unsigned n) {
 //
 
 /*** R
-a = t(combinations(5))
+combinations(5)
 */
