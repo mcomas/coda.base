@@ -5,17 +5,17 @@ void b(int mu, int nu, int sigma, arma::uvec& I, arma::uvec& A);
 
 void f(int mu, int nu, int sigma, arma::uvec& I, arma::uvec& A){
   if(mu == 2){
-    Rcpp::Rcout << "A: " << A.t();
+    Rcpp::Rcout << "A: " << A.tail(A.n_elem-2).t();
   }else{
     f(mu-1, nu-1, (mu+sigma) % 2, I, A);
   }
   if(nu == mu + 1){
     // Rcpp::Rcout << "a" << std::endl;
     A[mu] = mu - 1;
-    Rcpp::Rcout << "A: " << A.t();
+    Rcpp::Rcout << "A: " << A.tail(A.n_elem-2).t();
     while(A[nu] > 0){
       A[nu] = A[nu] - 1;
-      Rcpp::Rcout << "A: " << A.t();
+      Rcpp::Rcout << "A: " << A.tail(A.n_elem-2).t();
     }
     // Rcpp::Rcout << "b" << std::endl;
   }else if(nu > mu + 1){ // nu > mu + 1
@@ -43,10 +43,10 @@ void f(int mu, int nu, int sigma, arma::uvec& I, arma::uvec& A){
 void b(int mu, int nu, int sigma, arma::uvec& I, arma::uvec& A){
   if( nu == mu + 1){
     while(A[nu] < mu - 1){
-      Rcpp::Rcout << "A: " << A.t();
+      Rcpp::Rcout << "A: " << A.tail(A.n_elem-2).t();
       A[nu] = A[nu] + 1;
     }
-    Rcpp::Rcout << "A: " << A.t();
+    Rcpp::Rcout << "A: " << A.tail(A.n_elem-2).t();
     A[mu] = 0;
     // Rcpp::Rcout << "d" << std::endl;
   }else if(nu > mu + 1){ // nu > mu + 1:
@@ -71,7 +71,7 @@ void b(int mu, int nu, int sigma, arma::uvec& I, arma::uvec& A){
   }
   // Rcpp::Rcout << "a" << std::endl;
   if(mu == 2){
-    Rcpp::Rcout << "A: " << A.t();
+    Rcpp::Rcout << "A: " << A.tail(A.n_elem-2).t();
   }else{
     b(mu - 1, nu - 1, (mu + sigma) % 2, I, A);
   }
