@@ -323,6 +323,9 @@ pb_basis = function(X, method, rep = 0, ordering = TRUE, ...){
     if(method == 'constrained'){
       B = t(fBalChip(X)$bal)
     }
+    if(method == 'constrained2'){
+      B = find_PB_using_pc(X)
+    }
     # if(method == 'lsearch'){
     #   if(rep == 0){
     #     B = find_PB_pc_local_search(X)

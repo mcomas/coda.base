@@ -61,7 +61,7 @@ find_PB <- function(X) {
     .Call(`_coda_base_find_PB`, X)
 }
 
-find_PB_Chipman <- function(X) {
-    .Call(`_coda_base_find_PB_Chipman`, X)
+find_PB_using_pc <- function(X) {
+    .Call(`_coda_base_find_PB_using_pc`, X)
 }
 

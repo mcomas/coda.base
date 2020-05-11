@@ -176,14 +176,14 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// find_PB_Chipman
-arma::mat find_PB_Chipman(arma::mat& X);
-RcppExport SEXP _coda_base_find_PB_Chipman(SEXP XSEXP) {
+// find_PB_using_pc
+arma::mat find_PB_using_pc(arma::mat& X);
+RcppExport SEXP _coda_base_find_PB_using_pc(SEXP XSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::mat& >::type X(XSEXP);
-    rcpp_result_gen = Rcpp::wrap(find_PB_Chipman(X));
+    rcpp_result_gen = Rcpp::wrap(find_PB_using_pc(X));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -204,7 +204,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_coda_base_ilr_coordinates", (DL_FUNC) &_coda_base_ilr_coordinates, 1},
     {"_coda_base_inv_ilr_coordinates", (DL_FUNC) &_coda_base_inv_ilr_coordinates, 1},
     {"_coda_base_find_PB", (DL_FUNC) &_coda_base_find_PB, 1},
-    {"_coda_base_find_PB_Chipman", (DL_FUNC) &_coda_base_find_PB_Chipman, 1},
+    {"_coda_base_find_PB_using_pc", (DL_FUNC) &_coda_base_find_PB_using_pc, 1},
     {NULL, NULL, 0}
 };
 

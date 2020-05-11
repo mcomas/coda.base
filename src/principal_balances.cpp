@@ -66,20 +66,40 @@ arma::mat find_PB(arma::mat& X){
   return(pb_mat);
 }
 
-void optimiseChipman(Balance<MaximumVariance>& balance, arma::mat& X){
+void optimise_using_pc(Balance<MaximumVariance>& balance, arma::mat& X){
   MaximumVariance ebalance = MaximumVariance(balance.nodes, X);
   balance.setEvaluator(ebalance);
-  arma::mat Xsub = arma::mat(X.n_rows, balance.nodes.size());
-  for(int i = 0; i < Xsub.n_cols; i++){
-    Xsub.col(i) = X.col(balance.nodes[i][0]);
-    for(int j = 1; j < balance.nodes[i].n_elem; j++){
-      Xsub.col(i) += X.col(balance.nodes[i][j]);
+  if(balance.nodes.size() == 2){
+    arma::uvec uL(1), uR(1);
+    uL[0] = 0; uR[0] = 1;
+    ebalance.eval(uL, uR, 1, 1);
+    balance.set(uL, uR);
+  }else{
+    arma::mat Xsub = arma::mat(X.n_rows, balance.nodes.size());
+    for(int i = 0; i < Xsub.n_cols; i++){
+      Xsub.col(i) = X.col(balance.nodes[i][0]);
+      for(int j = 1; j < balance.nodes[i].n_elem; j++){
+        Xsub.col(i) += X.col(balance.nodes[i][j]);
+      }
     }
+    // arma::mat eigvec;
+    // arma::vec eigval;
+    // arma::eig_sym(eigval, eigvec, cov(clr_coordinates(Xsub)));
+    //
+    // Rcpp::Rcout << eigvec.tail_cols(1).t();
+
+    arma::mat U, V;
+    arma::vec s;
+
+    arma::svd_econ(U, s, V, clr_coordinates(Xsub));
+    // Rcpp::Rcout << V.col(0).t();
+    balance.setWithLogContrast(V.col(0));
+
   }
-  balance.setWithPrincipalComponent(cov(clr_coordinates(Xsub)));
+
 }
 // [[Rcpp::export]]
-arma::mat find_PB_Chipman(arma::mat& X){
+arma::mat find_PB_using_pc(arma::mat& X){
   int K = X.n_cols;
 
   arma::mat pb_mat = arma::mat(K,K-1);
@@ -88,7 +108,7 @@ arma::mat find_PB_Chipman(arma::mat& X){
 
   Balance<MaximumVariance> balance = Balance<MaximumVariance>(X.n_cols);
 
-  optimiseChipman(balance, X);
+  optimise_using_pc(balance, X);
 
   SOLS.push_back(balance);
 
@@ -112,15 +132,15 @@ arma::mat find_PB_Chipman(arma::mat& X){
     Balance<MaximumVariance> right  = SOLS[iBestSolution].right();
 
     if(top.nodes.size() > 1){
-      optimiseChipman(top, X);
+      optimise_using_pc(top, X);
       SOLS.push_back(top);
     }
     if(left.nodes.size() > 1){
-      optimiseChipman(left, X);
+      optimise_using_pc(left, X);
       SOLS.push_back(left);
     }
     if(right.nodes.size() > 1){
-      optimiseChipman(right, X);
+      optimise_using_pc(right, X);
       SOLS.push_back(right);
     }
 
