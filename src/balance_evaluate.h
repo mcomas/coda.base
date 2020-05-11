@@ -42,6 +42,9 @@ public:
       }
     }
   }
+  void init(){
+    bestScore = -1;
+  }
   double eval(arma::uvec& L, arma::uvec& R, int l, int r){
     double nL = 0;
     for(unsigned int i=0; i<l;nL+=N[L[i++]]);
@@ -71,11 +74,34 @@ public:
     }
     return variance;
   }
-
-  double eval(arma::uvec& L, arma::uvec& R){
-    return(eval(L, R, L.size(), R.size()));
-  }
+//
+//   double eval(arma::uvec& L, arma::uvec& R){
+//     return(eval(L, R, L.size(), R.size()));
+//   }
 
 };
+
+// class MaximumDotProduct: public EvaluateBalance {
+//
+//   std::map<int,arma::uvec>& nodes;
+//   arma::vec V;
+// public:
+//   MaximumDotProduct(std::map<int,arma::uvec>& nodes0, arma::vec& V0){
+//     nodes = nodes0;
+//     V = V0;
+//   }
+//   double eval(arma::uvec& L, arma::uvec& R, int l, int r){
+//
+//     double nL = 0, nR = 0;
+//     for(unsigned int i = 0; i< l; i++) nL+=nodes[L[i]].size();
+//     for(unsigned int i = 0; i< r; i++) nR+=nodes[R[i]].size();
+//
+//     arma::vec b = arma::zeros(D);
+//     for(unsigned int i = 0; i< l; i++) b(nodes[L[i]]).fill(-1/nL * sqrt(nL*nR/(nL+nR)));
+//     for(unsigned int i = 0; i< r; i++) b(nodes[R[i]]).fill(+1/nR * sqrt(nL*nR/(nL+nR)));
+//
+//     return(fabs(dot(b, V)));
+//   }
+// };
 
 #endif

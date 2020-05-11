@@ -17,6 +17,7 @@ public:
   int n_nodes;
 
   EB ebalance = EB();
+  double ebalance_value = 0;
 
   Balance(int D0){
     D = D0;
@@ -51,6 +52,8 @@ public:
 
     R_length = uR.size();
     R.head(R_length) = uR;
+
+    ebalance_value = ebalance.eval(L, R, L_length, R_length);
   }
   void setWithExhaustiveSearch(){
     int N = nodes.size();
@@ -77,8 +80,64 @@ public:
     f<EB>(3, N, 0, I, A, P, p, ebalance);
 
     set(ebalance.bestL, ebalance.bestR);
-  }
 
+  }
+  void setWithPrincipalComponent(arma::mat M){
+    arma::mat eigvec;
+    arma::vec eigval, V;
+    arma::eig_sym( eigval, eigvec, M);
+
+    V = eigvec.tail_cols(1);
+
+    int imin = index_min(V);
+    int imax = index_max(V);
+
+    V(imin) = 0;
+    V(imax) = 0;
+    arma::uvec ord = sort_index(abs(V), "descend");
+    arma::uvec uL(ord.size()), uR(ord.size());
+    uL[0] = imin; uR[0] = imax;
+    unsigned l = 1, r = 1;
+
+    ebalance.eval(uL, uR, l, r);
+    for(int i = 0; i < n_nodes-2; i++){
+      if(V(ord[i]) < 0) uL(l++) = ord[i];
+      else uR(r++) = ord[i];
+
+      ebalance.eval(uL, uR, l, r);
+    }
+
+    set(ebalance.bestL, ebalance.bestR);
+  }
+  void setWithLogContrast(arma::vec LC){
+    ebalance.init();
+
+    arma::vec V = arma::zeros(n_nodes);
+    for(int i=0; i < n_nodes; i++){
+      for(int j: nodes[i]){
+        V(i) += LC(j);
+      }
+    }
+    int imin = index_min(V);
+    int imax = index_max(V);
+
+    V(imin) = 0;
+    V(imax) = 0;
+    arma::uvec ord = sort_index(abs(V), "descend");
+    arma::uvec uL(ord.size()), uR(ord.size());
+    uL[0] = imin; uR[0] = imax;
+    unsigned l = 1, r = 1;
+
+    ebalance.eval(uL, uR, l, r);
+    for(int i = 0; i < n_nodes-2; i++){
+      if(V(ord[i]) < 0) uL(l++) = ord[i];
+      else uR(r++) = ord[i];
+
+      ebalance.eval(uL, uR, l, r);
+    }
+
+    set(ebalance.bestL, ebalance.bestR);
+  }
   arma::vec getBalance(){
     double nL = 0, nR = 0;
     for(unsigned int i = 0; i< L_length; i++) nL+=nodes[L[i]].size();
@@ -90,7 +149,7 @@ public:
     return(b);
   }
   double eval(){
-    return(ebalance.eval(L, R, L_length, R_length));
+    return(ebalance_value);
   }
 
 

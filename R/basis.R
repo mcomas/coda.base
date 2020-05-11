@@ -278,7 +278,7 @@ sbp_basis = function(..., data = NULL, silent=F){
 #' Exact method to calculate the principal balances of a compositional dataset. Different methods to approximate the principal balances of a compositional dataset are also included.
 #'
 #' @param X compositional dataset
-#' @param method method to be used with Principal Balances. Methods available are: 'exact', 'constrained', 'lsearch' or
+#' @param method method to be used with Principal Balances. Methods available are: 'exact', 'constrained' or
 #' method to be passed to hclust function (for example `ward.D` or `ward.D2` to use Ward method).
 #' @param rep Number of restartings to be used with the local search algorithm. If zero is supplied
 #' (default), one local search is performed using an starting point close to the principal component
@@ -305,7 +305,7 @@ sbp_basis = function(..., data = NULL, silent=F){
 #' (v4 <- apply(coordinates(X,pb_basis(X, method='ward.D2')), 2, var))
 #'
 #' # Plotting the variances
-#' barplot(rbind(v1,v2,v3,4), beside = TRUE,
+#' barplot(rbind(v1,v2,v3,v4), beside = TRUE,
 #'         legend = c('Principal Components','PB (Exact method)',
 #'                    'PB (Constrained)','PB (Ward approximation)'),
 #'         names = paste0('Comp.', 1:4), args.legend = list(cex = 0.8), ylab = 'Variance')
@@ -316,20 +316,20 @@ pb_basis = function(X, method, rep = 0, ordering = TRUE, ...){
   if(!(all(X > 0))){
     stop("All components must be strictly positive.", call. = FALSE)
   }
-  if(method %in% c('constrained', 'lsearch', 'exact')){
+  if(method %in% c('constrained', 'exact')){
     if(method == 'exact'){
       B = find_PB(X)
     }
     if(method == 'constrained'){
       B = t(fBalChip(X)$bal)
     }
-    if(method == 'lsearch'){
-      if(rep == 0){
-        B = find_PB_pc_local_search(X)
-      }else{
-        B = find_PB_rnd_local_search(stats::cov(log(X)), rep=rep)
-      }
-    }
+    # if(method == 'lsearch'){
+    #   if(rep == 0){
+    #     B = find_PB_pc_local_search(X)
+    #   }else{
+    #     B = find_PB_rnd_local_search(stats::cov(log(X)), rep=rep)
+    #   }
+    # }
   }else{
     # Passing arguments to hclust function
     hh = stats::hclust(stats::as.dist(variation_array(X, only_variation = TRUE)), method=method, ...)
