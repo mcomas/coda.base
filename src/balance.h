@@ -83,19 +83,6 @@ public:
 
   }
   void setWithLogContrast(arma::vec V){
-    // if(M.n_cols == 2){
-    //   arma::uvec uL(1), uR(1);
-    //   uL[0] = 0; uR[0] = 1;
-    //   ebalance.eval(uL, uR, 1, 1);
-    //   set(uL, uR);
-    //   return;
-    // }
-
-    // arma::mat eigvec;
-    // arma::vec eigval, V;
-    // arma::eig_sym( eigval, eigvec, M);
-    //
-    // V = eigvec.tail_cols(1);
 
     int imin = index_min(V);
     int imax = index_max(V);
@@ -112,41 +99,11 @@ public:
       if(V(ord[i]) < 0) uL(l++) = ord[i];
       else uR(r++) = ord[i];
 
-      double value = ebalance.eval(uL, uR, l, r);
-      Rcpp::Rcout << value << " ";
+      ebalance.eval(uL, uR, l, r);
     }
-    Rcpp::Rcout << std::endl;
     set(ebalance.bestL, ebalance.bestR);
   }
-  // void setWithLogContrast(arma::vec LC){
-  //   ebalance.init();
-  //
-  //   arma::vec V = arma::zeros(n_nodes);
-  //   for(int i=0; i < n_nodes; i++){
-  //     for(int j: nodes[i]){
-  //       V(i) += LC(j);
-  //     }
-  //   }
-  //   int imin = index_min(V);
-  //   int imax = index_max(V);
-  //
-  //   V(imin) = 0;
-  //   V(imax) = 0;
-  //   arma::uvec ord = sort_index(abs(V), "descend");
-  //   arma::uvec uL(ord.size()), uR(ord.size());
-  //   uL[0] = imin; uR[0] = imax;
-  //   unsigned l = 1, r = 1;
-  //
-  //   ebalance.eval(uL, uR, l, r);
-  //   for(int i = 0; i < n_nodes-2; i++){
-  //     if(V(ord[i]) < 0) uL(l++) = ord[i];
-  //     else uR(r++) = ord[i];
-  //
-  //     ebalance.eval(uL, uR, l, r);
-  //   }
-  //
-  //   set(ebalance.bestL, ebalance.bestR);
-  // }
+
   arma::vec getBalance(){
     double nL = 0, nR = 0;
     for(unsigned int i = 0; i< L_length; i++) nL+=nodes[L[i]].size();

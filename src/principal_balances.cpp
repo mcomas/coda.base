@@ -82,12 +82,6 @@ void optimise_using_pc(Balance<MaximumVariance>& balance, arma::mat& X){
         Xsub.col(i) += X.col(balance.nodes[i][j]);
       }
     }
-    // arma::mat eigvec;
-    // arma::vec eigval;
-    // arma::eig_sym(eigval, eigvec, cov(clr_coordinates(Xsub)));
-    //
-    // Rcpp::Rcout << eigvec.tail_cols(1).t();
-
     arma::mat U, V;
     arma::vec s;
 
@@ -96,8 +90,8 @@ void optimise_using_pc(Balance<MaximumVariance>& balance, arma::mat& X){
     balance.setWithLogContrast(V.col(0));
 
   }
-
 }
+
 // [[Rcpp::export]]
 arma::mat find_PB_using_pc(arma::mat& X){
   int K = X.n_cols;
@@ -152,5 +146,42 @@ arma::mat find_PB_using_pc(arma::mat& X){
 
   return(pb_mat);
 }
+
+
+void optimise_forcing_parent(arma::mat& X, arma::mat& pb_mat, int *pb_size){
+
+  Balance<MaximumVariance> balance = Balance<MaximumVariance>(X.n_cols);
+  optimise_using_pc(balance, X);
+  pb_mat.col(*pb_size) = balance.getBalance();
+  (*pb_size)++;
+
+  balance.print();
+
+
+}
+// [[Rcpp::export]]
+arma::mat find_PB_forcing_parent(arma::mat& X){
+  int K = X.n_cols;
+
+  arma::mat pb_mat = arma::zeros(K,K-1);
+
+  std::vector<Balance<MaximumVariance>> SOLS;
+  int pb_size = 0;
+  optimise_forcing_parent(X, pb_mat, &pb_size);
+
+
+  Rcpp::Rcout << pb_size << std::endl;
+  return(pb_mat);
+}
+
+/*** R
+SEED = round(1000*runif(1))
+set.seed(SEED)
+SEED
+D = 10
+X = matrix(rlnorm(100*D), ncol = D)
+find_PB(X)
+find_PB_using_pc(X)
+*/
 
 // #endif

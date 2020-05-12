@@ -278,11 +278,9 @@ sbp_basis = function(..., data = NULL, silent=F){
 #' Exact method to calculate the principal balances of a compositional dataset. Different methods to approximate the principal balances of a compositional dataset are also included.
 #'
 #' @param X compositional dataset
-#' @param method method to be used with Principal Balances. Methods available are: 'exact', 'constrained' or
-#' method to be passed to hclust function (for example `ward.D` or `ward.D2` to use Ward method).
-#' @param rep Number of restartings to be used with the local search algorithm. If zero is supplied
-#' (default), one local search is performed using an starting point close to the principal component
-#' solution.
+#' @param method method to be used with Principal Balances. Methods available are: 'exact', 'constrained' or 'cluster'.
+#' @param constrained.complete_up When searching up, should the algorithm try to find possible siblings for the current balance (TRUE) or build a parent directly forcing current balance to be part of the next balance (default: FALSE). While the first is more exhaustive and given better results the second is faster and can be used with highe dimensional datasets.
+#' @param cluster.method Method to be used with the hclust function (default: `ward.D2`) or any other method available in  hclust function
 #' @param ordering should the principal balances found be returned ordered? (first column, first
 #' principal balance and so on)
 #' @param ... parameters passed to hclust function
@@ -302,16 +300,17 @@ sbp_basis = function(..., data = NULL, silent=F){
 #' # Solution obtained using constrained method
 #' (v3 <- apply(coordinates(X,pb_basis(X, method='constrained')), 2, var))
 #' # Solution obtained using Ward method
-#' (v4 <- apply(coordinates(X,pb_basis(X, method='ward.D2')), 2, var))
+#' (v4 <- apply(coordinates(X,pb_basis(X, method='cluster')), 2, var))
 #'
 #' # Plotting the variances
-#' barplot(rbind(v1,v2,v3,v4), beside = TRUE,
+#' barplot(rbind(v1,v2,v3,v4), beside = TRUE, ylim = c(0,2),
 #'         legend = c('Principal Components','PB (Exact method)',
 #'                    'PB (Constrained)','PB (Ward approximation)'),
 #'         names = paste0('Comp.', 1:4), args.legend = list(cex = 0.8), ylab = 'Variance')
 #'
 #' @export
-pb_basis = function(X, method, rep = 0, ordering = TRUE, ...){
+pb_basis = function(X, method, constrained.complete_up = FALSE, cluster.method = 'ward.D2',
+                    ordering = TRUE, ...){
   X = as.matrix(X)
   if(!(all(X > 0))){
     stop("All components must be strictly positive.", call. = FALSE)
@@ -333,9 +332,9 @@ pb_basis = function(X, method, rep = 0, ordering = TRUE, ...){
     #     B = find_PB_rnd_local_search(stats::cov(log(X)), rep=rep)
     #   }
     # }
-  }else{
+  }else if(method == 'cluster'){
     # Passing arguments to hclust function
-    hh = stats::hclust(stats::as.dist(variation_array(X, only_variation = TRUE)), method=method, ...)
+    hh = stats::hclust(stats::as.dist(variation_array(X, only_variation = TRUE)), method=cluster.method, ...)
     bin = hh$merge
     df = as.data.frame(X)
     names(df) = paste0('P.', 1:NCOL(df))
@@ -346,6 +345,8 @@ pb_basis = function(X, method, rep = 0, ordering = TRUE, ...){
     sbp.exp = paste(sprintf("%s = %s ~ %s", paste0('P', id), nms[,1], nms[,2]),
                     collapse=', ')
     B = eval(parse(text = sprintf("sbp_basis(%s,data=df)", sbp.exp)))[,rev(id), drop = FALSE]
+  } else{
+    stop(sprintf("Method %s does not exist", method))
   }
   if(ordering){
     B = B[,order(apply(coordinates(X, B, basis_return = FALSE), 2, stats::var), decreasing = TRUE), drop = FALSE]

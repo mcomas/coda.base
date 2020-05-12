@@ -10,7 +10,7 @@ public:
 
   }
 
-  virtual double eval(arma::uvec& L, arma::uvec& R){
+  virtual double eval(arma::uvec& L, arma::uvec& R, int l, int r){
     return(-1);
   }
 
