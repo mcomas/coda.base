@@ -147,30 +147,136 @@ arma::mat find_PB_using_pc(arma::mat& X){
   return(pb_mat);
 }
 
+// // [[Rcpp::export]]
+// arma::mat find_PB_using_pc2(arma::mat& X){
+//   int K = X.n_cols;
+//
+//   arma::mat pb_mat = arma::mat(K,K-1);
+//   arma::vec pb_val = arma::vec(K-1);
+//
+//   std::vector<Balance<MaximumVariance>> SOLS;
+//   SOLS.reserve(K-1);
+//
+//
+//   Balance<MaximumVariance> balance = Balance<MaximumVariance>(X.n_cols);
+//
+//   optimise_using_pc(balance, X);
+//
+//   SOLS.push_back(balance);
+//
+//   for(int l=0;l<K-1;l++){
+//     // //Rcpp::Rcout << "Starting step " << l + 1 << " of " << K-1 << std::endl;
+//     // //print_list(SOLS);
+//     // double vBestSolution = 0;
+//     // int iBestSolution = -1;
+//     // for(unsigned int i =0; i< SOLS.size();i++){
+//     //   double v = SOLS[i].eval();
+//     //   if(v > vBestSolution){
+//     //     vBestSolution = v;
+//     //     iBestSolution = i;
+//     //   }
+//     // }
+//
+//     balance = SOLS.back();
+//     pb_mat.col(l) = balance.getBalance();
+//     pb_val(l) = balance.eval();
+//
+//     Balance<MaximumVariance> top = balance.top();
+//     Balance<MaximumVariance> left = balance.left();
+//     Balance<MaximumVariance> right  = balance.right();
+//
+//     SOLS.pop_back();
+//
+//     if(top.nodes.size() > 1){
+//       optimise_using_pc(top, X);
+//       SOLS.push_back(top);
+//     }
+//     if(left.nodes.size() > 1){
+//       optimise_using_pc(left, X);
+//       SOLS.push_back(left);
+//     }
+//     if(right.nodes.size() > 1){
+//       optimise_using_pc(right, X);
+//       SOLS.push_back(right);
+//     }
+//
+//     Rcpp::checkUserInterrupt();
+//   }
+//
+//   return(pb_mat);
+// }
 
-void optimise_forcing_parent(arma::mat& X, arma::mat& pb_mat, int *pb_size){
 
-  Balance<MaximumVariance> balance = Balance<MaximumVariance>(X.n_cols);
+void optimise_recursively(Balance<MaximumVariance>& balance, arma::mat& X, arma::mat& pb_mat, int *pb_size){
+
   optimise_using_pc(balance, X);
   pb_mat.col(*pb_size) = balance.getBalance();
   (*pb_size)++;
 
-  balance.print();
-
+  Balance<MaximumVariance> top = balance.top();
+  if(top.nodes.size() > 1){
+    optimise_recursively(top, X, pb_mat, pb_size);
+  }
+  Balance<MaximumVariance> left = balance.left();
+  if(left.nodes.size() > 1){
+    optimise_recursively(left, X, pb_mat, pb_size);
+  }
+  Balance<MaximumVariance> right  = balance.right();
+  if(right.nodes.size() > 1){
+    optimise_recursively(right, X, pb_mat, pb_size);
+  }
 
 }
+
 // [[Rcpp::export]]
-arma::mat find_PB_forcing_parent(arma::mat& X){
+arma::mat find_PB_recursively(arma::mat& X){
   int K = X.n_cols;
 
   arma::mat pb_mat = arma::zeros(K,K-1);
 
   std::vector<Balance<MaximumVariance>> SOLS;
   int pb_size = 0;
-  optimise_forcing_parent(X, pb_mat, &pb_size);
+  Balance<MaximumVariance> root = Balance<MaximumVariance>(X.n_cols);
+  optimise_recursively(root, X, pb_mat, &pb_size);
 
 
-  Rcpp::Rcout << pb_size << std::endl;
+  // Rcpp::Rcout << pb_size << std::endl;
+  return(pb_mat);
+}
+
+void optimise_recursively_forcing_parents(Balance<MaximumVariance>& balance, arma::mat& X, arma::mat& pb_mat, int *pb_size){
+
+  optimise_using_pc(balance, X);
+  pb_mat.col(*pb_size) = balance.getBalance();
+  (*pb_size)++;
+
+  Balance<MaximumVariance> top = balance.top();
+  while(top.nodes.size() > 1){
+
+    // optimise_recursively(top, X, pb_mat, pb_size);
+  }
+  Balance<MaximumVariance> left = balance.left();
+  if(left.nodes.size() > 1){
+    optimise_recursively_forcing_parents(left, X, pb_mat, pb_size);
+  }
+  Balance<MaximumVariance> right  = balance.right();
+  if(right.nodes.size() > 1){
+    optimise_recursively_forcing_parents(right, X, pb_mat, pb_size);
+  }
+
+}
+
+// [[Rcpp::export]]
+arma::mat find_PB_recursively_forcing_parents(arma::mat& X){
+  int K = X.n_cols;
+
+  arma::mat pb_mat = arma::zeros(K,K-1);
+
+  std::vector<Balance<MaximumVariance>> SOLS;
+  int pb_size = 0;
+  Balance<MaximumVariance> root = Balance<MaximumVariance>(X.n_cols);
+  optimise_recursively_forcing_parents(root, X, pb_mat, &pb_size);
+
   return(pb_mat);
 }
 
