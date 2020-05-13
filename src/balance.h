@@ -104,6 +104,33 @@ public:
     set(ebalance.bestL, ebalance.bestR);
   }
 
+  void setWithLogContrastForceBranch(arma::vec V, arma::uvec forced){
+
+    double vforced = V(forced[0]);
+    V(forced[0]) = 0;
+    for(int i=1; i < forced.size(); i++){
+      vforced += V(forced[i]);
+      V(forced[i]) = 0;
+    }
+    int imax = index_max(abs(V));
+    arma::uvec ord;
+    if(V(imax) > 0){
+       ord = sort_index(V, "descend");
+    }else{
+      ord = sort_index(V, "ascend");
+    }
+    unsigned pos = 0;
+    arma::uvec uR(ord.size());
+    while(V(pos) != 0){
+      uR[pos] = ord[pos];
+      pos++;
+      ebalance.eval(forced, uR, forced.size(), pos);
+    }
+    set(ebalance.bestL, ebalance.bestR);
+
+  }
+
+
   arma::vec getBalance(){
     double nL = 0, nR = 0;
     for(unsigned int i = 0; i< L_length; i++) nL+=nodes[L[i]].size();
