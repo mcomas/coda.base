@@ -5,6 +5,8 @@
 #include "balance.h"
 #include "coda.h"
 
+const double SQR2DIV2 = 0.70710678118;
+
 void optimise(Balance<MaximumVariance>& balance, arma::mat& X){
   MaximumVariance ebalance = MaximumVariance(balance.nodes, X);
   balance.setEvaluator(ebalance);
@@ -257,16 +259,150 @@ arma::mat find_PB_using_pc_recursively_forcing_parents(arma::mat& X){
   return(pb_mat);
 }
 
+/*
+ *
+ *
+ *
+ */
+
+arma::vec optimise_using_pc2(arma::mat& X){
+  unsigned D = X.n_cols;
+  if(D == 2){
+    arma::vec balance = {+SQR2DIV2, -SQR2DIV2};
+    return(balance);
+  }else{
+    arma::vec eigval;
+    arma::mat eigvec;
+
+    arma::mat S = cov(clr_coordinates(X));
+    eig_sym( eigval, eigvec, S);
+
+    arma::vec V = eigvec.tail_cols(1);
+    Rcpp::Rcout << V.t();
+
+    unsigned imin = index_min(V);
+    unsigned imax = index_max(V);
+
+    V(imin) = 0;
+    V(imax) = 0;
+    arma::uvec ord = sort_index(abs(V), "descend");
+    arma::uvec uL(D), uR(D);
+    uL[0] = imin; uR[0] = imax;
+    unsigned l = 1, r = 1;
+    arma::vec balance = arma::zeros(D);
+    balance[imin] = -SQR2DIV2;
+    balance[imax] = +SQR2DIV2;
+    // double bestScore = as_scalar(balance.t() * S * balance);
+    double bestScore = dot(V, balance);
+    double bestR = 1, bestL = 1;
+    for(unsigned i = 0; i < D-2; i++){
+      if(V(ord[i]) < 0) uL(l++) = ord[i];
+      else uR(r++) = ord[i];
+
+      balance(uL.head(l)).fill(-1.0/l * sqrt((double)l*r/(l+r)));
+      balance(uR.head(r)).fill(+1.0/r * sqrt((double)l*r/(l+r)));
+
+      // double score = as_scalar(balance.t() * S * balance);
+      double score = dot(V, balance);
+      if(score > bestScore){
+        bestScore = score;
+        bestL = l;
+        bestR = r;
+      }
+    }
+
+    balance.fill(0);
+    balance(uL.head(bestL)).fill(-1.0/bestL * sqrt((double)bestL*bestR/(bestL+bestR)));
+    balance(uR.head(bestR)).fill(+1.0/bestR * sqrt((double)bestL*bestR/(bestL+bestR)));
+    return(balance);
+
+  }
+}
+
+// [[Rcpp::export]]
+arma::mat find_PB_using_pc_recursively_forcing_parents2(arma::mat& X){
+  int K = X.n_cols;
+  arma::mat S0 = cov(X);
+  arma::mat pb_mat = arma::zeros(K,K-1);
+
+  int pb_size = 0;
+
+  pb_mat.col(0) = optimise_using_pc2(X);
+  unsigned pb_i = 0;
+  arma::uvec zeros = find( pb_mat.col(0) == 0 );
+  Rcpp::Rcout << zeros.t();
+
+  arma::vec bal = arma::vec(K);
+  // Rcpp::Rcout << pb_mat;
+  while( zeros.n_elem > 0 ){
+
+    double l = K-(double)zeros.n_elem;
+    pb_i++;
+    if(zeros.n_elem == 1){
+      // r = 1
+      bal(find( pb_mat.col(pb_i-1) != 0 )).fill(-1.0/l * sqrt((double)l/(l+1)));
+      bal(zeros).fill(sqrt(l/(l+1)));
+      pb_mat.col(pb_i) = bal;
+    }else{
+      arma::vec eigval;
+      arma::mat eigvec;
+      arma::mat Xsub = arma::mat(X.n_rows, zeros.n_elem);
+      for(int i = 0; i < zeros.n_elem; i++) Xsub.col(i) = X.col(zeros[i]);
+      arma::mat S = arma::cov(clr_coordinates(Xsub));
+      eig_sym( eigval, eigvec, S);
+
+      arma::vec V = eigvec.tail_cols(1);
+
+
+      arma::uvec ord;
+      if( abs(min(V)) > max(V) ){
+        ord = sort_index(V, "ascend");
+      }else{
+        ord = sort_index(V, "descend");
+      }
+      arma::uvec uR(K);
+      arma::vec bal = arma::zeros(K);
+
+      // Rcpp::Rcout << V.t();
+      // Rcpp::Rcout << ord.t();
+      unsigned r = 0, bestR;
+      double bestScore = -1;
+      for(unsigned i = 0; arma::as_scalar(V(ord[0])) * arma::as_scalar(V(ord[i])) > 0; i++){
+        uR(r++) = ord[i];
+
+        bal(zeros).fill(-1.0/l * sqrt((double)l*r/(l+r)));
+        bal(uR.head(r)).fill(+1.0/r * sqrt((double)l*r/(l+r)));
+
+        double score = as_scalar(bal.t() * S0 * bal);
+        // double score = dot(V, bal);
+        if(score > bestScore){
+          bestScore = score;
+          bestR = r;
+        }
+      }
+      bal.fill(0);
+      bal(find( pb_mat.col(pb_i-1) != 0 )).fill(-1.0/l * sqrt((double)l*bestR/(l+bestR)));
+      for(unsigned i = 0; i < bestR; i++){
+        bal(zeros[uR(i)]) = +1.0/bestR * sqrt((double)l*bestR/(l+bestR));
+      }
+      pb_mat.col(pb_i) = bal;
+    }
+    // Rcpp::Rcout << pb_mat;
+    zeros = find( pb_mat.col(pb_i) == 0 );
+  }
+  return(pb_mat);
+}
+
 /*** R
 SEED = round(1000*runif(1))
-set.seed(SEED)
+set.seed(720)
 SEED
 D = 10
 X = matrix(rlnorm(100*D), ncol = D)
 find_PB(X)
 find_PB_using_pc(X)
 find_PB_using_pc_recursively(X)
-find_PB_using_pc_recursively_forcing_parents(X)
+find_PB_using_pc_recursively_forcing_parents2(X)
 */
 
 // #endif

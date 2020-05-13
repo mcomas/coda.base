@@ -137,8 +137,10 @@ public:
     for(unsigned int i = 0; i< R_length; i++) nR+=nodes[R[i]].size();
 
     arma::vec b = arma::zeros(D);
-    for(unsigned int i = 0; i< L_length; i++) b(nodes[L[i]]).fill(-1/nL * sqrt(nL*nR/(nL+nR)));
-    for(unsigned int i = 0; i< R_length; i++) b(nodes[R[i]]).fill(+1/nR * sqrt(nL*nR/(nL+nR)));
+    double l_v = -1/nL * sqrt(nL*nR/(nL+nR));
+    double r_v = +1/nR * sqrt(nL*nR/(nL+nR));
+    for(unsigned int i = 0; i< L_length; i++) b(nodes[L[i]]).fill(l_v);
+    for(unsigned int i = 0; i< R_length; i++) b(nodes[R[i]]).fill(r_v);
     return(b);
   }
   double eval(){
