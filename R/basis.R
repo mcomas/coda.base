@@ -320,7 +320,8 @@ pb_basis = function(X, method, constrained.complete_up = FALSE, cluster.method =
       B = find_PB(X)
     }
     if(method == 'constrained'){
-      B = t(fBalChip(X)$bal)
+      # B = t(fBalChip(X)$bal)
+      B = find_PB_using_pc_recursively_forcing_parents(X)
     }
     if(method == 'constrained2'){
       B = find_PB_using_pc(X)

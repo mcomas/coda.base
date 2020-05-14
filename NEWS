@@ -1,6 +1,8 @@
-coda.base 0.2.3
+coda.base 0.3.1
 ===============
-* PB constrained approximation available. Code provided by J.A.Martín-Fernández.
+* PB constrained approximation available. Adaptation of code provided by J.A.Martín-Fernández.
+* PB exact algorithm rewritten to improve performance.
+* PB local search algorithm removed.
 
 coda.base 0.2.2
 ===============

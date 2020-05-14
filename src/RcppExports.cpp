@@ -209,17 +209,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// find_PB_using_pc_recursively_forcing_parents2
-arma::mat find_PB_using_pc_recursively_forcing_parents2(arma::mat& X);
-RcppExport SEXP _coda_base_find_PB_using_pc_recursively_forcing_parents2(SEXP XSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat& >::type X(XSEXP);
-    rcpp_result_gen = Rcpp::wrap(find_PB_using_pc_recursively_forcing_parents2(X));
-    return rcpp_result_gen;
-END_RCPP
-}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_coda_base_pinv", (DL_FUNC) &_coda_base_pinv, 1},
@@ -240,7 +229,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_coda_base_find_PB_using_pc", (DL_FUNC) &_coda_base_find_PB_using_pc, 1},
     {"_coda_base_find_PB_using_pc_recursively", (DL_FUNC) &_coda_base_find_PB_using_pc_recursively, 1},
     {"_coda_base_find_PB_using_pc_recursively_forcing_parents", (DL_FUNC) &_coda_base_find_PB_using_pc_recursively_forcing_parents, 1},
-    {"_coda_base_find_PB_using_pc_recursively_forcing_parents2", (DL_FUNC) &_coda_base_find_PB_using_pc_recursively_forcing_parents2, 1},
     {NULL, NULL, 0}
 };
 

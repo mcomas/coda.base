@@ -13,7 +13,7 @@ void optimise(Balance<MaximumVariance>& balance, arma::mat& X){
   balance.setWithExhaustiveSearch();
 }
 
-void optimise_using_pc(Balance<MaximumVariance>& balance, arma::mat& X){
+void optimise_balance_using_pc(Balance<MaximumVariance>& balance, arma::mat& X){
   MaximumVariance ebalance = MaximumVariance(balance.nodes, X);
   balance.setEvaluator(ebalance);
   if(balance.nodes.size() == 2){
@@ -35,6 +35,63 @@ void optimise_using_pc(Balance<MaximumVariance>& balance, arma::mat& X){
     arma::svd_econ(U, s, V, clr_coordinates(Xsub));
     // Rcpp::Rcout << V.col(0).t();
     balance.setWithLogContrast(V.col(0));
+
+  }
+}
+
+arma::vec get_balance_using_pc(arma::mat& X){
+  unsigned D = X.n_cols;
+  if(D == 2){
+    arma::vec balance = {+SQR2DIV2, -SQR2DIV2};
+    return(balance);
+  }else{
+    arma::vec eigval;
+    arma::mat eigvec;
+
+    arma::mat S = cov(clr_coordinates(X));
+    eig_sym( eigval, eigvec, S);
+
+    arma::vec V = eigvec.tail_cols(1);
+    // Rcpp::Rcout << V.t();
+
+    unsigned imin = index_min(V);
+    unsigned imax = index_max(V);
+
+    V(imin) = 0;
+    V(imax) = 0;
+    arma::uvec ord = sort_index(abs(V), "descend");
+    arma::uvec uL(D), uR(D);
+    uL[0] = imin; uR[0] = imax;
+    unsigned l = 1, r = 1;
+    arma::vec balance = arma::zeros(D);
+    balance[imin] = -SQR2DIV2;
+    balance[imax] = +SQR2DIV2;
+    // double bestScore = as_scalar(balance.t() * S * balance);
+    double bestScore = fabs(dot(eigvec.tail_cols(1), balance));
+    double bestR = 1, bestL = 1;
+    for(unsigned i = 0; i < D-2; i++){
+      if(V(ord[i]) < 0) uL(l++) = ord[i];
+      else uR(r++) = ord[i];
+
+      balance(uL.head(l)).fill(-1.0/l * sqrt((double)l*r/(l+r)));
+      balance(uR.head(r)).fill(+1.0/r * sqrt((double)l*r/(l+r)));
+
+      // double score = as_scalar(balance.t() * S * balance);
+      double score = fabs(dot(eigvec.tail_cols(1), balance));
+
+      //Rcpp::Rcout << balance.t();
+      //Rcpp::Rcout << "Value:" << score <<std::endl;
+      if(score > bestScore){
+        bestScore = score;
+        bestL = l;
+        bestR = r;
+      }
+    }
+
+    balance.fill(0);
+    balance(uL.head(bestL)).fill(-1.0/bestL * sqrt((double)bestL*bestR/(bestL+bestR)));
+    balance(uR.head(bestR)).fill(+1.0/bestR * sqrt((double)bestL*bestR/(bestL+bestR)));
+    return(balance);
 
   }
 }
@@ -68,7 +125,7 @@ void optimise_using_pc_forcing_branch(Balance<MaximumVariance>& balance, arma::m
 
 void optimise_recursively(Balance<MaximumVariance>& balance, arma::mat& X, arma::mat& pb_mat, int *pb_size){
 
-  optimise_using_pc(balance, X);
+  optimise_balance_using_pc(balance, X);
   pb_mat.col(*pb_size) = balance.getBalance();
   (*pb_size)++;
 
@@ -89,7 +146,7 @@ void optimise_recursively(Balance<MaximumVariance>& balance, arma::mat& X, arma:
 
 void optimise_recursively_forcing_parents(Balance<MaximumVariance>& balance, arma::mat& X, arma::mat& pb_mat, int *pb_size){
 
-  optimise_using_pc(balance, X);
+  optimise_balance_using_pc(balance, X);
   pb_mat.col(*pb_size) = balance.getBalance();
   (*pb_size)++;
 
@@ -185,7 +242,7 @@ arma::mat find_PB_using_pc(arma::mat& X){
 
   Balance<MaximumVariance> balance = Balance<MaximumVariance>(X.n_cols);
 
-  optimise_using_pc(balance, X);
+  optimise_balance_using_pc(balance, X);
 
   SOLS.push_back(balance);
 
@@ -209,15 +266,15 @@ arma::mat find_PB_using_pc(arma::mat& X){
     Balance<MaximumVariance> right  = SOLS[iBestSolution].right();
 
     if(top.nodes.size() > 1){
-      optimise_using_pc(top, X);
+      optimise_balance_using_pc(top, X);
       SOLS.push_back(top);
     }
     if(left.nodes.size() > 1){
-      optimise_using_pc(left, X);
+      optimise_balance_using_pc(left, X);
       SOLS.push_back(left);
     }
     if(right.nodes.size() > 1){
-      optimise_using_pc(right, X);
+      optimise_balance_using_pc(right, X);
       SOLS.push_back(right);
     }
 
@@ -246,91 +303,23 @@ arma::mat find_PB_using_pc_recursively(arma::mat& X){
   return(pb_mat);
 }
 
-// [[Rcpp::export]]
-arma::mat find_PB_using_pc_recursively_forcing_parents(arma::mat& X){
-  int K = X.n_cols;
-
-  arma::mat pb_mat = arma::zeros(K,K-1);
-
-  int pb_size = 0;
-  Balance<MaximumVariance> root = Balance<MaximumVariance>(X.n_cols);
-  optimise_recursively_forcing_parents(root, X, pb_mat, &pb_size);
-
-  return(pb_mat);
-}
-
 /*
  *
  *
  *
  */
 
-arma::vec optimise_using_pc2(arma::mat& X){
-  unsigned D = X.n_cols;
-  if(D == 2){
-    arma::vec balance = {+SQR2DIV2, -SQR2DIV2};
-    return(balance);
-  }else{
-    arma::vec eigval;
-    arma::mat eigvec;
 
-    arma::mat S = cov(clr_coordinates(X));
-    eig_sym( eigval, eigvec, S);
-
-    arma::vec V = eigvec.tail_cols(1);
-    // Rcpp::Rcout << V.t();
-
-    unsigned imin = index_min(V);
-    unsigned imax = index_max(V);
-
-    V(imin) = 0;
-    V(imax) = 0;
-    arma::uvec ord = sort_index(abs(V), "descend");
-    arma::uvec uL(D), uR(D);
-    uL[0] = imin; uR[0] = imax;
-    unsigned l = 1, r = 1;
-    arma::vec balance = arma::zeros(D);
-    balance[imin] = -SQR2DIV2;
-    balance[imax] = +SQR2DIV2;
-    // double bestScore = as_scalar(balance.t() * S * balance);
-    double bestScore = fabs(dot(eigvec.tail_cols(1), balance));
-    double bestR = 1, bestL = 1;
-    for(unsigned i = 0; i < D-2; i++){
-      if(V(ord[i]) < 0) uL(l++) = ord[i];
-      else uR(r++) = ord[i];
-
-      balance(uL.head(l)).fill(-1.0/l * sqrt((double)l*r/(l+r)));
-      balance(uR.head(r)).fill(+1.0/r * sqrt((double)l*r/(l+r)));
-
-      // double score = as_scalar(balance.t() * S * balance);
-      double score = fabs(dot(eigvec.tail_cols(1), balance));
-
-      //Rcpp::Rcout << balance.t();
-      //Rcpp::Rcout << "Value:" << score <<std::endl;
-      if(score > bestScore){
-        bestScore = score;
-        bestL = l;
-        bestR = r;
-      }
-    }
-
-    balance.fill(0);
-    balance(uL.head(bestL)).fill(-1.0/bestL * sqrt((double)bestL*bestR/(bestL+bestR)));
-    balance(uR.head(bestR)).fill(+1.0/bestR * sqrt((double)bestL*bestR/(bestL+bestR)));
-    return(balance);
-
-  }
-}
 
 // [[Rcpp::export]]
-arma::mat find_PB_using_pc_recursively_forcing_parents2(arma::mat& X){
+arma::mat find_PB_using_pc_recursively_forcing_parents(arma::mat& X){
   arma::mat pb_mat = arma::zeros(X.n_cols,X.n_cols-1);
 
   unsigned pb_i = 0;
   int K = X.n_cols;
   arma::mat S0 = cov(clr_coordinates(X));
 
-  pb_mat.col(0) = optimise_using_pc2(X);
+  pb_mat.col(0) = get_balance_using_pc(X);
   arma::uvec left = find(pb_mat.col(0) < 0);
   arma::uvec right = find(pb_mat.col(0) > 0);
   if(left.n_elem > 1){
@@ -346,7 +335,7 @@ arma::mat find_PB_using_pc_recursively_forcing_parents2(arma::mat& X){
       unsigned new_cols = left.n_elem - 1;
       arma::ucolvec inew_cols = arma::ucolvec(new_cols);
       for(unsigned i = 0; i < new_cols; i++) inew_cols(i) = 1+pb_i + i;
-      pb_mat.submat(left, inew_cols) = find_PB_using_pc_recursively_forcing_parents2(Xsub);
+      pb_mat.submat(left, inew_cols) = find_PB_using_pc_recursively_forcing_parents(Xsub);
       pb_i+=new_cols;
     }
   }
@@ -364,7 +353,7 @@ arma::mat find_PB_using_pc_recursively_forcing_parents2(arma::mat& X){
       unsigned new_cols = right.n_elem - 1;
       arma::ucolvec inew_cols = arma::ucolvec(new_cols);
       for(unsigned i = 0; i < new_cols; i++) inew_cols(i) = 1+pb_i + i;
-      pb_mat.submat(right, inew_cols) = find_PB_using_pc_recursively_forcing_parents2(Xsub);
+      pb_mat.submat(right, inew_cols) = find_PB_using_pc_recursively_forcing_parents(Xsub);
       pb_i+=new_cols;
     }
   }
@@ -438,7 +427,7 @@ arma::mat find_PB_using_pc_recursively_forcing_parents2(arma::mat& X){
         unsigned new_cols = right.n_elem - 1;
         arma::ucolvec inew_cols = arma::ucolvec(new_cols);
         for(unsigned i = 0; i < new_cols; i++) inew_cols(i) = 1+pb_i + i;
-        pb_mat.submat(right, inew_cols) = find_PB_using_pc_recursively_forcing_parents2(Xsub);
+        pb_mat.submat(right, inew_cols) = find_PB_using_pc_recursively_forcing_parents(Xsub);
         pb_i+=new_cols;
       }
     }
@@ -449,18 +438,16 @@ arma::mat find_PB_using_pc_recursively_forcing_parents2(arma::mat& X){
 }
 
 
-
-
 /*** R
 SEED = round(1000*runif(1))
 set.seed(363)
 SEED
 D = 10
 X = matrix(rlnorm(100*D), ncol = D)
-find_PB(X)
-find_PB_using_pc(X)
-find_PB_using_pc_recursively(X)
-find_PB_using_pc_recursively_forcing_parents2(X)
+sort(diag(cov(coordinates(X, find_PB(X)))), decreasing = TRUE)
+sort(diag(cov(coordinates(X, find_PB_using_pc(X)))), decreasing = TRUE)
+sort(diag(cov(coordinates(X, find_PB_using_pc_recursively(X)))), decreasing = TRUE)
+sort(diag(cov(coordinates(X, find_PB_using_pc_recursively_forcing_parents(X)))), decreasing = TRUE)
 */
 
 // #endif

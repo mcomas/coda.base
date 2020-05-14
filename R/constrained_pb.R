@@ -282,5 +282,4 @@ fBalChipman<-function(C,angle=TRUE){
   # return results
   return(list(bal=bal[VarSBP==max(VarSBP),],varbal=mvar))
 
-
 }

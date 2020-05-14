@@ -132,20 +132,20 @@ X100 = exp(matrix(rnorm(1000*100), ncol = 100))
 * _Hierarchical clustering based algorithm_.
 
 ```{r}
-PB1.ward = pb_basis(X100, method = 'ward.D2')
+PB1.ward = pb_basis(X100, method = 'cluster')
 ```
 
-* _Local search algorithm_
+* _Constrained search algorithm_
 
 ```{r}
-PB1.lsearch = pb_basis(X100, method = 'lsearch')
+PB1.constrained = pb_basis(X100, method = 'constrained')
 ```
 
 We can compare they performance (variance explained by the first balance) with respect to the principal components.
 
 ```{r}
-PC_approx = coordinates(X100, cbind(pc_basis(X100)[,1], PB1.ward[,1], PB1.lsearch[,1]))
-names(PC_approx) = c('PC', 'Ward', 'Local Search')
+PC_approx = coordinates(X100, cbind(pc_basis(X100)[,1], PB1.ward[,1], PB1.constrained[,1]))
+names(PC_approx) = c('PC', 'Ward', 'Constrained')
 apply(PC_approx, 2, var)
 ```
 
