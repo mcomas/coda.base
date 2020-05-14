@@ -335,16 +335,34 @@ pb_basis = function(X, method, constrained.complete_up = FALSE, cluster.method =
   }else if(method == 'cluster'){
     # Passing arguments to hclust function
     hh = stats::hclust(stats::as.dist(variation_array(X, only_variation = TRUE)), method=cluster.method, ...)
-    bin = hh$merge
-    df = as.data.frame(X)
-    names(df) = paste0('P.', 1:NCOL(df))
-    nms = paste0('P',gsub('-','.', bin))
-    dim(nms) = dim(bin)
-    sbp = apply(nms, 1, paste, collapse='~')
-    id = seq_along(sbp)
-    sbp.exp = paste(sprintf("%s = %s ~ %s", paste0('P', id), nms[,1], nms[,2]),
-                    collapse=', ')
-    B = eval(parse(text = sprintf("sbp_basis(%s,data=df)", sbp.exp)))[,rev(id), drop = FALSE]
+    B = matrix(0, ncol = nrow(hh$merge), nrow = ncol(X))
+    for(i in 1:nrow(hh$merge)){
+      if(hh$merge[i,1] < 0 & hh$merge[i,2] < 0){
+        B[-hh$merge[i,],i] = c(-1,+1)
+      }else{
+        if(hh$merge[i,1] > 0){
+          B[B[,hh$merge[i,1]] != 0,i] = -1
+        }else{
+          B[-hh$merge[i,1],i] = -1
+        }
+        if(hh$merge[i,2] > 0){
+          B[B[,hh$merge[i,2]] != 0,i] = +1
+        }else{
+          B[-hh$merge[i,2],i] = +1
+        }
+      }
+    }
+    B = sbp_basis(B[,nrow(hh$merge):1, drop = FALSE])
+    # bin = hh$merge
+    # df = as.data.frame(X)
+    # names(df) = paste0('P.', 1:NCOL(df))
+    # nms = paste0('P',gsub('-','.', bin))
+    # dim(nms) = dim(bin)
+    # sbp = apply(nms, 1, paste, collapse='~')
+    # id = seq_along(sbp)
+    # sbp.exp = paste(sprintf("%s = %s ~ %s", paste0('P', id), nms[,1], nms[,2]),
+    #                 collapse=', ')
+    # B = eval(parse(text = sprintf("sbp_basis(%s,data=df)", sbp.exp)))[,rev(id), drop = FALSE]
   } else{
     stop(sprintf("Method %s does not exist", method))
   }

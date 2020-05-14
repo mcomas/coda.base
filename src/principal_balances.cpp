@@ -293,7 +293,7 @@ arma::vec optimise_using_pc2(arma::mat& X){
     balance[imin] = -SQR2DIV2;
     balance[imax] = +SQR2DIV2;
     // double bestScore = as_scalar(balance.t() * S * balance);
-    double bestScore = abs(dot(eigvec.tail_cols(1), balance));
+    double bestScore = fabs(dot(eigvec.tail_cols(1), balance));
     double bestR = 1, bestL = 1;
     for(unsigned i = 0; i < D-2; i++){
       if(V(ord[i]) < 0) uL(l++) = ord[i];
@@ -303,10 +303,10 @@ arma::vec optimise_using_pc2(arma::mat& X){
       balance(uR.head(r)).fill(+1.0/r * sqrt((double)l*r/(l+r)));
 
       // double score = as_scalar(balance.t() * S * balance);
-      double score = abs(dot(eigvec.tail_cols(1), balance));
+      double score = fabs(dot(eigvec.tail_cols(1), balance));
 
-      // Rcpp::Rcout << balance.t();
-      // Rcpp::Rcout << "Value:" << score <<std::endl;
+      //Rcpp::Rcout << balance.t();
+      //Rcpp::Rcout << "Value:" << score <<std::endl;
       if(score > bestScore){
         bestScore = score;
         bestL = l;
@@ -324,12 +324,51 @@ arma::vec optimise_using_pc2(arma::mat& X){
 
 // [[Rcpp::export]]
 arma::mat find_PB_using_pc_recursively_forcing_parents2(arma::mat& X){
+  arma::mat pb_mat = arma::zeros(X.n_cols,X.n_cols-1);
+
+  unsigned pb_i = 0;
   int K = X.n_cols;
   arma::mat S0 = cov(clr_coordinates(X));
-  arma::mat pb_mat = arma::zeros(K,K-1);
 
   pb_mat.col(0) = optimise_using_pc2(X);
-  unsigned pb_i = 0;
+  arma::uvec left = find(pb_mat.col(0) < 0);
+  arma::uvec right = find(pb_mat.col(0) > 0);
+  if(left.n_elem > 1){
+    if(left.n_elem == 2){
+      arma::vec balance = arma::zeros(K);
+      balance[left(0)] = -SQR2DIV2;
+      balance[left(1)] = +SQR2DIV2;
+      pb_mat.col(++pb_i) = balance;
+    }else{
+      arma::mat Xsub = arma::mat(X.n_rows, left.n_elem);
+      for(unsigned i = 0; i < left.n_elem; i++) Xsub.col(i) = X.col(left(i));
+
+      unsigned new_cols = left.n_elem - 1;
+      arma::ucolvec inew_cols = arma::ucolvec(new_cols);
+      for(unsigned i = 0; i < new_cols; i++) inew_cols(i) = 1+pb_i + i;
+      pb_mat.submat(left, inew_cols) = find_PB_using_pc_recursively_forcing_parents2(Xsub);
+      pb_i+=new_cols;
+    }
+  }
+
+  if(right.n_elem > 1){
+    if(right.n_elem == 2){
+      arma::vec balance = arma::zeros(K);
+      balance[right(0)] = -SQR2DIV2;
+      balance[right(1)] = +SQR2DIV2;
+      pb_mat.col(++pb_i) = balance;
+    }else{
+      arma::mat Xsub = arma::mat(X.n_rows, right.n_elem);
+      for(unsigned i = 0; i < right.n_elem; i++) Xsub.col(i) = X.col(right(i));
+
+      unsigned new_cols = right.n_elem - 1;
+      arma::ucolvec inew_cols = arma::ucolvec(new_cols);
+      for(unsigned i = 0; i < new_cols; i++) inew_cols(i) = 1+pb_i + i;
+      pb_mat.submat(right, inew_cols) = find_PB_using_pc_recursively_forcing_parents2(Xsub);
+      pb_i+=new_cols;
+    }
+  }
+
   arma::uvec zeros = find( pb_mat.col(0) == 0 );
   arma::uvec no_zeros = find( pb_mat.col(0) != 0 );
 
@@ -338,7 +377,10 @@ arma::mat find_PB_using_pc_recursively_forcing_parents2(arma::mat& X){
 
   while( zeros.n_elem > 0 ){
     double l = no_zeros.n_elem;
+    unsigned r = 0, bestR;
+    arma::uvec uR(K);
     if(zeros.n_elem <= 2){
+      bestR = 1;
       bal(no_zeros).fill(-1.0/l * sqrt(l/(l+1)));
       bal(zeros.head(1)).fill(sqrt(l/(l+1)));  // When zeros.n_elem == 2 the decision is arbitrary.
     }else{
@@ -350,18 +392,14 @@ arma::mat find_PB_using_pc_recursively_forcing_parents2(arma::mat& X){
       eig_sym( eigval, eigvec, S);
 
       arma::vec V = eigvec.tail_cols(1);
-
       arma::uvec ord;
-      if( abs(min(V)) >= max(V) ){
+      if( fabs(min(V)) >= max(V) ){
         ord = sort_index(V, "ascend");
       }else{
         ord = sort_index(V, "descend");
       }
-      arma::uvec uR(K);
 
-      unsigned r = 0, bestR;
       double bestScore = -1;
-
       for(unsigned i = 0; arma::as_scalar(V(ord[0])) * arma::as_scalar(V(ord[i])) > 0; i++){
         uR(r++) = zeros[ord[i]];
 
@@ -382,13 +420,36 @@ arma::mat find_PB_using_pc_recursively_forcing_parents2(arma::mat& X){
     }
     zeros = find( bal == 0 );
     no_zeros = find( bal != 0 );
-    // Saving
+
     pb_i++;
-    pb_mat.col(pb_i) = bal;
+    pb_mat.col( pb_i ) = bal;
+
+    right = uR.head(bestR);
+    if(bestR > 1){
+      if(bestR == 2){
+        arma::vec balance = arma::zeros(K);
+        balance[uR(0)] = -SQR2DIV2;
+        balance[uR(1)] = +SQR2DIV2;
+        pb_mat.col(++pb_i) = balance;
+      }else{
+        arma::mat Xsub = arma::mat(X.n_rows, right.n_elem);
+        for(unsigned i = 0; i < right.n_elem; i++) Xsub.col(i) = X.col(right(i));
+
+        unsigned new_cols = right.n_elem - 1;
+        arma::ucolvec inew_cols = arma::ucolvec(new_cols);
+        for(unsigned i = 0; i < new_cols; i++) inew_cols(i) = 1+pb_i + i;
+        pb_mat.submat(right, inew_cols) = find_PB_using_pc_recursively_forcing_parents2(Xsub);
+        pb_i+=new_cols;
+      }
+    }
 
   }
+
   return(pb_mat);
 }
+
+
+
 
 /*** R
 SEED = round(1000*runif(1))

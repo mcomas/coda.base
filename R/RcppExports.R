@@ -65,3 +65,15 @@ find_PB_using_pc <- function(X) {
     .Call(`_coda_base_find_PB_using_pc`, X)
 }
 
+find_PB_using_pc_recursively <- function(X) {
+    .Call(`_coda_base_find_PB_using_pc_recursively`, X)
+}
+
+find_PB_using_pc_recursively_forcing_parents <- function(X) {
+    .Call(`_coda_base_find_PB_using_pc_recursively_forcing_parents`, X)
+}
+
+find_PB_using_pc_recursively_forcing_parents2 <- function(X) {
+    .Call(`_coda_base_find_PB_using_pc_recursively_forcing_parents2`, X)
+}
+
