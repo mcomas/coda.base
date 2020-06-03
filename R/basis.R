@@ -37,6 +37,7 @@ ilr_basis = function(dim, type = 'default'){
   if(type == 'pivot'){
     return((-B)[,ncol(B):1, drop = FALSE][nrow(B):1,])
   }
+  class(B) = 'balance'
   B
 }
 
@@ -107,6 +108,8 @@ pc_basis = function(X){
   lX =  log(X)
   SVD = svd(scale(lX - rowMeans(lX), scale = FALSE))
   B = SVD$v[,-ncol(X), drop = FALSE]
+  rownames(B) = colnames(X)
+  colnames(B) = paste0('PC', 1:ncol(B))
   B
 }
 
@@ -123,7 +126,11 @@ cc_basis = function(Y, X){
   X = cbind(X)
   B = ilr_basis(ncol(Y))
   cc = stats::cancor(coordinates(Y), X)
-  B %*% cc$xcoef
+  B = B %*% cc$xcoef
+  rownames(B) = colnames(Y)
+  colnames(B) = paste0('CC', 1:ncol(B))
+  class(B) = 'balance'
+  B
 }
 
 #' Balance generated from the first canonical correlation component
@@ -317,13 +324,16 @@ pb_basis = function(X, method, constrained.complete_up = FALSE, cluster.method =
   }
   if(method %in% c('constrained', 'exact')){
     if(method == 'exact'){
+      M = 'PB'
       B = find_PB(X)
     }
     if(method == 'constrained'){
+      M = 'CS'
       # B = t(fBalChip(X)$bal)
       B = find_PB_using_pc_recursively_forcing_parents(X)
     }
     if(method == 'constrained2'){
+      M = 'CS'
       B = find_PB_using_pc(X)
     }
     # if(method == 'lsearch'){
@@ -334,6 +344,7 @@ pb_basis = function(X, method, constrained.complete_up = FALSE, cluster.method =
     #   }
     # }
   }else if(method == 'cluster'){
+    M = 'CL'
     # Passing arguments to hclust function
     hh = stats::hclust(stats::as.dist(variation_array(X, only_variation = TRUE)), method=cluster.method, ...)
     B = matrix(0, ncol = nrow(hh$merge), nrow = ncol(X))
@@ -370,6 +381,9 @@ pb_basis = function(X, method, constrained.complete_up = FALSE, cluster.method =
   if(ordering){
     B = B[,order(apply(coordinates(X, B, basis_return = FALSE), 2, stats::var), decreasing = TRUE), drop = FALSE]
   }
+  rownames(B) = colnames(X)
+  colnames(B) = paste0(M, 1:ncol(B))
+  class(B) = 'balance'
   B
 }
 
@@ -381,7 +395,9 @@ pb_basis = function(X, method, constrained.complete_up = FALSE, cluster.method =
 #' @return matrix
 #' @export
 cdp_basis = function(dim){
-  cdp_basis_(dim)
+  B = cdp_basis_(dim)
+  class(B) = 'balance'
+  B
 }
 
 cdp_basis_ = function(dim, wR = 1:ceiling(dim/2), wL = ceiling(dim/2) + 1:floor(dim/2)){
