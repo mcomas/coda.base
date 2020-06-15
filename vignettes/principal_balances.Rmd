@@ -27,6 +27,18 @@ references:
   type: article-journal
   issued:
     year: 2017
+- id: ruskey1993
+  title: Simple Combinatorial Gray Codes Constructed by Reversing Sublists
+  author:
+  - family: Ruskey
+    given: Frank
+  container-title: Lecture Notes in Computer Science
+  volume: 762
+  DOI: 10.1007/3-540-57568-5_250
+  page: 201-208
+  type: article-journal
+  issued:
+    year: 1993
 - id: pawlowsky2011
   title: Principal balances
   author:
@@ -48,6 +60,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+options(digits = 4)
 ```
 
 _Principal balances_ are defined as follows [@pawlowsky2011]:
@@ -80,33 +93,41 @@ B1 = pb_basis(X, method = "exact")
 
 Where the obtained sequential binary partition can be summarised with the following sequential binary tree:
 
-```{r}
+```{r, fig.width=7.5, fig.height=4.5}
 plot(B1)
 ```
 
-When `method` is set to `"exact"`, exhaustive search is performed to obtain the PB. The time needed to calculate the PB grows exponentially with respect the number of parts of `X`. Currently, exhaustive search can find the PB of a compositional data set with 20 parts in a reasonable ammount of time (5 minutes approximately).
+```{r}
+apply(coordinates(X, B1), 2, var)
+```
 
-![Time expended for an exhaustive search of the principal balances](time_pb.png)
+When `method` is set to `"exact"`, exhaustive search is performed to obtain the PB. The time needed to calculate the PB grows exponentially with respect the number of parts of `X`. To iterate throught all the possibilities, CoDaPack uses the algorithm @ruskey1993. Currently, exhaustive search can find the PB of a compositional data set with 20 parts in a reasonable ammount of time (5 minutes approximately). 
 
-```{r, eval=FALSE, results='hide', echo=FALSE}
+
+```{r, echo=FALSE, fig.width=7.5, fig.height=4.5, warning=FALSE}
 library(tictoc)
 library(ggplot2)
 D = 10
 
+# time_ = sapply(5:20, function(D){
+#   print(D)
+#   x = matrix(rlnorm(100*D), ncol=D)
+#   a = tic()
+#   r = pb_basis(x, method = 'exact')
+#   b = toc()
+#   b$toc - b$tic
+# })
+# dplot = data.frame(
+#   parts = tail(5:20, 11),
+#   time = tail(time_, 11)
+# )
 
-time_ = sapply(5:20, function(D){
-  print(D)
-  x = matrix(rlnorm(100*D), ncol=D)
-  a = tic()
-  r = pb_basis(x, method = 'exact')
-  b = toc()
-  b$toc - b$tic
-})
-dplot = data.frame(
-  parts = tail(5:20, 11),
-  time = tail(time_, 11)
-)
-p = ggplot(data=dplot) +
+dplot = structure(list(parts = 10:20, time = c(0.00499999999999545, 0.0119999999999436, 
+0.0260000000000673, 0.0749999999999318, 0.243000000000052, 0.831999999999994, 
+2.64400000000001, 9.56200000000001, 28.787, 95.4560000000001, 
+311.133)), class = "data.frame", row.names = c(NA, -11L))
+
+ggplot(data=dplot) +
   geom_point(aes(x=parts, y=time)) +
   geom_segment(aes(x=parts, xend =parts, y = 0, yend=time)) +
   labs(x = 'Number of parts', y = 'Time in seconds (logarithmic scale)', title = 'Time needed to calculate Principal Balances',
@@ -114,27 +135,45 @@ p = ggplot(data=dplot) +
   scale_x_continuous(breaks = tail(5:20, 11)) +
   scale_y_continuous(trans = 'log', breaks = c(0.004, 0.04, 0.4, 4, 40, 400), labels = c("0.004", "0.04", "0.4", 4, 40, 400)) +
   theme_minimal()
-###
-png('vignettes/time_pb.png', height = 400, pointsize = 20)
-print(p)
-dev.off()
+```
+
+When the number of part is higher, the exact method should be discarted in favour of other alternatives. Different alternatives are available in @pawlowsky2011 and @fernandez2017. Between this alternatives, the once that can be implemented are agglomerative partition approach based on the Ward method [@pawlowsky2011, @fernandez2017] and the approximation based on a reduced approximation to the principal components [@fernandez2017].
+
+##  Ward Method for Parts
+
+For a composition $X$, @pawlowsky2011 proposed to builds the variation array and use it to produce a matrix distance. The variation array calculates the variance between pair of logratios.
+
+```{r}
+D = as.dist(variation_array(X, only_variation = TRUE))
+D
+```
+
+Combining pairs with lower variance it is expected to get a final merging with high variability.
+
+
+```{r, fig.width=7.5, fig.height=4.5}
+B2 = pb_basis(X, method = 'cluster')
+plot(B2)
+```
+
+
+```{r}
+apply(coordinates(X, B2), 2, var)
 ```
 
 ##  Constrained PCs Algorithm
 
-```{r}
-B2 = pb_basis(X, method = 'constrained')
-plot(B2)
-```
-
-##  Ward Method for Parts
-
-```{r}
-B3 = pb_basis(X, method = 'cluster')
+```{r, fig.width=7.5, fig.height=4.5}
+B3 = pb_basis(X, method = 'constrained')
 plot(B3)
 ```
 
-```{r, eval=FALSE}
+```{r}
+apply(coordinates(X, B3), 2, var)
+```
+
+
+```{r, eval=FALSE, echo=FALSE}
 hc = hclust_dendrogram(B1)
 hcd = as.dendrogram(hc)
 dd = dendro_data(hcd)
@@ -276,3 +315,61 @@ plot(dp$proj[,1:2], col = iris$Species)
 
 
 # References
+
+
+```{r, eval=FALSE, echo=FALSE}
+@article{cite-key,
+	Date-Added = {2020-06-13 08:44:39 +0000},
+	Date-Modified = {2020-06-13 08:44:39 +0000},
+	Id = {ref25},
+	Title = {Pawlowsky-Glahn V, Egozcue JJ, Tolosana-Delgado R (2011) Principal balances. In Egozcue JJ, Tolosana-Delgado R, Ortego M (eds) Proceedings of the 4th international workshop on compositional data analysis, Girona, Spain, pp 1--10},
+	Ty = {STD}}
+
+@article{cite-key,
+	Author = {Mart{\'\i}n-Fern{\'a}ndez, J. A. and Pawlowsky-Glahn, V. and Egozcue, J. J. and Tolosona-Delgado, R.},
+	Da = {2018/04/01},
+	Date-Added = {2020-06-13 08:42:47 +0000},
+	Date-Modified = {2020-06-13 08:42:47 +0000},
+	Doi = {10.1007/s11004-017-9712-z},
+	Id = {Mart{\'\i}n-Fern{\'a}ndez2018},
+	Isbn = {1874-8953},
+	Journal = {Mathematical Geosciences},
+	Number = {3},
+	Pages = {273--298},
+	Title = {Advances in Principal Balances for Compositional Data},
+	Ty = {JOUR},
+	Url = {https://doi.org/10.1007/s11004-017-9712-z},
+	Volume = {50},
+	Year = {2018},
+	Bdsk-Url-1 = {https://doi.org/10.1007/s11004-017-9712-z}}
+
+Frank Ruskey LEcture note computer science 762 (1993) 205-206
+@String{j-LECT-NOTES-COMP-SCI   = "Lecture Notes in Computer Science"}
+@String{ack-nhfb = "Nelson H. F. Beebe,
+                    University of Utah,
+                    Department of Mathematics, 110 LCB,
+                    155 S 1400 E RM 233,
+                    Salt Lake City, UT 84112-0090, USA,
+                    Tel: +1 801 581 5254,
+                    FAX: +1 801 581 4148,
+                    e-mail: \path|beebe@math.utah.edu|,
+                            \path|beebe@acm.org|,
+                            \path|beebe@computer.org| (Internet),
+                    URL: \path|http://www.math.utah.edu/~beebe/|"}
+@Article{Ruskey:1993:SCG,
+  author =       "F. Ruskey",
+  title =        "Simple Combinatorial Gray Codes Constructed by
+                 Reversing Sublists",
+  journal =      j-LECT-NOTES-COMP-SCI,
+  volume =       "762",
+  pages =        "201--208",
+  year =         "1993",
+  CODEN =        "LNCSD9",
+  ISSN =         "0302-9743 (print), 1611-3349 (electronic)",
+  ISSN-L =       "0302-9743",
+  bibdate =      "Wed Sep 15 10:01:31 MDT 1999",
+  bibsource =    "http://www.math.utah.edu/pub/tex/bib/lncs1993.bib",
+  acknowledgement = ack-nhfb,
+  keywords =     "algorithms; computation; ISAAC",
+}
+```
