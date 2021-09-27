@@ -6,29 +6,30 @@ library(easyCODA)
 library(RcppCoDA)
 
 K = 1000
-N = 100
+N = 1000
 # ALR default transformation
 mX = matrix(exp(rnorm(K*N)), nrow=N, ncol=K)
 dX = as.data.frame(mX)
 aX = acomp(mX)
 B = alr_basis(K)
 alr_results = microbenchmark(
-  coda.base::coordinates(mX, 'alr', basis_return = FALSE),
+  coda.base::coordinates(mX, 'alr'),
   compositions::alr(aX),
   robCompositions::addLR(mX),
-  easyCODA::ALR(mX),
-  RcppCoDA::alr(mX),
-  times = 500
+  # easyCODA::ALR(mX),
+  # RcppCoDA::alr(mX),
+  times = 100
 )
 autoplot(alr_results)
 (res <- summary(alr_results)[,c('expr', 'lq', 'median', 'uq')])[order(res$median),]
 
 clr_results = microbenchmark(
-  coda.base::coordinates(mX, 'clr', basis_return = FALSE),
+  coda.base::coordinates(mX, 'clr'),
   compositions::clr(aX),
-  RcppCoDA::clr(mX),
+  # RcppCoDA::clr(mX),
   robCompositions::cenLR(mX),
-  easyCODA::CLR(mX), times = 500
+  # easyCODA::CLR(mX), times = 500
+  times = 50
 )
 autoplot(clr_results)
 (res <- summary(clr_results)[,c('expr', 'lq', 'median', 'uq')])[order(res$median),]
@@ -36,10 +37,11 @@ autoplot(clr_results)
 ilr_results = microbenchmark(
   coda.base::coordinates(mX),
   compositions::ilr(aX),
-  RcppCoDA::ilr(mX),
+  # RcppCoDA::ilr(mX),
   # robCompositions::isomLR(mX, fast=T),
   robCompositions::pivotCoord(mX, fast=T),
-  easyCODA::PLR(mX), times = 500
+  # easyCODA::PLR(mX),
+  times = 50
 )
 autoplot(ilr_results)
 (res <- summary(ilr_results)[,c('expr', 'lq', 'median', 'uq')])[order(res$median),]

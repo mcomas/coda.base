@@ -267,7 +267,7 @@ names(l_nodes) = sapply(l_nodes, function(x) paste(sort(names(x$balance)[x$balan
 l_nodes
 ```
 
-```{r, include=FALSE}
+```{r, eval=FALSE, include=FALSE}
 library(coda.base)
 X = iris[,1:4]
 B = pb_basis(X, method = 'exact')
@@ -276,12 +276,12 @@ H = coordinates(X, B)
 apply(H, 2, var)
 ```
 
-```{r, include=FALSE}
+```{r, eval = FALSE, include=FALSE}
 plot(H[,1], H[,2])
 ```
 
 
-```{r, include=FALSE}
+```{r, eval=FALSE, include=FALSE}
 lX = split(X, iris$Species)
 m_ = lapply(lX, colMeans)
 s_ = lapply(lX, cov)
@@ -289,25 +289,25 @@ S = cov(X)
 S_ = replicate(3, S, simplify = FALSE)
 ```
 
-```{r, include=FALSE}
+```{r, eval=FALSE, include=FALSE}
 Prob = mapply(function(m,s){
   mvtnorm::dmvnorm(X, m, s)
 }, m_, S_)
 ```
 
-```{r, include=FALSE}
+```{r, eval=FALSE, include=FALSE}
 B_1 = pb_basis(Prob, method = 'exact')
 H_1 = coordinates(Prob, B_1)
 plot(H_1, col = iris$Species)
 ```
 
-```{r, include=FALSE}
+```{r, eval=FALSE, include=FALSE}
 B_2 = pc_basis(Prob)
 H_2 = coordinates(Prob, B_2)
 plot(-H_2, col = iris$Species)
 ```
 
-```{r, include=FALSE}
+```{r, eval=FALSE, include=FALSE}
 library(fpc)
 dp = discrproj(X, iris$Species)
 plot(dp$proj[,1:2], col = iris$Species)

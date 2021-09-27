@@ -12,8 +12,9 @@ getDim = function(X) ifelse(is.vector(X), length(X), NCOL(X))
 #' variation_array(X, only_variation = TRUE)
 #' @export
 variation_array = function(X, only_variation = FALSE){
-  X = as.matrix(X)
-  c_variation_array(X, as.logical(only_variation))
+  var_arr = c_variation_array(as.matrix(X), as.logical(only_variation))
+  if(!is.null(colnames(X))) colnames(var_arr) = rownames(var_arr) = colnames(X)
+  var_arr
 }
 
 
