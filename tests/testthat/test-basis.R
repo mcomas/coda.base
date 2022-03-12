@@ -1,18 +1,33 @@
 library(testthat)
 library(coda.base)
 test_that("basis_matrix", {
-  X2 = data.frame(matrix(exp(rnorm(20)), ncol = 2))
+  D = 5
+  N = D * 10
+  X = data.frame(matrix(exp(rnorm(N)), ncol = D))
 
-  ALR = alr_basis(2)
-  ILR = ilr_basis(2)
-  SBP = sbp_basis(X1~X2, data = X2)
-  PC = pc_basis(X2)
-  PB = pb_basis(X2, method = 'exact')
+  ALR = alr_basis(D)
+  ILR = ilr_basis(D)
+  CLR = clr_basis(D)
+  SBP = sbp_basis(b1=X1~X2+X3+X4+X5,
+                  b2=X2~X3+X4+X5,
+                  b3=X3~X4+X5,
+                  b4=X4~X5, data = X)
+  PC = pc_basis(X)
+  PB = pb_basis(X, method = 'exact')
 
   expect_that(ALR, is_a('matrix'))
   expect_that(ILR, is_a('matrix'))
+  expect_that(CLR, is_a('matrix'))
   expect_that(SBP, is_a('matrix'))
   expect_that(PC, is_a('matrix'))
   expect_that(PB, is_a('matrix'))
+
+  expect_equal(sum(composition(coordinates(X, ALR)) / X * rowSums(X)), N)
+  expect_equal(sum(composition(coordinates(X, ILR)) / X * rowSums(X)), N)
+  expect_equal(sum(composition(coordinates(X, CLR)) / X * rowSums(X)), N)
+  expect_equal(sum(composition(coordinates(X, SBP)) / X * rowSums(X)), N)
+  expect_equal(sum(composition(coordinates(X, PC)) / X * rowSums(X)), N)
+  expect_equal(sum(composition(coordinates(X, PB)) / X * rowSums(X)), N)
+
 })
 

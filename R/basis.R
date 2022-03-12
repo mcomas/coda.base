@@ -39,7 +39,6 @@ ilr_basis = function(dim, type = 'default'){
   }
   colnames(B) = sprintf("ilr%d", 1:ncol(B))
   rownames(B) = sprintf("c%d", 1:nrow(B))
-  class(B) = c(class(B), 'balance')
   B
 }
 
@@ -145,7 +144,6 @@ cc_basis = function(Y, X){
   }
   rownames(B) = parts
   colnames(B) = paste0('cc', 1:ncol(B))
-  class(B) = c(class(B), 'balance')
   B
 }
 
@@ -403,7 +401,6 @@ pb_basis = function(X, method, constrained.complete_up = FALSE, cluster.method =
   }
   rownames(B) = parts
   colnames(B) = paste0('pb', 1:ncol(B))
-  class(B) = c(class(B), 'balance')
   B
 }
 
@@ -416,7 +413,6 @@ pb_basis = function(X, method, constrained.complete_up = FALSE, cluster.method =
 #' @export
 cdp_basis = function(dim){
   B = cdp_basis_(dim)
-  class(B) = c(class(B), 'balance')
   B
 }
 

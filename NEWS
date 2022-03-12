@@ -1,6 +1,7 @@
 coda.base 0.3.2
 ===============
-* `coord()` and `compo()` are included as a shorter names of `coordinates()` and `composition()`
+* `coord()` and `compo()` are included as a shorter names of `coordinates()` and `composition()`.
+* Basis names taken from composition.
 
 coda.base 0.3.1
 ===============
