@@ -1,3 +1,7 @@
+coda.base 0.3.2
+===============
+* `coord()` and `compo()` are included as a shorter names of `coordinates()` and `composition()`
+
 coda.base 0.3.1
 ===============
 * PB constrained approximation available. Adaptation of code provided by J.A.Martín-Fernández.

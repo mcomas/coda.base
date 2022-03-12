@@ -59,19 +59,37 @@ cdp_partition = function(ncomp) unname(t(fillPartition(matrix(0, nrow = 1, ncol 
 
 alr = function(X, basis_return){
   COORD = alr_coordinates(X, ncol(X))
-  if(basis_return) attr(COORD, 'basis') = alr_basis(ncol(X))
+  if(basis_return){
+    B = alr_basis(ncol(X))
+    if(!is.null(colnames(X))){
+      rownames(B) = colnames(X)
+    }
+    attr(COORD, 'basis') = B
+  }
   COORD
 }
 
 ilr = function(X, basis_return){
   COORD = ilr_coordinates(X)
-  if(basis_return) attr(COORD, 'basis') = ilr_basis(ncol(X))
+  if(basis_return){
+    B = ilr_basis(ncol(X))
+    if(!is.null(colnames(X))){
+      rownames(B) = colnames(X)
+    }
+    attr(COORD, 'basis') = B
+  }
   COORD
 }
 
 clr = function(X, basis_return){
   COORD = clr_coordinates(X)
-  if(basis_return) attr(COORD, 'basis') = clr_basis(ncol(X))
+  if(basis_return){
+    B = clr_basis(ncol(X))
+    if(!is.null(colnames(X))){
+      rownames(B) = colnames(X)
+    }
+    attr(COORD, 'basis') = B
+  }
   COORD
 }
 
@@ -80,21 +98,37 @@ pc = function(X, basis_return){
   SVD = svd(scale(lX - rowMeans(lX), scale = FALSE))
   B = SVD$v[,-ncol(SVD$v)]
   COORD = matrix_coordinates(X, B)
-  if(basis_return) attr(COORD, 'basis') = B
+  if(basis_return){
+    colnames(B) = paste0('pc', 1:ncol(B))
+    if(!is.null(colnames(X))){
+      rownames(B) = colnames(X)
+    }
+    attr(COORD, 'basis') = B
+  }
   COORD
 }
 
 cdp = function(X, basis_return){
   B = cdp_basis(ncol(X))
   COORD = matrix_coordinates(X, B)
-  if(basis_return) attr(COORD, 'basis') = B
+  if(basis_return){
+    if(!is.null(colnames(X))){
+      rownames(B) = colnames(X)
+    }
+    attr(COORD, 'basis') = B
+  }
   COORD
 }
 
 pb = function(X, basis_return){
   B = pb_basis(X, method = 'exact')
   COORD = matrix_coordinates(X, B)
-  if(basis_return) attr(COORD, 'basis') = B
+  if(basis_return){
+    if(!is.null(colnames(X))){
+      rownames(B) = colnames(X)
+    }
+    attr(COORD, 'basis') = B
+  }
   COORD
 }
 
@@ -126,10 +160,12 @@ pb = function(X, basis_return){
 #' a compositions from given coordinates.
 #' @examples
 #' coordinates(c(1,2,3,4,5))
+#' h = coordinates(c(1,2,3,4,5))
+#' basis(h)
 #' # basis is shown if 'coda.base.basis' option is set to TRUE
 #' options('coda.base.basis' = TRUE)
 #' coordinates(c(1,2,3,4,5))
-#' # Default transformation improves performance.
+#' # Default transformation can improve performance.
 #' N = 100
 #' K = 1000
 #' X = matrix(exp(rnorm(N*K)), nrow=N, ncol=K)
@@ -147,7 +183,6 @@ coordinates = function(X, basis = 'ilr', label = ifelse(is.character(basis), bas
     }
     colnames(COORD) = sprintf(sprintf('%s%%0%dd', label, 1+floor(log(ncol(COORD), 10))),1:ncol(COORD))
   }else{
-
     if(is.atomic(X) & !is.list(X)){ # vector
       COORD = Recall(matrix(X, nrow = 1), basis, label, basis_return)
       B = attr(COORD, 'basis')
@@ -166,9 +201,13 @@ coordinates = function(X, basis = 'ilr', label = ifelse(is.character(basis), bas
     }
 
   }
+  suppressWarnings(row.names(COORD) <- row.names(X))
   set.coda(COORD)
 }
 
+#' @rdname coordinates
+#' @export
+coord = coordinates
 
 #' Get composition from coordinates w.r.t.  an specific basis
 #'
@@ -187,6 +226,7 @@ coordinates = function(X, basis = 'ilr', label = ifelse(is.character(basis), bas
 #' coordinates of a given composition.
 #' @export
 composition = function(H, basis = NULL, label = 'x', sparse_basis = FALSE){
+  rnames = rownames(H)
   class_type = class(H)
   if(is.null(basis) & "basis" %in% names(attributes(H))){
     basis = attr(H, 'basis')
@@ -250,6 +290,10 @@ composition = function(H, basis = NULL, label = 'x', sparse_basis = FALSE){
   #attr(RAW, 'basis') = basis
   RAW
 }
+
+#' @rdname composition
+#' @export
+compo = composition
 
 #' Distance Matrix Computation (including Aitchison distance)
 #'

@@ -24,7 +24,6 @@ print.coda = function(x, ..., basis = getOption('coda.base.basis')){
     utils::getAnywhere(print.methods.list[print.method])$objs[[1]](x.print, ...)
     if(basis){
       B = attr(x.print, 'basis')
-      dimnames(B) = list(paste0('P', 1:nrow(B)), colnames(x))
       cat(' Basis:\n')
       print(B)
     }

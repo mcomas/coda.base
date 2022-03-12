@@ -37,6 +37,8 @@ ilr_basis = function(dim, type = 'default'){
   if(type == 'pivot'){
     return((-B)[,ncol(B):1, drop = FALSE][nrow(B):1,])
   }
+  colnames(B) = sprintf("ilr%d", 1:ncol(B))
+  rownames(B) = sprintf("c%d", 1:nrow(B))
   class(B) = 'balance'
   B
 }
@@ -60,7 +62,10 @@ ilr_basis = function(dim, type = 'default'){
 #' sum(clr_coordinates) < 1e-15
 #' @export
 clr_basis = function(dim){
-  clr_basis_default(dim)
+  B = clr_basis_default(dim)
+  colnames(B) = sprintf("clr%d", 1:ncol(B))
+  rownames(B) = sprintf("c%d", 1:nrow(B))
+  B
 }
 
 
@@ -92,7 +97,10 @@ alr_basis = function(dim, denominator = dim, numerator = which(denominator != 1:
     res[c(denominator, dim),] = res[c(dim, denominator),, drop = FALSE]
     res[,c(denominator, dim)] = res[,c(dim, denominator), drop = FALSE]
   }
-  res[,numerator, drop = FALSE]
+  B = res[,numerator, drop = FALSE]
+  colnames(B) = sprintf("alr%d", 1:ncol(B))
+  rownames(B) = sprintf("c%d", 1:nrow(B))
+  B
 }
 
 #' Isometric log-ratio basis based on Principal Components.
@@ -108,8 +116,12 @@ pc_basis = function(X){
   lX =  log(X)
   SVD = svd(scale(lX - rowMeans(lX), scale = FALSE))
   B = SVD$v[,-ncol(X), drop = FALSE]
-  rownames(B) = colnames(X)
-  colnames(B) = paste0('PC', 1:ncol(B))
+  parts = colnames(X)
+  if(is.null(parts)){
+    parts = paste0('c', 1:nrow(B))
+  }
+  rownames(B) = parts
+  colnames(B) = paste0('pc', 1:ncol(B))
   B
 }
 
@@ -127,8 +139,12 @@ cc_basis = function(Y, X){
   B = ilr_basis(ncol(Y))
   cc = stats::cancor(coordinates(Y), X)
   B = B %*% cc$xcoef
-  rownames(B) = colnames(Y)
-  colnames(B) = paste0('CC', 1:ncol(B))
+  parts = colnames(Y)
+  if(is.null(parts)){
+    parts = paste0('c', 1:nrow(B))
+  }
+  rownames(B) = parts
+  colnames(B) = paste0('cc', 1:ncol(B))
   class(B) = 'balance'
   B
 }
@@ -381,8 +397,12 @@ pb_basis = function(X, method, constrained.complete_up = FALSE, cluster.method =
   if(ordering){
     B = B[,order(apply(coordinates(X, B, basis_return = FALSE), 2, stats::var), decreasing = TRUE), drop = FALSE]
   }
-  rownames(B) = colnames(X)
-  colnames(B) = paste0(M, 1:ncol(B))
+  parts = colnames(X)
+  if(is.null(parts)){
+    parts = paste0('c', 1:nrow(B))
+  }
+  rownames(B) = parts
+  colnames(B) = paste0('pb', 1:ncol(B))
   class(B) = 'balance'
   B
 }

@@ -105,7 +105,6 @@ When `method` is set to `"exact"`, exhaustive search is performed to obtain the 
 
 
 ```{r, echo=FALSE, fig.width=7.5, fig.height=4.5, warning=FALSE}
-library(tictoc)
 library(ggplot2)
 D = 10
 
