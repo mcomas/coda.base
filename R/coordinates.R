@@ -94,9 +94,8 @@ clr = function(X, basis_return){
 }
 
 pc = function(X, basis_return){
-  lX =  log(X)
-  SVD = svd(scale(lX - rowMeans(lX), scale = FALSE))
-  B = SVD$v[,-ncol(SVD$v)]
+  B = ilr_basis(ncol(X))
+  B = B %*% svd(scale(log(X) %*% B, scale=FALSE))$v
   COORD = matrix_coordinates(X, B)
   if(basis_return){
     colnames(B) = paste0('pc', 1:ncol(B))

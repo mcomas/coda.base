@@ -111,10 +111,9 @@ alr_basis = function(dim, denominator = dim, numerator = which(denominator != 1:
 #'
 #' @export
 pc_basis = function(X){
-  X = as.matrix(X)
-  lX =  log(X)
-  SVD = svd(scale(lX - rowMeans(lX), scale = FALSE))
-  B = SVD$v[,-ncol(X), drop = FALSE]
+  B = ilr_basis(ncol(X))
+  B = B %*% svd(scale(log(as.matrix(X)) %*% B, scale=FALSE))$v
+
   parts = colnames(X)
   if(is.null(parts)){
     parts = paste0('c', 1:nrow(B))
