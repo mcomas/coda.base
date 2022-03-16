@@ -412,6 +412,8 @@ pb_basis = function(X, method, constrained.complete_up = FALSE, cluster.method =
 #' @export
 cdp_basis = function(dim){
   B = cdp_basis_(dim)
+  rownames(B) = paste0("c", 1:dim)
+  colnames(B) = paste0("ilr", 1:ncol(B))
   B
 }
 
@@ -436,4 +438,23 @@ cdp_basis_ = function(dim, wR = 1:ceiling(dim/2), wL = ceiling(dim/2) + 1:floor(
   cbind(v,
         Recall(dim, wR = wR[1:ceiling(R/2)], wL = wR[ceiling(R/2) + 1:floor(R/2)]),
         Recall(dim, wR = wL[1:ceiling(L/2)], wL = wL[ceiling(L/2) + 1:floor(L/2)]))
+}
+
+#' Pairwise log-ratio generator system
+#'
+#' The function returns all combinations of pairs of log-ratios.
+#'
+#' @param dim dimension to build the pairwise log-ratio generator system
+#' @return matrix
+#' @export
+pairwise_basis = function(dim){
+  I = utils::combn(dim,2)
+  B = apply(I, 2, function(i){
+    b = rep(0, dim)
+    b[i] = c(1,-1)
+    b
+  })
+  colnames(B) = paste0('alr.', apply(I, 2, paste, collapse = '_'))
+  rownames(B) = paste0("c", 1:dim)
+  B
 }

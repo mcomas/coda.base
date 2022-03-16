@@ -12,5 +12,5 @@
 #' \item{pp}{Votes to Partit popular party}
 #' \item{other}{Votes to other parties}
 #' }
-#' @source \url{http://www.idescat.cat/tema/elecc}
+#' @source \url{https://www.idescat.cat/tema/elecc}
 "parliament2017"
