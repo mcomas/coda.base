@@ -97,7 +97,7 @@ clr = function(X, basis_return){
 }
 
 pc = function(X, basis_return){
-  B = ilr_basis(ncol(X))
+  B = as.matrix(ilr_basis(ncol(X)))
   B = B %*% svd(scale(log(X) %*% B, scale=FALSE))$v
   COORD = matrix_coordinates(X, B)
   colnames(COORD) = paste0('pc', 1:ncol(B))
@@ -113,7 +113,7 @@ pc = function(X, basis_return){
 
 cdp = function(X, basis_return){
   B = cdp_basis(ncol(X))
-  COORD = matrix_coordinates(X, B)
+  COORD = sparse_coordinates(X, B)
   colnames(COORD) = colnames(B)
   if(basis_return){
     if(!is.null(colnames(X))){
@@ -126,7 +126,7 @@ cdp = function(X, basis_return){
 
 pb = function(X, basis_return){
   B = pb_basis(X, method = 'exact')
-  COORD = matrix_coordinates(X, B)
+  COORD = sparse_coordinates(X, B)
   colnames(COORD) = colnames(B)
   if(basis_return){
     if(!is.null(colnames(X))){
@@ -139,7 +139,7 @@ pb = function(X, basis_return){
 
 pw = function(X, basis_return){
   B = pairwise_basis(ncol(X))
-  COORD = matrix_coordinates(X, B)
+  COORD = sparse_coordinates(X, B)
   colnames(COORD) = colnames(B)
   if(basis_return){
     if(!is.null(colnames(X))){
@@ -195,7 +195,11 @@ coordinates = function(X, basis = 'ilr', basis_return = TRUE){
       COORD = get(basis)(X, basis_return)
       #sprintf(sprintf('%s%%0%dd', basis, 1+floor(log(ncol(COORD), 10))),1:ncol(COORD))
     }else{                      # matrix basis
-      COORD = matrix_coordinates(X, basis)
+      if('dgCMatrix' %in% class(basis)){
+        COORD = sparse_coordinates(X, basis)
+      }else{
+        COORD = matrix_coordinates(X, basis)
+      }
       if(basis_return) attr(COORD, 'basis') = basis
       if(!is.null(colnames(basis))){
         colnames(COORD) = colnames(basis)
@@ -230,15 +234,17 @@ coordinates = function(X, basis = 'ilr', basis_return = TRUE){
 #' @export
 coord = coordinates
 
+
+coordinates_sparse = function(X, B, sparse){
+  coordinates_basis(X,B,sparse)
+}
+
 #' Get composition from coordinates w.r.t.  an specific basis
 #'
 #' Calculate a composition from coordinates with respect a given basis
 #'
 #' @param H coordinates of a composition. Either a matrix, a data.frame or a vector
 #' @param basis basis used to calculate the coordinates
-#' @param label name given to the coordinates
-#' @param sparse_basis Is the given matrix basis sparse? If TRUE calculation are carried
-#' taking into an account sparsity (default `FALSE`)
 #' @return coordinates with respect the given basis
 #' @seealso See functions \code{\link{ilr_basis}}, \code{\link{alr_basis}},
 #' \code{\link{clr_basis}}, \code{\link{sbp_basis}}
@@ -246,14 +252,15 @@ coord = coordinates
 #' See function \code{\link{coordinates}} to obtain details on how to calculate
 #' coordinates of a given composition.
 #' @export
-composition = function(H, basis = NULL, label = 'x', sparse_basis = FALSE){
+composition = function(H, basis = NULL){
   rnames = rownames(H)
+
   class_type = class(H)
   if(is.null(basis) & "basis" %in% names(attributes(H))){
     basis = attr(H, 'basis')
   }
   if(is.null(basis)){
-    basis = 'ilr'
+    stop("Basis is not defined", call. = FALSE)
   }
   is_vector = is.atomic(H) & !is.list(H) & !is.matrix(H)
   is_data_frame = inherits(H, 'data.frame')
@@ -291,17 +298,20 @@ composition = function(H, basis = NULL, label = 'x', sparse_basis = FALSE){
       }
     }
   }else{
-    if(is.matrix(basis)){
-      RAW = exp(COORD %*% pinv(basis))
+    if(is.matrix(basis) | 'dgCMatrix' %in% class(basis)){
+      RAW = exp(COORD %*% pinv(as.matrix(basis)))
     }else{
       stop(sprintf('Basis need to be either an string or a matrix'))
     }
   }
   RAW = RAW / rowSums(RAW)
-  colnames(RAW) = sprintf(sprintf('%s%%0%dd',label, 1+floor(log(ncol(RAW), 10))),1:ncol(RAW))
+  cnames = sprintf('c%d', 1:ncol(RAW))
+  if(!is.character(basis) & !is.null(colnames(basis))){
+    cnames = rownames(basis)
+  }
+  colnames(RAW) = cnames
   if(is_vector){
     RAW = RAW[1,]
-    names(RAW) = sprintf(sprintf('%s%%0%dd', label, 1+floor(log(length(RAW), 10))),1:length(RAW))
   }
   if(is_data_frame){
     RAW = as.data.frame(RAW)

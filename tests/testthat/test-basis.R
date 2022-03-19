@@ -15,12 +15,12 @@ test_that("basis_matrix", {
   PC = pc_basis(X)
   PB = pb_basis(X, method = 'exact')
 
-  expect_that(ALR, is_a('matrix'))
-  expect_that(ILR, is_a('matrix'))
+  expect_that(ALR, is_a('Matrix'))
+  expect_that(ILR, is_a('Matrix'))
   expect_that(CLR, is_a('matrix'))
-  expect_that(SBP, is_a('matrix'))
+  expect_that(SBP, is_a('Matrix'))
   expect_that(PC, is_a('matrix'))
-  expect_that(PB, is_a('matrix'))
+  expect_that(PB, is_a('Matrix'))
 
   expect_equal(sum(composition(coordinates(X, ALR)) / X * rowSums(X)), N)
   expect_equal(sum(composition(coordinates(X, ILR)) / X * rowSums(X)), N)

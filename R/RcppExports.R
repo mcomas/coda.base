@@ -45,6 +45,10 @@ matrix_coordinates <- function(X, B) {
     .Call(`_coda_base_matrix_coordinates`, X, B)
 }
 
+sparse_coordinates <- function(X, B) {
+    .Call(`_coda_base_sparse_coordinates`, X, B)
+}
+
 coordinates_basis <- function(X, B, sparse = FALSE) {
     .Call(`_coda_base_coordinates_basis`, X, B, sparse)
 }

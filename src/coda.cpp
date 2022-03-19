@@ -161,6 +161,11 @@ arma::mat matrix_coordinates(arma::mat X, arma::mat B){
 }
 
 // [[Rcpp::export]]
+arma::mat sparse_coordinates(arma::mat X, arma::sp_mat B){
+  return(log(X) * B);
+}
+
+// [[Rcpp::export]]
 arma::mat coordinates_basis(arma::mat X, arma::mat B, bool sparse = false){
   if(sparse){
     arma::sp_mat sB(B);
