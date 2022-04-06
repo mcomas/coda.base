@@ -215,8 +215,8 @@ coordinates = function(X, basis = 'ilr', basis_return = TRUE){
       attr(COORD, 'basis') = B
     }else{
       class_type = class(X)
-
       if(inherits(X, 'data.frame')){
+        if(!all(sapply(X, is.numeric))) stop("All parts must be numeric", call. = FALSE)
         mCOORD = Recall(as.matrix(X), basis, basis_return)
         COORD = as.data.frame(mCOORD)
         attr(COORD, 'basis') = attr(mCOORD, 'basis')
@@ -232,8 +232,46 @@ coordinates = function(X, basis = 'ilr', basis_return = TRUE){
 
 #' @rdname coordinates
 #' @export
-coord = coordinates
+coord = function(..., basis = 'ilr'){
+  largs = list(...)
+  # cat("---\n")
+  # str(largs)
+  # cat("---\n")
+  lpars = as.list(substitute(largs))
+  inum = sapply(1:length(lpars), function(i) is.numeric(lpars[[i]]) & !is.matrix(lpars[[i]]) & length(lpars[[i]] > 1))
+  if(sum(inum) == 0){
+    if(length(lpars) == 1 & (is.matrix(lpars[[1]]) | is.data.frame(lpars[[1]]) | is.vector(lpars[[1]]))){
+      coordinates(lpars[[1]], basis = basis)
+    }else{
+      stop("Please specify second argument", call. = FALSE)
+    }
 
+  }else{
+    if(sum(inum) == 1){
+      stop("Compositions should have at leat two parts", call. = FALSE)
+    }
+    if(1 < sum(inum)  & sum(inum) < length(lpars)){
+      stop("All components should be numeric", call. = FALSE)
+    }
+    coordinates(cbind(...), basis = basis)
+  }
+  # print(inum)
+  # print(lpars)
+  # cat("---\n")
+  # coordinates(a)
+}
+
+#' #' Define a composition passing parts one by one.
+#' #'
+#' #' @param ... compositional dataset. Composition column names
+#' #' @param basis basis used to calculate the coordinates. \code{basis} can be either a string or a matrix.
+#' #' Accepted values for strings are: 'ilr' (default), 'clr', 'alr', 'pw', 'pc', 'pb' and 'cdp'. If \code{basis} is a matrix, it is expected
+#' #' to have log-ratio basis given in columns.
+#' #' @export
+#' coda = function(..., basis = 'ilr'){
+#'   X = coordinates(cbind(...), basis = basis)
+#'   X
+#' }
 
 coordinates_sparse = function(X, B, sparse){
   coordinates_basis(X,B,sparse)
@@ -276,16 +314,14 @@ composition = function(H, basis = NULL){
   if(is.character(basis)){
     dim = ncol(COORD)+1
     if(basis == 'ilr'){
-      basis = ilr_basis(dim)
+      basis = as.matrix(ilr_basis(dim))
       RAW = exp(COORD %*% t(basis))
     }else{
       if(basis == 'alr'){
-        basis = alr_basis(dim)
         RAW = cbind(exp(COORD), 1)
       }else{
         if(basis == 'clr'){
           dim = ncol(COORD)
-          basis = clr_basis(dim)
           RAW = exp(COORD)
         }else{
           if(basis == 'cdp'){
