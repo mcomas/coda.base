@@ -72,9 +72,9 @@ _Principal balances_ are defined as follows [@pawlowsky2011]:
 > * The $i$-th PB has maximum variance conditional to its balancing element being orthogonal to the previous 1st, 2nd, ..., $(i-1)$-th balancing elements.
 >
 
-Because of the large amount of possibilities, for a given compositional sample, finding the PB is a computational demanding task. @fernandez2017 proposed different approaches to deal with the calculation and approximation of such type of basis. `coda.base` implements all methods presented in [@fernandez2017]. 
+Because of the large number of possibilities, for a given compositional sample, finding the PB is a computational demanding task. @fernandez2017 proposed different approaches to deal with the calculation and approximation of such type of basis. `coda.base` implements all methods presented in [@fernandez2017]. 
 
-To illustrate `coda.base` functionalities we will use the following dataset:
+To illustrate `coda.base` functionalities, we use the following dataset:
 
 ```{r}
 library(coda.base)
@@ -85,23 +85,23 @@ consisting of parties in the 2017 Catalan Parliament Elections.
 
 ## Exact Principal Balances
 
-`coda.base` can calculate the PB with the function `pb_basis()`. Function `pb_basis()` needs the paramater `method` to be set. To obtain the PB users needs to set `method = "exact"`.
+`coda.base` can calculate the PB with the function `pb_basis()`. Function `pb_basis()` needs the parameter `method` to be set. To obtain the PB users needs to set `method = "exact"`.
 
 ```{r}
 B1 = pb_basis(X, method = "exact")
 ```
 
-Where the obtained sequential binary partition can be summarised with the following sequential binary tree:
+Where the obtained sequential binary partition can be summarized with the following sequential binary tree:
 
 ```{r, fig.width=7.5, fig.height=4.5}
-plot(B1)
+plot_balance(B1)
 ```
 
 ```{r}
 apply(coordinates(X, B1), 2, var)
 ```
 
-When `method` is set to `"exact"`, exhaustive search is performed to obtain the PB. The time needed to calculate the PB grows exponentially with respect the number of parts of `X`. To iterate throught all the possibilities, CoDaPack uses the algorithm @ruskey1993. Currently, exhaustive search can find the PB of a compositional data set with 20 parts in a reasonable ammount of time (5 minutes approximately). 
+When `method` is set to `"exact"`, exhaustive search is performed to obtain the PB. The time needed to calculate the PB grows exponentially regarding the number of parts of `X`. To iterate through all the possibilities, CoDaPack uses the algorithm @ruskey1993. Currently, exhaustive search can find the PB of a compositional data set with 20 parts in a reasonable amount of time (5 minutes approximately). 
 
 
 ```{r, echo=FALSE, fig.width=7.5, fig.height=4.5, warning=FALSE}
@@ -137,23 +137,23 @@ ggplot(data=dplot) +
   theme_minimal()
 ```
 
-When the number of part is higher, the exact method should be discarted in favour of other alternatives. Different alternatives are available in @pawlowsky2011 and @fernandez2017. Between this alternatives, the once that can be implemented are agglomerative partition approach based on the Ward method [@pawlowsky2011, @fernandez2017] and the approximation based on a reduced approximation to the principal components [@fernandez2017].
+When the number of part is higher, the exact method should be discarded in favor of other alternatives. Different alternatives are available in @pawlowsky2011 and @fernandez2017. Between these alternatives, the once that can be implemented are agglomerate partition approach based on the Ward method [@pawlowsky2011, @fernandez2017] and the approximation based on a reduced approximation to the principal components [@fernandez2017].
 
 ##  Ward Method for Parts
 
-For a composition $X$, @pawlowsky2011 proposed to builds the variation array and use it to produce a matrix distance. The variation array calculates the variance between pair of logratios.
+For a composition $X$, @pawlowsky2011 proposed to build the variation array and use it to produce a matrix distance. The variation array calculates the variance between a pair of logratios.
 
 ```{r}
 D = as.dist(variation_array(X, only_variation = TRUE))
 D
 ```
 
-Combining pairs with lower variance it is expected to get a final merging with high variability.
+Combining pairs with lower variance, it is expected to get a final merging with high variability.
 
 
 ```{r, fig.width=7.5, fig.height=4.5}
 B2 = pb_basis(X, method = 'cluster')
-plot(B2)
+plot_balance(B2)
 ```
 
 
@@ -165,7 +165,7 @@ apply(coordinates(X, B2), 2, var)
 
 ```{r, fig.width=7.5, fig.height=4.5}
 B3 = pb_basis(X, method = 'constrained')
-plot(B3)
+plot_balance(B3)
 ```
 
 ```{r}

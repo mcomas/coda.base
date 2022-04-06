@@ -45,7 +45,15 @@ hclust_dendrogram = function(B){
   )
 }
 
-
+#' Plot a balance
+#'
+#' @param B Balance to plot
+#' @param data (Optional) Data used to calculate the statistics associated to a balance
+#' @param main Plot title
+#' @param ... further arguments passed to plot
+#' @return Balance plot
+#'
+#' @export
 plot_balance = function(B, data = NULL, main = 'Balance dendrogram', ...){
   if(is.null(data)){
     plot(as.dendrogram(hclust_dendrogram(B)), main = main, ylab = "", axes = FALSE, ...)
