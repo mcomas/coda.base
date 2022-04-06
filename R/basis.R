@@ -1,3 +1,13 @@
+check_dim = function(dim){
+  if(!is.numeric(dim)){
+    stop("Dimension should be a number", call. = FALSE)
+  }
+  if(!dim>0){
+    stop("dimension should be positive", call. = FALSE)
+  }
+}
+
+
 #' @title Coordinates basis
 #'
 #' @description
@@ -30,6 +40,7 @@ basis = function(H){
 #' ilr_basis(5)
 #' @export
 ilr_basis = function(dim, type = 'default'){
+  check_dim(dim)
   if(type == 'cdp'){
     return(cdp_basis_(dim))
   }
@@ -37,8 +48,9 @@ ilr_basis = function(dim, type = 'default'){
   if(type == 'pivot'){
     return((-B)[,ncol(B):1, drop = FALSE][nrow(B):1,])
   }
-  class(B) = 'balance'
-  B
+  colnames(B) = sprintf("ilr%d", 1:ncol(B))
+  rownames(B) = sprintf("c%d", 1:nrow(B))
+  Matrix::Matrix(B, sparse = TRUE)
 }
 
 #' Centered log-ratio basis
@@ -60,7 +72,11 @@ ilr_basis = function(dim, type = 'default'){
 #' sum(clr_coordinates) < 1e-15
 #' @export
 clr_basis = function(dim){
-  clr_basis_default(dim)
+  check_dim(dim)
+  B = clr_basis_default(dim)
+  colnames(B) = sprintf("clr%d", 1:ncol(B))
+  rownames(B) = sprintf("c%d", 1:nrow(B))
+  B
 }
 
 
@@ -86,13 +102,17 @@ clr_basis = function(dim){
 #' Monographs on Statistics and Applied Probability. Chapman & Hall Ltd., London (UK). 416p.
 #' @export
 alr_basis = function(dim, denominator = dim, numerator = which(denominator != 1:dim)){
+  check_dim(dim)
   res = alr_basis_default(dim)
   res = cbind(res, 0)
   if(dim != denominator){
     res[c(denominator, dim),] = res[c(dim, denominator),, drop = FALSE]
     res[,c(denominator, dim)] = res[,c(dim, denominator), drop = FALSE]
   }
-  res[,numerator, drop = FALSE]
+  B = res[,numerator, drop = FALSE]
+  colnames(B) = sprintf("alr%d", 1:ncol(B))
+  rownames(B) = sprintf("c%d", 1:nrow(B))
+  Matrix::Matrix(B, sparse = TRUE)
 }
 
 #' Isometric log-ratio basis based on Principal Components.
@@ -104,13 +124,16 @@ alr_basis = function(dim, denominator = dim, numerator = which(denominator != 1:
 #'
 #' @export
 pc_basis = function(X){
-  X = as.matrix(X)
-  lX =  log(X)
-  SVD = svd(scale(lX - rowMeans(lX), scale = FALSE))
-  B = SVD$v[,-ncol(X), drop = FALSE]
-  rownames(B) = colnames(X)
-  colnames(B) = paste0('PC', 1:ncol(B))
-  B
+  B = ilr_basis(ncol(X))
+  B = B %*% svd(scale(log(as.matrix(X)) %*% B, scale=FALSE))$v
+
+  parts = colnames(X)
+  if(is.null(parts)){
+    parts = paste0('c', 1:nrow(B))
+  }
+  rownames(B) = parts
+  colnames(B) = paste0('pc', 1:ncol(B))
+  as.matrix(B)
 }
 
 #' Isometric log-ratio basis based on canonical correlations
@@ -127,9 +150,12 @@ cc_basis = function(Y, X){
   B = ilr_basis(ncol(Y))
   cc = stats::cancor(coordinates(Y), X)
   B = B %*% cc$xcoef
-  rownames(B) = colnames(Y)
-  colnames(B) = paste0('CC', 1:ncol(B))
-  class(B) = 'balance'
+  parts = colnames(Y)
+  if(is.null(parts)){
+    parts = paste0('c', 1:nrow(B))
+  }
+  rownames(B) = parts
+  colnames(B) = paste0('cc', 1:ncol(B))
   B
 }
 
@@ -277,7 +303,7 @@ sbp_basis = function(..., data = NULL, silent=F){
       }
     }
   }
-  RES
+  Matrix::Matrix(RES, sparse = TRUE)
 }
 
 #' Isometric log-ratio basis based on Principal Balances.
@@ -381,10 +407,13 @@ pb_basis = function(X, method, constrained.complete_up = FALSE, cluster.method =
   if(ordering){
     B = B[,order(apply(coordinates(X, B, basis_return = FALSE), 2, stats::var), decreasing = TRUE), drop = FALSE]
   }
-  rownames(B) = colnames(X)
-  colnames(B) = paste0(M, 1:ncol(B))
-  class(B) = 'balance'
-  B
+  parts = colnames(X)
+  if(is.null(parts)){
+    parts = paste0('c', 1:nrow(B))
+  }
+  rownames(B) = parts
+  colnames(B) = paste0('pb', 1:ncol(B))
+  Matrix::Matrix(B, sparse = TRUE)
 }
 
 #' Isometric log-ratio basis based on Balances.
@@ -395,9 +424,11 @@ pb_basis = function(X, method, constrained.complete_up = FALSE, cluster.method =
 #' @return matrix
 #' @export
 cdp_basis = function(dim){
+  check_dim(dim)
   B = cdp_basis_(dim)
-  class(B) = 'balance'
-  B
+  rownames(B) = paste0("c", 1:dim)
+  colnames(B) = paste0("ilr", 1:ncol(B))
+  Matrix::Matrix(B, sparse = TRUE)
 }
 
 cdp_basis_ = function(dim, wR = 1:ceiling(dim/2), wL = ceiling(dim/2) + 1:floor(dim/2)){
@@ -421,4 +452,24 @@ cdp_basis_ = function(dim, wR = 1:ceiling(dim/2), wL = ceiling(dim/2) + 1:floor(
   cbind(v,
         Recall(dim, wR = wR[1:ceiling(R/2)], wL = wR[ceiling(R/2) + 1:floor(R/2)]),
         Recall(dim, wR = wL[1:ceiling(L/2)], wL = wL[ceiling(L/2) + 1:floor(L/2)]))
+}
+
+#' Pairwise log-ratio generator system
+#'
+#' The function returns all combinations of pairs of log-ratios.
+#'
+#' @param dim dimension to build the pairwise log-ratio generator system
+#' @return matrix
+#' @export
+pairwise_basis = function(dim){
+  check_dim(dim)
+  I = utils::combn(dim,2)
+  B = apply(I, 2, function(i){
+    b = rep(0, dim)
+    b[i] = c(1,-1)
+    b
+  })
+  colnames(B) = paste0('lr.', apply(I, 2, paste, collapse = '_'))
+  rownames(B) = paste0("c", 1:dim)
+  Matrix::Matrix(B, sparse = TRUE)
 }

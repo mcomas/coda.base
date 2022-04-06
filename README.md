@@ -1,6 +1,6 @@
 # coda.base
 
-[https://mcomas.github.io/coda.base/](https://mcomas.github.io/coda.base/)
+[https://mcomas.net/coda.base/](https://mcomas.net/coda.base/)
 
 ## Installation
 

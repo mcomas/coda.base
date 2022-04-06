@@ -1,3 +1,15 @@
+coda.base 0.4.2
+===============
+* Pairwise default name changed to lr instead of alr.
+* Sparse matrices are used for basis when zeros.
+
+coda.base 0.3.2 (Release date: 2022-03-13)
+===============
+* `coord()` and `comp()` are included as a shorter names of `coordinates()` and `composition()`.
+* Basis names taken from composition.
+* Coordinates based on pairwise log-ratios available with `pairwise_basis()` or basis = 'pw' in function coordinates().
+* Parameter label removed in function coordinates().
+
 coda.base 0.3.1
 ===============
 * PB constrained approximation available. Adaptation of code provided by J.A.Martín-Fernández.
@@ -43,7 +55,6 @@ coda.base 0.1.8 (Release date: 2017-12-03)
 
 coda.base 0.1.7 (Release date: 2017-08-25)
 ===============
-
 * Problem with function composition using 'clr' basis solved.
 * 'coda.base.basis' option included to hide the basis when printing the coordinates.
 * New method which uses the principal components included in pb_basis.

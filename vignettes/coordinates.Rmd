@@ -24,8 +24,6 @@ In this vignette we work with a subcomposition of the results obtained in differ
 
 ```{r, message=FALSE}
 library(coda.base)
-# By default basis is not shown, in this vignette we turn on basis showing.
-options('coda.base.basis' = TRUE)
 data('parliament2017')
 X = parliament2017[,c('erc','jxcat','psc','cs')]
 ```
@@ -43,7 +41,11 @@ H1.alr = coordinates(X, basis = 'alr')
 head(H1.alr)
 ```
 
-It defines an alr-coordinates were the first parts are used for the numerator of the log-quotient in order and the last part is used in the denominator.
+It defines an alr-coordinates were the last part is used in the denominator. We can obtain the basis used to build the coordinates with function `basis()`:
+
+```{r}
+basis(H1.alr)
+```
 
 The basis can be reproduced using the function `alr_basis`:
 
@@ -58,21 +60,22 @@ B.alr = alr_basis(dim = 4, numerator = c(4,2,3), denominator = 1)
 B.alr
 ```
 
-The log-contrast matrix can be used in `basis` parameter:
+The log-contrast matrix can be used as `basis` parameter in `coordinates()` function:
 
 ```{r}
 H2.alr = coordinates(X, basis = B.alr)
-head(H2.alr)
+basis(H2.alr)
 ```
 
 ##  The centered logratio (clr) coordinates
 
-Building centered log-ratio coordinates can be accomplished by setting parameter `basis='clr'`:
+Building centered log-ratio coordinates can be accomplished by setting parameter `basis='clr'` or 
 
 ```{r}
 H.clr = coordinates(X, basis = 'clr')
 head(H.clr)
 ```
+
 
 ## The isometric logratio (ilr) coordinates
 

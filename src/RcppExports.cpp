@@ -6,6 +6,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // pinv
 arma::mat pinv(arma::mat X);
 RcppExport SEXP _coda_base_pinv(SEXP XSEXP) {
@@ -130,6 +135,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// sparse_coordinates
+arma::mat sparse_coordinates(arma::mat X, arma::sp_mat B);
+RcppExport SEXP _coda_base_sparse_coordinates(SEXP XSEXP, SEXP BSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
+    Rcpp::traits::input_parameter< arma::sp_mat >::type B(BSEXP);
+    rcpp_result_gen = Rcpp::wrap(sparse_coordinates(X, B));
+    return rcpp_result_gen;
+END_RCPP
+}
 // coordinates_basis
 arma::mat coordinates_basis(arma::mat X, arma::mat B, bool sparse);
 RcppExport SEXP _coda_base_coordinates_basis(SEXP XSEXP, SEXP BSEXP, SEXP sparseSEXP) {
@@ -222,6 +239,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_coda_base_inv_clr_coordinates", (DL_FUNC) &_coda_base_inv_clr_coordinates, 1},
     {"_coda_base_alr_coordinates", (DL_FUNC) &_coda_base_alr_coordinates, 2},
     {"_coda_base_matrix_coordinates", (DL_FUNC) &_coda_base_matrix_coordinates, 2},
+    {"_coda_base_sparse_coordinates", (DL_FUNC) &_coda_base_sparse_coordinates, 2},
     {"_coda_base_coordinates_basis", (DL_FUNC) &_coda_base_coordinates_basis, 3},
     {"_coda_base_ilr_coordinates", (DL_FUNC) &_coda_base_ilr_coordinates, 1},
     {"_coda_base_inv_ilr_coordinates", (DL_FUNC) &_coda_base_inv_ilr_coordinates, 1},
