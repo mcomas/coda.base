@@ -248,7 +248,7 @@ coord = function(..., basis = 'ilr'){
 
   }else{
     if(sum(inum) == 1){
-      stop("Compositions should have at leat two parts", call. = FALSE)
+      stop("Compositions should have at least two parts. If you want to calculate the coordinates of one composition, please use function coordinates().", call. = FALSE)
     }
     if(1 < sum(inum)  & sum(inum) < length(lpars)){
       stop("All components should be numeric", call. = FALSE)
