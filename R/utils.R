@@ -1,0 +1,84 @@
+getDim = function(X) ifelse(is.vector(X), length(X), NCOL(X))
+
+#' Variation array is returned.
+#'
+#' @param X Compositional dataset
+#' @param only_variation if TRUE only the variation matrix is calculated
+#' @return variation array matrix
+#' @examples
+#' set.seed(1)
+#' X = matrix(exp(rnorm(5*100)), nrow=100, ncol=5)
+#' variation_array(X)
+#' variation_array(X, only_variation = TRUE)
+#' @export
+variation_array = function(X, only_variation = FALSE){
+  var_arr = c_variation_array(as.matrix(X), as.logical(only_variation))
+  if(!is.null(colnames(X))) colnames(var_arr) = rownames(var_arr) = colnames(X)
+  var_arr
+}
+
+#' Distance Matrix Computation (including Aitchison distance)
+#'
+#' This function overwrites \code{\link[stats]{dist}} function to contain Aitchison distance between
+#' compositions.
+#'
+#' @param x compositions
+#' method
+#' @param method the distance measure to be used. This must be one of "aitchison", "euclidean", "maximum",
+#' "manhattan", "canberra", "binary" or "minkowski". Any unambiguous substring can be given.
+#' @param ... arguments passed to \code{\link[stats]{dist}} function
+#' @return \code{dist} returns an object of class "dist".
+#' @seealso See functions \code{\link[stats]{dist}}.
+#' @examples
+#' X = exp(matrix(rnorm(10*50), ncol=50, nrow=10))
+#'
+#' (d <- dist(X, method = 'aitchison'))
+#' plot(hclust(d))
+#'
+#' # In contrast to Euclidean distance
+#' dist(rbind(c(1,1,1), c(100, 100, 100)), method = 'euc') # method = 'euclidean'
+#' # using Aitchison distance, only relative information is of importance
+#' dist(rbind(c(1,1,1), c(100, 100, 100)), method = 'ait') # method = 'aitchison'
+#'
+#' @export
+dist = function(x, method = 'euclidean', ...){
+  METHODS <- c("aitchison", "euclidean", "maximum",
+               "manhattan", "canberra",  "binary", "minkowski")
+  imethod <- pmatch(method, METHODS)
+  .coda = FALSE
+  if (!is.na(imethod) & imethod == 1) {
+    .coda = TRUE
+    x = coordinates(x)
+    method = 'euclidean'
+  }
+  adist = stats::dist(x, method = method, ...)
+  if(.coda){
+    attr(adist, 'method') = 'aitchison'
+  }
+  adist
+}
+
+#' Geometric Mean
+#'
+#' Generic function for the (trimmed) geometric mean.
+#'
+#' @param x A nonnegative vector.
+#' @param zero.rm a logical value indicating whether zero values should be stripped
+#' before the computation proceeds.
+#' @param trim the fraction (0 to 0.5) of observations to be trimmed from each
+#' end of x before the mean is computed. Values of trim outside that range are
+#' taken as the nearest endpoint.
+#' @param na.rm	a logical value indicating whether NA values should be stripped
+#' before the computation proceeds.
+#' @export
+gmean = function(x, zero.rm = FALSE, trim = 0, na.rm = FALSE){
+  if(any(x < 0)) stop('Negative values')
+
+  if(zero.rm) x = x[x != 0]
+
+  lmean = mean(log(x), trim = trim, na.rm = na.rm)
+
+  if(lmean == -Inf) return(0)
+  exp(lmean)
+
+}
