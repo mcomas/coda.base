@@ -56,6 +56,7 @@ hclust_dendrogram = function(B){
 #' @export
 plot_balance = function(B, data = NULL, main = 'Balance dendrogram', ...){
   if(is.null(data)){
+    B = as.matrix(B)
     plot(as.dendrogram(hclust_dendrogram(B)), main = main, ylab = "", axes = FALSE, ...)
   }else{
 

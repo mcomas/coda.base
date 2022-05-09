@@ -82,3 +82,42 @@ gmean = function(x, zero.rm = FALSE, trim = 0, na.rm = FALSE){
   exp(lmean)
 
 }
+
+fillPartition = function(partition, row, left, right){
+  new_row = rep(0, ncol(partition))
+  if(right - left <= 0){
+    return(partition)
+  }
+  if(right - left == 1){
+    new_row[left] = 1
+    new_row[right] = -1
+    if(row == 0){
+      partition = rbind(new_row)
+    }else{
+      partition = rbind(partition, new_row)
+    }
+    return(partition)
+  }
+  middle = left + (0.5 + right - left)/2
+  new_row[left:floor(middle)] = 1
+  new_row[ceiling(middle):right] = -1
+  if(row == 0){
+    partition = rbind(new_row)
+  }else{
+    partition = rbind(partition, new_row)
+  }
+  partition = fillPartition(partition, nrow(partition), left, floor(middle))
+  partition = fillPartition(partition, nrow(partition), ceiling(middle), right)
+  return(partition)
+}
+
+#' CoDaPack's default binary partition
+#'
+#' Compute the default binary partition used in CoDaPack's software
+#'
+#' @param ncomp number of parts
+#' @return matrix
+#' @examples
+#' cdp_partition(4)
+#' @export
+cdp_partition = function(ncomp) unname(t(fillPartition(matrix(0, nrow = 1, ncol = ncomp), 0, 1, ncomp)))
