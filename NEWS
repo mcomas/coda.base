@@ -2,6 +2,7 @@ coda.base 0.4.2
 ===============
 * Pairwise default name changed to lr instead of alr.
 * Sparse matrices are used for basis when zeros.
+* Problem with constrained principal balances detected and solved.
 
 coda.base 0.3.2 (Release date: 2022-03-13)
 ===============

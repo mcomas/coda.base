@@ -2,7 +2,7 @@ Package: coda.base
 Type: Package
 Title: A Basic Set of Functions for Compositional Data Analysis
 Version: 0.4.2
-Date: 2022-03-16
+Date: 2022-05-27
 Authors@R: c(person("Marc", "Comas-Cufí", role = c("aut", "cre"), 
                     email = "mcomas@imae.udg.edu", comment = c(ORCID = "0000-0001-9759-0622")))
 Description: A minimum set of functions to perform compositional data analysis
@@ -17,7 +17,7 @@ License: GPL
 Encoding: UTF-8
 LazyData: true
 NeedsCompilation: yes
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.0
 Suggests: 
     knitr,
     rmarkdown,

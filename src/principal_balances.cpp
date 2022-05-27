@@ -39,6 +39,7 @@ void optimise_balance_using_pc(Balance<MaximumVariance>& balance, arma::mat& X){
   }
 }
 
+// [[Rcpp::export]]
 arma::vec get_balance_using_pc(arma::mat& X){
   unsigned D = X.n_cols;
   if(D == 2){
@@ -52,7 +53,7 @@ arma::vec get_balance_using_pc(arma::mat& X){
     eig_sym( eigval, eigvec, S);
 
     arma::vec V = eigvec.tail_cols(1);
-    // Rcpp::Rcout << V.t();
+    //Rcpp::Rcout << V.t();
 
     unsigned imin = index_min(V);
     unsigned imax = index_max(V);
@@ -60,14 +61,16 @@ arma::vec get_balance_using_pc(arma::mat& X){
     V(imin) = 0;
     V(imax) = 0;
     arma::uvec ord = sort_index(abs(V), "descend");
+    //Rcpp::Rcout << ord;
     arma::uvec uL(D), uR(D);
     uL[0] = imin; uR[0] = imax;
     unsigned l = 1, r = 1;
     arma::vec balance = arma::zeros(D);
     balance[imin] = -SQR2DIV2;
     balance[imax] = +SQR2DIV2;
-    // double bestScore = as_scalar(balance.t() * S * balance);
-    double bestScore = fabs(dot(eigvec.tail_cols(1), balance));
+    double bestScore = as_scalar(balance.t() * S * balance);
+    // Rcpp::Rcout << bestScore << std::endl;
+    //double bestScore = fabs(dot(eigvec.tail_cols(1), balance));
     double bestR = 1, bestL = 1;
     for(unsigned i = 0; i < D-2; i++){
       if(V(ord[i]) < 0) uL(l++) = ord[i];
@@ -76,9 +79,9 @@ arma::vec get_balance_using_pc(arma::mat& X){
       balance(uL.head(l)).fill(-1.0/l * sqrt((double)l*r/(l+r)));
       balance(uR.head(r)).fill(+1.0/r * sqrt((double)l*r/(l+r)));
 
-      // double score = as_scalar(balance.t() * S * balance);
-      double score = fabs(dot(eigvec.tail_cols(1), balance));
-
+      double score = as_scalar(balance.t() * S * balance);
+      //double score = fabs(dot(eigvec.tail_cols(1), balance));
+      // Rcpp::Rcout << score << std::endl;
       //Rcpp::Rcout << balance.t();
       //Rcpp::Rcout << "Value:" << score <<std::endl;
       if(score > bestScore){
@@ -320,6 +323,7 @@ arma::mat find_PB_using_pc_recursively_forcing_parents(arma::mat& X){
   arma::mat S0 = cov(clr_coordinates(X));
 
   pb_mat.col(0) = get_balance_using_pc(X);
+  // Rcpp::Rcout << pb_mat << std::endl;
   arma::uvec left = find(pb_mat.col(0) < 0);
   arma::uvec right = find(pb_mat.col(0) > 0);
   if(left.n_elem > 1){
@@ -377,6 +381,7 @@ arma::mat find_PB_using_pc_recursively_forcing_parents(arma::mat& X){
       arma::mat eigvec;
       arma::mat Xsub = arma::mat(X.n_rows, zeros.n_elem);
       for(int i = 0; i < zeros.n_elem; i++) Xsub.col(i) = X.col(zeros[i]);
+      Rcpp::Rcout << Xsub;
       arma::mat S = arma::cov(clr_coordinates(Xsub));
       eig_sym( eigval, eigvec, S);
 

@@ -20,6 +20,10 @@ basis = function(H){
   attr(H, 'basis')
 }
 
+#' @export
+balance_using_pc = function(X){
+  get_balance_using_pc(as.matrix(X))
+}
 #' Isometric log-ratio basis for log-transformed compositions.
 #'
 #' By default the basis of the clr-given by Egozcue et al., 2013
@@ -307,6 +311,8 @@ sbp_basis = function(..., data = NULL, silent=F){
   Matrix::Matrix(RES, sparse = TRUE)
 }
 
+
+
 #' Isometric log-ratio basis based on Principal Balances.
 #'
 #' Exact method to calculate the principal balances of a compositional dataset. Different methods to approximate the principal balances of a compositional dataset are also included.
@@ -357,7 +363,7 @@ pb_basis = function(X, method, constrained.complete_up = FALSE, cluster.method =
     if(method == 'constrained'){
       M = 'CS'
       # B = t(fBalChip(X)$bal)
-      B = find_PB_using_pc_recursively_forcing_parents(X)
+      B = constrained_pb(X)
     }
     if(method == 'constrained2'){
       M = 'CS'
@@ -392,16 +398,6 @@ pb_basis = function(X, method, constrained.complete_up = FALSE, cluster.method =
       }
     }
     B = sbp_basis(B[,nrow(hh$merge):1, drop = FALSE])
-    # bin = hh$merge
-    # df = as.data.frame(X)
-    # names(df) = paste0('P.', 1:NCOL(df))
-    # nms = paste0('P',gsub('-','.', bin))
-    # dim(nms) = dim(bin)
-    # sbp = apply(nms, 1, paste, collapse='~')
-    # id = seq_along(sbp)
-    # sbp.exp = paste(sprintf("%s = %s ~ %s", paste0('P', id), nms[,1], nms[,2]),
-    #                 collapse=', ')
-    # B = eval(parse(text = sprintf("sbp_basis(%s,data=df)", sbp.exp)))[,rev(id), drop = FALSE]
   } else{
     stop(sprintf("Method %s does not exist", method))
   }
