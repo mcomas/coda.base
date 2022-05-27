@@ -184,7 +184,11 @@ coord = function(..., basis = 'ilr'){
     if(length(lpars) == 1 & (is.matrix(lpars[[1]]) | is.data.frame(lpars[[1]]) | is.vector(lpars[[1]]))){
       coordinates(lpars[[1]], basis = basis)
     }else{
-      stop("Please specify second argument", call. = FALSE)
+      if(is.character(lpars[[2]])){
+        coordinates(lpars[[1]], basis = lpars[[2]])
+      }else{
+        stop("Please specify second argument", call. = FALSE)
+      }
     }
 
   }else{
