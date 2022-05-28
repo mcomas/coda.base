@@ -132,6 +132,9 @@ pw = function(X, basis_return){
 #' @export
 coordinates = function(X, basis = 'ilr', basis_return = TRUE){
   if(is.matrix(X)){
+    if(!is.numeric(X)){
+      stop("Composition must be numeric", call. = FALSE)
+    }
     if(is.character(basis)){   # default's basis with characters
       COORD = get(basis)(X, basis_return)
       #sprintf(sprintf('%s%%0%dd', basis, 1+floor(log(ncol(COORD), 10))),1:ncol(COORD))
