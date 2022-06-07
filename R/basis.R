@@ -20,10 +20,6 @@ basis = function(H){
   attr(H, 'basis')
 }
 
-#' @export
-balance_using_pc = function(X){
-  get_balance_using_pc(as.matrix(X))
-}
 #' Isometric log-ratio basis for log-transformed compositions.
 #'
 #' By default the basis of the clr-given by Egozcue et al., 2013
@@ -47,11 +43,12 @@ balance_using_pc = function(X){
 ilr_basis = function(dim, type = 'default'){
   check_dim(dim)
   if(type == 'cdp'){
-    return(cdp_basis_(dim))
-  }
-  B = ilr_basis_default(dim)
-  if(type == 'pivot'){
-    B = (-B)[,ncol(B):1, drop = FALSE][nrow(B):1,]
+    B = cdp_basis_(dim)
+  }else{
+    B = ilr_basis_default(dim)
+    if(type == 'pivot'){
+      B = (-B)[,ncol(B):1, drop = FALSE][nrow(B):1,]
+    }
   }
   colnames(B) = sprintf("ilr%d", 1:ncol(B))
   rownames(B) = sprintf("c%d", 1:nrow(B))
@@ -363,7 +360,7 @@ pb_basis = function(X, method, constrained.complete_up = FALSE, cluster.method =
     if(method == 'constrained'){
       M = 'CS'
       # B = t(fBalChip(X)$bal)
-      B = constrained_pb(X)
+      B = constrained_pb(as.matrix(X))
     }
     if(method == 'constrained2'){
       M = 'CS'
@@ -466,7 +463,7 @@ pairwise_basis = function(dim){
     b[i] = c(1,-1)
     b
   })
-  colnames(B) = paste0('lr.', apply(I, 2, paste, collapse = '_'))
+  colnames(B) = paste0('lr', apply(I, 2, paste, collapse = '_'))
   rownames(B) = paste0("c", 1:dim)
   Matrix::Matrix(B, sparse = TRUE)
 }

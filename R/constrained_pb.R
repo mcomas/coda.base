@@ -7,7 +7,7 @@ pb_subcomposition = function(X, variables = 1:ncol(X), constraints = NULL){
     }
   }
   pb = matrix(0, nrow = ncol(X), ncol = 1)
-  pb[variables,1] = balance_using_pc(Xc[,variables])[,1]
+  pb[variables,1] = get_balance_using_pc(Xc[,variables])[,1]
 
   lpb = list(pb)
   if(sum(pb<0)>1 ){

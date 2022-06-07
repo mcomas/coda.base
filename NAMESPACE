@@ -2,7 +2,6 @@
 
 S3method(print,coda)
 export(alr_basis)
-export(balance_using_pc)
 export(basis)
 export(cbalance_approx)
 export(cc_basis)
