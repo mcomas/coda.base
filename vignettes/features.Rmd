@@ -1,0 +1,103 @@
+---
+title: "`coda.base` features' enumeration"
+author: "Marc Comas-Cufí"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r}
+library(coda.base)
+```
+
+# Main functions
+
+* Simulated data set:
+
+```{r}
+nP = 6
+nO = 8
+set.seed(1)
+X = matrix(rlnorm(nP * nO), ncol = nP, nrow = nO)
+colnames(X) = paste0('P', 1:nP)
+rownames(X) = paste0('O', 1:nO)
+X
+```
+
+####   Descriptive statistics
+
+* Center:
+
+```{r}
+center(X)
+```
+
+* Variation array:
+
+```{r}
+variation_array(X)
+```
+
+#### Aitchison distances between compositions
+
+`stats::dist()` is rewritten to include the Aitchison distance between compositions:
+
+```{r}
+dist(X, method = 'aitchison')
+```
+
+
+#### Log-ratio coordinates. `coordinates()`
+
+```{r}
+coordinates(X)
+```
+
+By default, `coda.base` uses the isometric log-ratio coordinates defined in Egozcue et al. 2003.
+
+-   `coordinates(X, 'ilr')`: isometric log-ratio coordinates (Egozcue et al. 2003, defaults)
+-   `coordinates(X, 'alr')`: additive log-ratio coordinates
+-   `coordinates(X, 'clr')`: centered log-ratio coordinates
+-   `coordinates(X, 'pw')`: pairwise log-ratio coordinates
+-   `coordinates(X, 'pc')`: principal component coordinates
+-   `coordinates(X, 'pb')`: principal balance coordinates
+-   `coordinates(X, 'cdp')`: balanced isometric log-ratio coordinates
+
+`coordinates(X, B)` accepts a log-contrast matrix $B$ to build the log-ratio coordinates. Different log-contrast matrices $B$ can be constructed (following section).
+
+#### Functions to build log-contrast matrices
+
+```{r}
+ilr_basis(nP)
+```
+
+```{r}
+all.equal(as.numeric(coordinates(X, 'ilr')),
+          as.numeric(log(X) %*% ilr_basis(nP)))
+```
+
+Log-ratio matrix transformations:
+
+- `ilr_basis(nP)` (Egozcue et al. 2003, defaults)
+- `ilr_basis(nP, type = 'pivot')` to pivot log-ratio coordinates
+- `ilr_basis(nP, type = 'cdp')` to balanced log-ratio coordinates (CoDaPack's default)
+- `alr_basis(nP)` to additive-log ratio coordinates. Numerator order and denominator can be modified. For example, `alr_basis(nP, denominator = 1, numerator = nP:2)`.
+- `clr_basis(nP)` to centered log-ratio coordinates.
+- `pc_basis(X)` to principal components log-ratio coordinates.
+- `cc_basis(X, X2)` to canonical correlations log-ratio coordinates.
+- `pb_basis(X, method = 'exact')` to principal balances using the exact algorithm.
+- `pb_basis(X, method = 'constrained')` to principal balances using pca constrained algorithm.
+- `pb_basis(X, method = 'cluster')` to principal balances obtained using parts clustering algorithm.
+- `pairwise_basis(nP)` to pairwise log-ratio coordinates.
+- `sbp_basis(b0 = b1~b2, b1 = P1~P2+P3, b2 = P4~P5+P6, data=X)`   
+

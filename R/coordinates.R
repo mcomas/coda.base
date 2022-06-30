@@ -209,17 +209,17 @@ coord = function(..., basis = 'ilr'){
   # coordinates(a)
 }
 
-#' #' Define a composition passing parts one by one.
-#' #'
-#' #' @param ... compositional dataset. Composition column names
-#' #' @param basis basis used to calculate the coordinates. \code{basis} can be either a string or a matrix.
-#' #' Accepted values for strings are: 'ilr' (default), 'clr', 'alr', 'pw', 'pc', 'pb' and 'cdp'. If \code{basis} is a matrix, it is expected
-#' #' to have log-ratio basis given in columns.
-#' #' @export
-#' coda = function(..., basis = 'ilr'){
-#'   X = coordinates(cbind(...), basis = basis)
-#'   X
-#' }
+# #' Define a composition passing parts one by one.
+# #'
+# #' @param ... compositional dataset. Composition column names
+# #' @param basis basis used to calculate the coordinates. \code{basis} can be either a string or a matrix.
+# #' Accepted values for strings are: 'ilr' (default), 'clr', 'alr', 'pw', 'pc', 'pb' and 'cdp'. If \code{basis} is a matrix, it is expected
+# #' to have log-ratio basis given in columns.
+# #' @export
+# coda = function(..., basis = 'ilr'){
+#   X = coordinates(cbind(...), basis = basis)
+#   X
+# }
 
 coordinates_sparse = function(X, B, sparse){
   coordinates_basis(X,B,sparse)

@@ -70,6 +70,7 @@ dist = function(x, method = 'euclidean', ...){
 #' taken as the nearest endpoint.
 #' @param na.rm	a logical value indicating whether NA values should be stripped
 #' before the computation proceeds.
+#' @seealso \code{\link{center}}
 #' @export
 gmean = function(x, zero.rm = FALSE, trim = 0, na.rm = FALSE){
   if(any(x < 0)) stop('Negative values')
@@ -81,6 +82,27 @@ gmean = function(x, zero.rm = FALSE, trim = 0, na.rm = FALSE){
   if(lmean == -Inf) return(0)
   exp(lmean)
 
+}
+
+#' Dataset center
+#'
+#' Generic function to calculate the center of a compositional dataset
+#'
+#' @param X compositional dataset
+#' @param zero.rm a logical value indicating whether zero values should be stripped
+#' before the computation proceeds.
+#' @param na.rm	a logical value indicating whether NA values should be stripped
+#' before the computation proceeds.
+#' @examples
+#' X = matrix(exp(rnorm(5*100)), nrow=100, ncol=5)
+#' g = rep(c('a','b','c','d'), 25)
+#' center(X)
+#' (by_g <- by(X, g, center))
+#' center(t(simplify2array(by_g)))
+#' @export
+center = function(X, zero.rm = FALSE, na.rm = FALSE){
+  C = apply(X, 2, gmean, zero.rm = zero.rm, na.rm = na.rm)
+  setNames(C/sum(C), colnames(X))
 }
 
 fillPartition = function(partition, row, left, right){
