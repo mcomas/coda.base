@@ -4,6 +4,7 @@
 library(coda.base)
 library(coda.plot)
 
+## CLUSTER ANALYSIS
 alimentation = read_cdp('~/Software/CoDaPack/data/alimentation.cdp')
 X = alimentation[,2:10]
 
@@ -33,13 +34,17 @@ ggplot(data=dplot) +
   facet_wrap(~variable)
 
 rm(list = ls())
+## MANOVA
 pollen = fread('~/Software/CoDaPack/data/pollen.txt')
 pollen = transform(pollen, group = paste0('g', group))
 
 model = lm(coord(pinus, abies, quercus)~group, data = pollen, y = TRUE)
 summary(model)
-anova(model)
+
 # Pillai's test is set by default, see other tests at ?anova.mlm
+# To use Wilks statistics
+anova(model, test = 'Wilks')
+
 Yobs = model$y
 Yexp = fitted(model)
 Y0 = matrix(colMeans(Yobs), ncol = ncol(Yobs), nrow = nrow(Yobs), byrow = TRUE)
