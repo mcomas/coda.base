@@ -1,3 +1,4 @@
+# install.packages('remotes')
 # remotes::install_github('mcomas/coda.base')
 # remotes::install_github('mcomas/coda.plot')
 
