@@ -107,6 +107,7 @@ pw = function(X, basis_return){
 #' Accepted values for strings are: 'ilr' (default), 'clr', 'alr', 'pw', 'pc', 'pb' and 'cdp'. If \code{basis} is a matrix, it is expected
 #' to have log-ratio basis given in columns.
 #' @param basis_return Should the basis be returned as attribute? (default: \code{TRUE})
+#' @param ... components of the compositional data
 #'
 #' @return
 #' Coordinates of composition \code{X} with respect the given \code{basis}.
@@ -282,8 +283,8 @@ composition = function(H, basis = NULL){
       }
     }
   }else{
-    if(is.matrix(basis) | 'dgCMatrix' %in% class(basis)){
-      RAW = exp(COORD %*% pinv(as.matrix(basis)))
+    if(is.matrix(basis) | methods::is(basis, 'Matrix')){
+      RAW = exp(as.matrix(COORD) %*% pinv(as.matrix(basis)))
     }else{
       stop(sprintf('Basis need to be either an string or a matrix'))
     }

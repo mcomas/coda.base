@@ -36,7 +36,6 @@ print.coda = function(x, ..., basis = getOption('coda.base.basis')){
 #' @param fname cdp file name
 #' @export
 read_cdp = function(fname){
-  require(jsonlite)
   file = jsonlite::read_json(fname)
   ldat = lapply(file$dataframes, function(df){
     vars = df$variables
