@@ -12,7 +12,7 @@ alr = function(X, basis_return){
 }
 
 ilr = function(X, basis_return){
-  COORD = ilr_coordinates(X)
+  COORD = coordinates(X, ilr_basis(ncol(X)))
   colnames(COORD) = paste0('ilr', 1:ncol(COORD))
   if(basis_return){
     B = ilr_basis(ncol(X))
@@ -38,7 +38,7 @@ clr = function(X, basis_return){
 }
 
 pc = function(X, basis_return){
-  B = as.matrix(ilr_basis(ncol(X)))
+  B = ilr_basis(ncol(X))
   B = B %*% svd(scale(log(X) %*% B, scale=FALSE))$v
   COORD = matrix_coordinates(X, B)
   colnames(COORD) = paste0('pc', 1:ncol(B))
@@ -54,7 +54,7 @@ pc = function(X, basis_return){
 
 cdp = function(X, basis_return){
   B = cdp_basis(ncol(X))
-  COORD = sparse_coordinates(X, B)
+  COORD = sparse_coordinates(X, Matrix::Matrix(B, sparse = TRUE))
   colnames(COORD) = colnames(B)
   if(basis_return){
     if(!is.null(colnames(X))){
@@ -67,7 +67,7 @@ cdp = function(X, basis_return){
 
 pb = function(X, basis_return){
   B = pb_basis(X, method = 'exact')
-  COORD = sparse_coordinates(X, B)
+  COORD = sparse_coordinates(X, Matrix::Matrix(B, sparse = TRUE))
   colnames(COORD) = colnames(B)
   if(basis_return){
     if(!is.null(colnames(X))){
@@ -140,8 +140,8 @@ coordinates = function(X, basis = 'ilr', basis_return = TRUE){
       COORD = get(basis)(X, basis_return)
       #sprintf(sprintf('%s%%0%dd', basis, 1+floor(log(ncol(COORD), 10))),1:ncol(COORD))
     }else{                      # matrix basis
-      if('dgCMatrix' %in% class(basis)){
-        COORD = sparse_coordinates(X, basis)
+      if(ncol(basis) <= 5 || mean(basis == 0) > 0.3){
+        COORD = sparse_coordinates(X, Matrix::Matrix(basis, sparse = TRUE))
       }else{
         COORD = matrix_coordinates(X, basis)
       }
@@ -263,7 +263,7 @@ composition = function(H, basis = NULL){
   if(is.character(basis)){
     dim = ncol(COORD)+1
     if(basis == 'ilr'){
-      basis = as.matrix(ilr_basis(dim))
+      basis = ilr_basis(dim)
       RAW = exp(COORD %*% t(basis))
     }else{
       if(basis == 'alr'){
@@ -283,8 +283,8 @@ composition = function(H, basis = NULL){
       }
     }
   }else{
-    if(is.matrix(basis) | methods::is(basis, 'Matrix')){
-      RAW = exp(as.matrix(COORD) %*% pinv(as.matrix(basis)))
+    if(is.matrix(basis)){
+      RAW = exp(as.matrix(COORD) %*% pinv(basis))
     }else{
       stop(sprintf('Basis need to be either an string or a matrix'))
     }

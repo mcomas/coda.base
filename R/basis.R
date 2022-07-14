@@ -52,7 +52,7 @@ ilr_basis = function(dim, type = 'default'){
   }
   colnames(B) = sprintf("ilr%d", 1:ncol(B))
   rownames(B) = sprintf("c%d", 1:nrow(B))
-  Matrix::Matrix(B, sparse = TRUE)
+  B
 }
 
 #' Centered log-ratio basis
@@ -114,7 +114,7 @@ alr_basis = function(dim, denominator = dim, numerator = which(denominator != 1:
   B = res[,numerator, drop = FALSE]
   colnames(B) = sprintf("alr%d", 1:ncol(B))
   rownames(B) = sprintf("c%d", 1:nrow(B))
-  Matrix::Matrix(B, sparse = TRUE)
+  B
 }
 
 #' Isometric log-ratio basis based on Principal Components.
@@ -305,7 +305,7 @@ sbp_basis = function(..., data = NULL, silent=F){
       }
     }
   }
-  Matrix::Matrix(RES, sparse = TRUE)
+  RES
 }
 
 
@@ -407,7 +407,7 @@ pb_basis = function(X, method, constrained.complete_up = FALSE, cluster.method =
   }
   rownames(B) = parts
   colnames(B) = paste0('pb', 1:ncol(B))
-  Matrix::Matrix(B, sparse = TRUE)
+  B
 }
 
 #' Isometric log-ratio basis based on Balances.
@@ -422,7 +422,7 @@ cdp_basis = function(dim){
   B = cdp_basis_(dim)
   rownames(B) = paste0("c", 1:dim)
   colnames(B) = paste0("ilr", 1:ncol(B))
-  Matrix::Matrix(B, sparse = TRUE)
+  B
 }
 
 cdp_basis_ = function(dim, wR = 1:ceiling(dim/2), wL = ceiling(dim/2) + 1:floor(dim/2)){
@@ -465,5 +465,5 @@ pairwise_basis = function(dim){
   })
   colnames(B) = paste0('lr', apply(I, 2, paste, collapse = '_'))
   rownames(B) = paste0("c", 1:dim)
-  Matrix::Matrix(B, sparse = TRUE)
+  B
 }
