@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">coda.base</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.2</span>
       </span>
     </div>
 
@@ -87,7 +87,7 @@ enumeration</h1>
                         <h4 data-toc-skip class="author">Marc
 Comas-Cufí</h4>
             
-            <h4 data-toc-skip class="date">2022-06-30</h4>
+            <h4 data-toc-skip class="date">2022-07-19</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/mcomas/coda.base/blob/HEAD/vignettes/features.Rmd" class="external-link"><code>vignettes/features.Rmd</code></a></small>
       <div class="hidden name"><code>features.Rmd</code></div>
@@ -215,14 +215,13 @@ can be constructed (following section).</p>
 </h5>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ilr_basis.html">ilr_basis</a></span><span class="op">(</span><span class="va">nP</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 6 x 5 sparse Matrix of class "dgCMatrix"</span></span>
 <span><span class="co">#&gt;          ilr1       ilr2       ilr3       ilr4       ilr5</span></span>
 <span><span class="co">#&gt; c1  0.7071068  0.4082483  0.2886751  0.2236068  0.1825742</span></span>
 <span><span class="co">#&gt; c2 -0.7071068  0.4082483  0.2886751  0.2236068  0.1825742</span></span>
-<span><span class="co">#&gt; c3  .         -0.8164966  0.2886751  0.2236068  0.1825742</span></span>
-<span><span class="co">#&gt; c4  .          .         -0.8660254  0.2236068  0.1825742</span></span>
-<span><span class="co">#&gt; c5  .          .          .         -0.8944272  0.1825742</span></span>
-<span><span class="co">#&gt; c6  .          .          .          .         -0.9128709</span></span></code></pre></div>
+<span><span class="co">#&gt; c3  0.0000000 -0.8164966  0.2886751  0.2236068  0.1825742</span></span>
+<span><span class="co">#&gt; c4  0.0000000  0.0000000 -0.8660254  0.2236068  0.1825742</span></span>
+<span><span class="co">#&gt; c5  0.0000000  0.0000000  0.0000000 -0.8944272  0.1825742</span></span>
+<span><span class="co">#&gt; c6  0.0000000  0.0000000  0.0000000  0.0000000 -0.9128709</span></span></code></pre></div>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="../reference/coordinates.html">coordinates</a></span><span class="op">(</span><span class="va">X</span>, <span class="st">'ilr'</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>          <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="fu"><a href="../reference/ilr_basis.html">ilr_basis</a></span><span class="op">(</span><span class="va">nP</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>

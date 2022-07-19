@@ -25,6 +25,9 @@
     <loc>/reference/alr_basis.html</loc>
   </url>
   <url>
+    <loc>/reference/arctic_lake.html</loc>
+  </url>
+  <url>
     <loc>/reference/basis.html</loc>
   </url>
   <url>
@@ -61,6 +64,9 @@
     <loc>/reference/gmean.html</loc>
   </url>
   <url>
+    <loc>/reference/household_budget.html</loc>
+  </url>
+  <url>
     <loc>/reference/ilr_basis.html</loc>
   </url>
   <url>
@@ -80,6 +86,9 @@
   </url>
   <url>
     <loc>/reference/plot_balance.html</loc>
+  </url>
+  <url>
+    <loc>/reference/pottery.html</loc>
   </url>
   <url>
     <loc>/reference/print.coda.html</loc>

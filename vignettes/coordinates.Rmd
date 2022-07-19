@@ -79,7 +79,7 @@ head(H.clr)
 
 ## The isometric logratio (ilr) coordinates
 
-`coda.base` allows to define a wide variety of ilr-coordinates: principal components (pc) coordinates, specific user balances coordinates, principal balances (pb) coordinates, balanced coordinates (default's [CoDaPack](http://ima.udg.edu/codapack/)'s coordinates).
+`coda.base` allows to define a wide variety of ilr-coordinates: principal components (pc) coordinates, specific user balances coordinates, principal balances (pb) coordinates, balanced coordinates (default's [CoDaPack](https://imae.udg.edu/codapack/)'s coordinates).
 
 The default ilr coordinate used by `coda.base` are accessible by simply calling function `coordinates` without parameters:
 

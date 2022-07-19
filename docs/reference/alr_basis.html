@@ -18,7 +18,7 @@ coordinates."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/lib
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">coda.base</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.2</span>
       </span>
     </div>
 
@@ -101,32 +101,29 @@ Monographs on Statistics and Applied Probability. Chapman &amp; Hall Ltd., Londo
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">alr_basis</span><span class="op">(</span><span class="fl">5</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 x 4 sparse Matrix of class "dgCMatrix"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    alr1 alr2 alr3 alr4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> c1    1    .    .    .</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> c2    .    1    .    .</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> c3    .    .    1    .</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> c4    .    .    .    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> c1    1    0    0    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> c2    0    1    0    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> c3    0    0    1    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> c4    0    0    0    1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> c5   -1   -1   -1   -1</span>
 <span class="r-in"><span><span class="co"># Third part is used as denominator</span></span></span>
 <span class="r-in"><span><span class="fu">alr_basis</span><span class="op">(</span><span class="fl">5</span>, <span class="fl">3</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 x 4 sparse Matrix of class "dgCMatrix"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    alr1 alr2 alr3 alr4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> c1    1    .    .    .</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> c2    .    1    .    .</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> c1    1    0    0    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> c2    0    1    0    0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> c3   -1   -1   -1   -1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> c4    .    .    1    .</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> c5    .    .    .    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> c4    0    0    1    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> c5    0    0    0    1</span>
 <span class="r-in"><span><span class="co"># Third part is used as denominator, and</span></span></span>
 <span class="r-in"><span><span class="co"># other parts are rearranged</span></span></span>
 <span class="r-in"><span><span class="fu">alr_basis</span><span class="op">(</span><span class="fl">5</span>, <span class="fl">3</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">5</span>,<span class="fl">2</span>,<span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 x 4 sparse Matrix of class "dgCMatrix"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    alr1 alr2 alr3 alr4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> c1    1    .    .    .</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> c2    .    .    1    .</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> c1    1    0    0    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> c2    0    0    1    0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> c3   -1   -1   -1   -1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> c4    .    .    .    1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> c5    .    1    .    .</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> c4    0    0    0    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> c5    0    1    0    0</span>
 </code></pre></div>
     </div>
   </div>

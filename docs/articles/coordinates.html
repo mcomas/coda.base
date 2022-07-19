@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">coda.base</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.2</span>
       </span>
     </div>
 
@@ -87,7 +87,7 @@
                         <h4 data-toc-skip class="author">Marc
 Comas-Cufí</h4>
             
-            <h4 data-toc-skip class="date">2022-06-30</h4>
+            <h4 data-toc-skip class="date">2022-07-19</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/mcomas/coda.base/blob/HEAD/vignettes/coordinates.Rmd" class="external-link"><code>vignettes/coordinates.Rmd</code></a></small>
       <div class="hidden name"><code>coordinates.Rmd</code></div>
@@ -134,44 +134,40 @@ denominator. We can obtain the basis used to build the coordinates with
 function <code><a href="../reference/basis.html">basis()</a></code>:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/basis.html">basis</a></span><span class="op">(</span><span class="va">H1.alr</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 4 x 3 sparse Matrix of class "dgCMatrix"</span></span>
 <span><span class="co">#&gt;       alr1 alr2 alr3</span></span>
-<span><span class="co">#&gt; erc      1    .    .</span></span>
-<span><span class="co">#&gt; jxcat    .    1    .</span></span>
-<span><span class="co">#&gt; psc      .    .    1</span></span>
+<span><span class="co">#&gt; erc      1    0    0</span></span>
+<span><span class="co">#&gt; jxcat    0    1    0</span></span>
+<span><span class="co">#&gt; psc      0    0    1</span></span>
 <span><span class="co">#&gt; cs      -1   -1   -1</span></span></code></pre></div>
 <p>The basis can be reproduced using the function
 <code>alr_basis</code>:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/alr_basis.html">alr_basis</a></span><span class="op">(</span>dim <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 4 x 3 sparse Matrix of class "dgCMatrix"</span></span>
 <span><span class="co">#&gt;    alr1 alr2 alr3</span></span>
-<span><span class="co">#&gt; c1    1    .    .</span></span>
-<span><span class="co">#&gt; c2    .    1    .</span></span>
-<span><span class="co">#&gt; c3    .    .    1</span></span>
+<span><span class="co">#&gt; c1    1    0    0</span></span>
+<span><span class="co">#&gt; c2    0    1    0</span></span>
+<span><span class="co">#&gt; c3    0    0    1</span></span>
 <span><span class="co">#&gt; c4   -1   -1   -1</span></span></code></pre></div>
 <p>In fact, function <code>alr_basis</code> allows to define any type of
 alr-like coordinate by defining the numerator and the denominator:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">B.alr</span> <span class="op">=</span> <span class="fu"><a href="../reference/alr_basis.html">alr_basis</a></span><span class="op">(</span>dim <span class="op">=</span> <span class="fl">4</span>, numerator <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>,<span class="fl">2</span>,<span class="fl">3</span><span class="op">)</span>, denominator <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">B.alr</span></span>
-<span><span class="co">#&gt; 4 x 3 sparse Matrix of class "dgCMatrix"</span></span>
 <span><span class="co">#&gt;    alr1 alr2 alr3</span></span>
 <span><span class="co">#&gt; c1   -1   -1   -1</span></span>
-<span><span class="co">#&gt; c2    .    1    .</span></span>
-<span><span class="co">#&gt; c3    .    .    1</span></span>
-<span><span class="co">#&gt; c4    1    .    .</span></span></code></pre></div>
+<span><span class="co">#&gt; c2    0    1    0</span></span>
+<span><span class="co">#&gt; c3    0    0    1</span></span>
+<span><span class="co">#&gt; c4    1    0    0</span></span></code></pre></div>
 <p>The log-contrast matrix can be used as <code>basis</code> parameter
 in <code><a href="../reference/coordinates.html">coordinates()</a></code> function:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">H2.alr</span> <span class="op">=</span> <span class="fu"><a href="../reference/coordinates.html">coordinates</a></span><span class="op">(</span><span class="va">X</span>, basis <span class="op">=</span> <span class="va">B.alr</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/basis.html">basis</a></span><span class="op">(</span><span class="va">H2.alr</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 4 x 3 sparse Matrix of class "dgCMatrix"</span></span>
 <span><span class="co">#&gt;    alr1 alr2 alr3</span></span>
 <span><span class="co">#&gt; c1   -1   -1   -1</span></span>
-<span><span class="co">#&gt; c2    .    1    .</span></span>
-<span><span class="co">#&gt; c3    .    .    1</span></span>
-<span><span class="co">#&gt; c4    1    .    .</span></span></code></pre></div>
+<span><span class="co">#&gt; c2    0    1    0</span></span>
+<span><span class="co">#&gt; c3    0    0    1</span></span>
+<span><span class="co">#&gt; c4    1    0    0</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="the-centered-logratio-clr-coordinates">The centered logratio (clr) coordinates<a class="anchor" aria-label="anchor" href="#the-centered-logratio-clr-coordinates"></a>
@@ -195,7 +191,7 @@ setting parameter <code>basis='clr'</code> or</p>
 <p><code>coda.base</code> allows to define a wide variety of
 ilr-coordinates: principal components (pc) coordinates, specific user
 balances coordinates, principal balances (pb) coordinates, balanced
-coordinates (default’s <a href="http://ima.udg.edu/codapack/" class="external-link">CoDaPack</a>’s coordinates).</p>
+coordinates (default’s <a href="https://imae.udg.edu/codapack/" class="external-link">CoDaPack</a>’s coordinates).</p>
 <p>The default ilr coordinate used by <code>coda.base</code> are
 accessible by simply calling function <code>coordinates</code> without
 parameters:</p>
@@ -287,7 +283,7 @@ balance) with respect to the principal components.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">PC_approx</span><span class="op">)</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'PC'</span>, <span class="st">'Ward'</span>, <span class="st">'Constrained'</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">PC_approx</span>, <span class="fl">2</span>, <span class="va">var</span><span class="op">)</span></span>
 <span><span class="co">#&gt;       h1       h2       h3 </span></span>
-<span><span class="co">#&gt; 1.675381 1.366041 1.570537</span></span></code></pre></div>
+<span><span class="co">#&gt; 1.683594 1.380539 1.560108</span></span></code></pre></div>
 <p>Finally, <code>coda.base</code> allows to define the default CoDaPack
 basis which consists in defining well balanced balances, i.e. equal
 number of branches in each balance.</p>

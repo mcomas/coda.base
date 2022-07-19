@@ -23,7 +23,7 @@ a generic coordinate system based on balances."><!-- mathjax --><script src="htt
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">coda.base</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.2</span>
       </span>
     </div>
 
@@ -109,13 +109,12 @@ a generic coordinate system based on balances.</p>
 <span class="r-in"><span>          b4 <span class="op">=</span> <span class="va">d</span><span class="op">~</span><span class="va">e</span><span class="op">+</span><span class="va">f</span><span class="op">+</span><span class="va">g</span>,</span></span>
 <span class="r-in"><span>          b5 <span class="op">=</span> <span class="va">e</span><span class="op">~</span><span class="va">f</span><span class="op">+</span><span class="va">g</span>,</span></span>
 <span class="r-in"><span>          b6 <span class="op">=</span> <span class="va">f</span><span class="op">~</span><span class="va">g</span>, data <span class="op">=</span> <span class="va">X</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7 x 6 sparse Matrix of class "dgCMatrix"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           b1         b2         b3         b4         b5         b6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> a  0.9258201  .          .          .          .          .        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> b -0.1543033  0.9128709  .          .          .          .        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> c -0.1543033 -0.1825742  0.8944272  .          .          .        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> d -0.1543033 -0.1825742 -0.2236068  0.8660254  .          .        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> e -0.1543033 -0.1825742 -0.2236068 -0.2886751  0.8164966  .        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> a  0.9258201  0.0000000  0.0000000  0.0000000  0.0000000  0.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> b -0.1543033  0.9128709  0.0000000  0.0000000  0.0000000  0.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> c -0.1543033 -0.1825742  0.8944272  0.0000000  0.0000000  0.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> d -0.1543033 -0.1825742 -0.2236068  0.8660254  0.0000000  0.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> e -0.1543033 -0.1825742 -0.2236068 -0.2886751  0.8164966  0.0000000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> f -0.1543033 -0.1825742 -0.2236068 -0.2886751 -0.4082483  0.7071068</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> g -0.1543033 -0.1825742 -0.2236068 -0.2886751 -0.4082483 -0.7071068</span>
 <span class="r-in"><span><span class="fu">sbp_basis</span><span class="op">(</span>b1 <span class="op">=</span> <span class="va">a</span><span class="op">~</span><span class="va">b</span>,</span></span>
@@ -124,15 +123,14 @@ a generic coordinate system based on balances.</p>
 <span class="r-in"><span>         b4 <span class="op">=</span> <span class="va">b3</span><span class="op">~</span><span class="va">e</span>,</span></span>
 <span class="r-in"><span>         b5 <span class="op">=</span> <span class="va">b4</span><span class="op">~</span><span class="va">f</span>,</span></span>
 <span class="r-in"><span>         b6 <span class="op">=</span> <span class="va">b5</span><span class="op">~</span><span class="va">g</span>, data <span class="op">=</span> <span class="va">X</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7 x 6 sparse Matrix of class "dgCMatrix"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           b1         b2         b3         b4         b5         b6</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> a  0.7071068  0.4082483  0.2886751  0.2236068  0.1825742  0.1543033</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> b -0.7071068  0.4082483  0.2886751  0.2236068  0.1825742  0.1543033</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> c  .         -0.8164966  0.2886751  0.2236068  0.1825742  0.1543033</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> d  .          .         -0.8660254  0.2236068  0.1825742  0.1543033</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> e  .          .          .         -0.8944272  0.1825742  0.1543033</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> f  .          .          .          .         -0.9128709  0.1543033</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> g  .          .          .          .          .         -0.9258201</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> c  0.0000000 -0.8164966  0.2886751  0.2236068  0.1825742  0.1543033</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> d  0.0000000  0.0000000 -0.8660254  0.2236068  0.1825742  0.1543033</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> e  0.0000000  0.0000000  0.0000000 -0.8944272  0.1825742  0.1543033</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> f  0.0000000  0.0000000  0.0000000  0.0000000 -0.9128709  0.1543033</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> g  0.0000000  0.0000000  0.0000000  0.0000000  0.0000000 -0.9258201</span>
 <span class="r-in"><span><span class="co"># A non-orthogonal basis can also be calculated.</span></span></span>
 <span class="r-in"><span><span class="fu">sbp_basis</span><span class="op">(</span>b1 <span class="op">=</span> <span class="va">a</span><span class="op">+</span><span class="va">b</span><span class="op">+</span><span class="va">c</span><span class="op">~</span><span class="va">e</span><span class="op">+</span><span class="va">f</span><span class="op">+</span><span class="va">g</span>,</span></span>
 <span class="r-in"><span>          b2 <span class="op">=</span> <span class="va">d</span><span class="op">~</span><span class="va">a</span><span class="op">+</span><span class="va">b</span><span class="op">+</span><span class="va">c</span>,</span></span>
@@ -141,15 +139,14 @@ a generic coordinate system based on balances.</p>
 <span class="r-in"><span>          b5 <span class="op">=</span> <span class="va">b</span><span class="op">~</span><span class="va">f</span>,</span></span>
 <span class="r-in"><span>          b6 <span class="op">=</span> <span class="va">c</span><span class="op">~</span><span class="va">g</span>, data <span class="op">=</span> <span class="va">X</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Given basis is not orthogonal</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7 x 6 sparse Matrix of class "dgCMatrix"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           b1         b2         b3         b4         b5         b6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> a  0.4082483 -0.2886751  .          0.8164966  .          .        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> b  0.4082483 -0.2886751  .         -0.4082483  0.7071068  .        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> c  0.4082483 -0.2886751  .          .          .          0.7071068</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> d  .          0.8660254  0.8164966  .          .          .        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> e -0.4082483  .         -0.4082483 -0.4082483  .          .        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> f -0.4082483  .          .          .         -0.7071068  .        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> g -0.4082483  .         -0.4082483  .          .         -0.7071068</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> a  0.4082483 -0.2886751  0.0000000  0.8164966  0.0000000  0.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> b  0.4082483 -0.2886751  0.0000000 -0.4082483  0.7071068  0.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> c  0.4082483 -0.2886751  0.0000000  0.0000000  0.0000000  0.7071068</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> d  0.0000000  0.8660254  0.8164966  0.0000000  0.0000000  0.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> e -0.4082483  0.0000000 -0.4082483 -0.4082483  0.0000000  0.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> f -0.4082483  0.0000000  0.0000000  0.0000000 -0.7071068  0.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> g -0.4082483  0.0000000 -0.4082483  0.0000000  0.0000000 -0.7071068</span>
 </code></pre></div>
     </div>
   </div>
