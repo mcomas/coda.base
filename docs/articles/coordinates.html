@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">coda.base</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.3</span>
       </span>
     </div>
 
@@ -87,7 +87,7 @@
                         <h4 data-toc-skip class="author">Marc
 Comas-Cufí</h4>
             
-            <h4 data-toc-skip class="date">2022-07-19</h4>
+            <h4 data-toc-skip class="date">2023-02-08</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/mcomas/coda.base/blob/HEAD/vignettes/coordinates.Rmd" class="external-link"><code>vignettes/coordinates.Rmd</code></a></small>
       <div class="hidden name"><code>coordinates.Rmd</code></div>
@@ -236,9 +236,9 @@ the first and with highest variance and so on:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cov</a></span><span class="op">(</span><span class="va">H2.ilr</span><span class="op">)</span></span>
 <span><span class="co">#&gt;              pc1           pc2           pc3</span></span>
-<span><span class="co">#&gt; pc1 4.475083e-01  1.594625e-16  1.473686e-16</span></span>
-<span><span class="co">#&gt; pc2 1.594625e-16  3.650673e-02 -2.098275e-17</span></span>
-<span><span class="co">#&gt; pc3 1.473686e-16 -2.098275e-17  1.257989e-02</span></span></code></pre></div>
+<span><span class="co">#&gt; pc1 4.475083e-01  1.036012e-16  1.997487e-16</span></span>
+<span><span class="co">#&gt; pc2 1.036012e-16  3.650673e-02 -3.031068e-17</span></span>
+<span><span class="co">#&gt; pc3 1.997487e-16 -3.031068e-17  1.257989e-02</span></span></code></pre></div>
 <p>The Principal Balance coordinates are similar to PC coordinates but
 with the restriction that the log contrast are balances</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
@@ -283,7 +283,7 @@ balance) with respect to the principal components.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">PC_approx</span><span class="op">)</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'PC'</span>, <span class="st">'Ward'</span>, <span class="st">'Constrained'</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">PC_approx</span>, <span class="fl">2</span>, <span class="va">var</span><span class="op">)</span></span>
 <span><span class="co">#&gt;       h1       h2       h3 </span></span>
-<span><span class="co">#&gt; 1.683594 1.380539 1.560108</span></span></code></pre></div>
+<span><span class="co">#&gt; 1.674438 1.325367 1.543138</span></span></code></pre></div>
 <p>Finally, <code>coda.base</code> allows to define the default CoDaPack
 basis which consists in defining well balanced balances, i.e. equal
 number of branches in each balance.</p>
@@ -332,7 +332,14 @@ matrix.</p>
 <span>                  b3 <span class="op">=</span> <span class="va">erc</span><span class="op">+</span><span class="va">jxcat</span><span class="op">~</span><span class="va">psc</span><span class="op">+</span><span class="va">cs</span>, </span>
 <span>                  data<span class="op">=</span><span class="va">X</span><span class="op">)</span></span>
 <span><span class="va">H2.man</span> <span class="op">=</span> <span class="fu"><a href="../reference/coordinates.html">coordinates</a></span><span class="op">(</span><span class="va">X</span>, basis <span class="op">=</span> <span class="va">B.man</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">H2.man</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">H2.man</span><span class="op">)</span></span>
+<span><span class="co">#&gt;            b1          b2        b3</span></span>
+<span><span class="co">#&gt; 1 -0.14697799 -0.50925247 0.7026704</span></span>
+<span><span class="co">#&gt; 2 -0.22679692 -0.74060456 0.5801749</span></span>
+<span><span class="co">#&gt; 3 -0.12358191 -0.37622854 0.7206583</span></span>
+<span><span class="co">#&gt; 4 -0.18836356 -0.33935049 0.9052439</span></span>
+<span><span class="co">#&gt; 5  0.05082486 -0.07274761 0.5646882</span></span>
+<span><span class="co">#&gt; 6 -0.07090708 -0.48495254 0.2956308</span></span></code></pre></div>
 <p>With <code>sbp_basis</code> we do not need to define neither a basis
 nor a system generator</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
@@ -367,8 +374,22 @@ nor a system generator</p>
 <span><span class="co">#&gt; 4  0.24556428 0.6764410 -0.7997213 -0.24556428</span></span>
 <span><span class="co">#&gt; 5  0.26662472 0.2845246 -0.3854211 -0.26662472</span></span>
 <span><span class="co">#&gt; 6 -0.22527958 0.2285779 -0.5666446  0.22527958</span></span></code></pre></div>
-<p>We can also define sequential binary partition using a matrix.</p>
+<p>If interested, we can complete a sequential binary partition giving
+only some partitions</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">B</span> <span class="op">=</span> <span class="fu"><a href="../reference/sbp_basis.html">sbp_basis</a></span><span class="op">(</span>b1 <span class="op">=</span> <span class="va">erc</span><span class="op">+</span><span class="va">jxcat</span><span class="op">~</span><span class="va">psc</span>, </span>
+<span>              data<span class="op">=</span><span class="va">X</span>, fill <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/sign.html" class="external-link">sign</a></span><span class="op">(</span><span class="va">B</span><span class="op">)</span></span>
+<span><span class="co">#&gt;    [,1] [,2] [,3]</span></span>
+<span><span class="co">#&gt; V1    1    1    1</span></span>
+<span><span class="co">#&gt; V2    1    1   -1</span></span>
+<span><span class="co">#&gt; V3   -1    1    0</span></span>
+<span><span class="co">#&gt; V4    0   -1    0</span></span></code></pre></div>
+<p>We can also define sequential binary partition using a matrix. By
+using a matrix we don’t need to include a dataset. The number of
+components is obtained with the number of rows and component names from
+row names (if available).</p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">P</span> <span class="op">=</span>  <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>,<span class="op">-</span><span class="fl">1</span>,<span class="op">-</span><span class="fl">1</span>,</span>
 <span>              <span class="fl">1</span>,<span class="op">-</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0</span>,</span>
 <span>              <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span>,<span class="op">-</span><span class="fl">1</span><span class="op">)</span>, ncol<span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>

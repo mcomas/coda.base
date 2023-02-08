@@ -23,7 +23,7 @@ a generic coordinate system based on balances."><!-- mathjax --><script src="htt
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">coda.base</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.3</span>
       </span>
     </div>
 
@@ -76,7 +76,7 @@ a generic coordinate system based on balances.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">sbp_basis</span><span class="op">(</span><span class="va">...</span>, data <span class="op">=</span> <span class="cn">NULL</span>, silent <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">sbp_basis</span><span class="op">(</span><span class="va">...</span>, data <span class="op">=</span> <span class="cn">NULL</span>, fill <span class="op">=</span> <span class="cn">FALSE</span>, silent <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -90,7 +90,11 @@ a generic coordinate system based on balances.</p>
 
 
 <dt>silent</dt>
-<dd><p>inform about orthgonality</p></dd>
+<dd><p>inform about orthogonality</p></dd>
+
+
+<dt>complete</dt>
+<dd><p>should the balances be completed to become an orthonormal basis? if the given balances are not orthonormal, the function will complete the balance to become a basis.</p></dd>
 
 </dl></div>
     <div id="value">

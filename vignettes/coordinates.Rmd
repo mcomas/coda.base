@@ -177,7 +177,7 @@ head(H1.man)
 
 We can also define balances using formula `numerator~denominator`:
 
-```{r, eval=FALSE}
+```{r}
 B.man = sbp_basis(b1 = erc~jxcat,
                   b2 = psc~cs,
                   b3 = erc+jxcat~psc+cs, 
@@ -207,7 +207,17 @@ H4.man = coordinates(X, basis = B)
 head(H4.man)
 ```
 
-We can also define sequential binary partition using a matrix.
+If interested, we can complete a sequential binary partition giving only some partitions
+
+
+```{r}
+B = sbp_basis(b1 = erc+jxcat~psc, 
+              data=X, fill = TRUE)
+sign(B)
+```
+
+
+We can also define sequential binary partition using a matrix. By using a matrix we don't need to include a dataset. The number of components is obtained with the number of rows and component names from row names (if available).
 
 ```{r}
 P =  matrix(c(1, 1,-1,-1,

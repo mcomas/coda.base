@@ -105,7 +105,8 @@ center = function(X, zero.rm = FALSE, na.rm = FALSE){
   setNames(C/sum(C), colnames(X))
 }
 
-fillPartition = function(partition, row, left, right){
+# Function used to build balanced partitions. default basis in CoDaPack
+fill_partition = function(partition, row, left, right){
   new_row = rep(0, ncol(partition))
   if(right - left <= 0){
     return(partition)
@@ -128,9 +129,47 @@ fillPartition = function(partition, row, left, right){
   }else{
     partition = rbind(partition, new_row)
   }
-  partition = fillPartition(partition, nrow(partition), left, floor(middle))
-  partition = fillPartition(partition, nrow(partition), ceiling(middle), right)
+  partition = Recall(partition, nrow(partition), left, floor(middle))
+  partition = Recall(partition, nrow(partition), ceiling(middle), right)
   return(partition)
+}
+
+fill_sbp = function(iRES){
+  if(ncol(iRES)==0){
+    return(sign(ilr_basis(nrow(iRES))))
+  }
+  # Detecting free components
+  free_comp = rowSums(iRES!=0) == 0
+  if(sum(free_comp) > 0){
+    iRES = cbind(iRES, 1-2*free_comp)
+  }
+  # Set branches
+  iROOT = which.max(colSums(iRES!=0))
+  iBAL = which(iRES[,iROOT] > 0)
+
+  BAL = matrix(0,nrow(iRES),nrow(iRES)-1)
+  BAL[,1:ncol(iRES)] = iRES
+
+  ## fill positive
+  pBAL = iRES[+iBAL,-iROOT,drop=FALSE]
+  pDIM = nrow(pBAL)-1
+  pBAL = pBAL[,colSums(pBAL!=0)>0,drop=FALSE]
+  pN = ncol(pBAL)
+  if(pN < pDIM){
+    pBAL = Recall(pBAL)
+    BAL[+iBAL,(ncol(iRES)+1):(ncol(iRES)+pDIM-pN)] = pBAL[,(pN+1):pDIM]
+  }
+
+  ## fill negative
+  nBAL = iRES[-iBAL,-iROOT,drop=FALSE]
+  nDIM = nrow(nBAL)-1
+  nBAL = nBAL[,colSums(nBAL!=0)>0,drop=FALSE]
+  nN = ncol(nBAL)
+  if(ncol(nBAL) < nDIM){
+    nBAL = Recall(nBAL)
+    BAL[-iBAL,(ncol(iRES)+1+pDIM-pN):(1+pDIM+nDIM)] = nBAL[,(nN+1):nDIM]
+  }
+  BAL
 }
 
 #' CoDaPack's default binary partition
@@ -142,4 +181,4 @@ fillPartition = function(partition, row, left, right){
 #' @examples
 #' cdp_partition(4)
 #' @export
-cdp_partition = function(ncomp) unname(t(fillPartition(matrix(0, nrow = 1, ncol = ncomp), 0, 1, ncomp)))
+cdp_partition = function(ncomp) unname(t(fill_partition(matrix(0, nrow = 1, ncol = ncomp), 0, 1, ncomp)))

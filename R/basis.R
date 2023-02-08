@@ -195,7 +195,8 @@ cbalance_approx = function(Y,X){
 #'
 #' @param ... balances to consider
 #' @param data composition from where name parts are extracted
-#' @param silent inform about orthgonality
+#' @param complete should the balances be completed to become an orthonormal basis? if the given balances are not orthonormal, the function will complete the balance to become a basis.
+#' @param silent inform about orthogonality
 #' @return matrix
 #' @examples
 #' X = data.frame(a=1:2, b=2:3, c=4:5, d=5:6, e=10:11, f=100:101, g=1:2)
@@ -219,7 +220,7 @@ cbalance_approx = function(Y,X){
 #'           b5 = b~f,
 #'           b6 = c~g, data = X)
 #' @export
-sbp_basis = function(..., data = NULL, silent=F){
+sbp_basis = function(..., data = NULL, fill = FALSE, silent=FALSE){
   sbp = list(...)
   if(is.null(data) & is.matrix(sbp[[1]])){
     P = t(sbp[[1]])
@@ -231,6 +232,7 @@ sbp_basis = function(..., data = NULL, silent=F){
       stats::as.formula(frm)
     }
     return(do.call('sbp_basis', c(apply(P, 1, str_to_frm), list(data=df,
+                                                                fill = fill,
                                                                 silent = silent)))) #, envir = as.environment('package:coda.base')
   }
 
@@ -291,6 +293,9 @@ sbp_basis = function(..., data = NULL, silent=F){
     bal[balance[[2]]] = bal[balance[[2]]] + r
     bal
   })
+  if(fill){
+    return(Recall(fill_sbp(sign(RES))))
+  }
   if(!silent){
     if(qr(RES)$rank != NCOL(data)-1){
       warning('Given partition is not a basis')

@@ -1,3 +1,7 @@
+coda.base 0.5.3
+===============
+* sbp_basis() completes partition to obtain a basis
+
 coda.base 0.4.3
 ===============
 * center() and gmean() functions incorporated.
