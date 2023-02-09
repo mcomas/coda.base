@@ -3,7 +3,6 @@ packrat/lib*/
 packrat/src/
 src/*.o
 src/*.so
-man
 inst/doc
 *.DS_Store
 .Rhistory
