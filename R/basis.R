@@ -193,9 +193,15 @@ cbalance_approx = function(Y,X){
 #' Build an \code{\link{ilr_basis}} using a sequential binary partition or
 #' a generic coordinate system based on balances.
 #'
-#' @param ... balances to consider
+#' @param sbp parts to consider in the numerator and the denominator. Can be
+#' defined either using a list of formulas setting parts (see examples) or using
+#' a matrix where each column define a balance. Positive values are parts in
+#' the numerator, negative values are parts in the denominator, zeros are parts
+#' not used to build the balance.
 #' @param data composition from where name parts are extracted
-#' @param complete should the balances be completed to become an orthonormal basis? if the given balances are not orthonormal, the function will complete the balance to become a basis.
+#' @param fill should the balances be completed to become an orthonormal basis?
+#'  if the given balances are not orthonormal, the function will complete the
+#'  balance to become a basis.
 #' @param silent inform about orthogonality
 #' @return matrix
 #' @examples
@@ -220,20 +226,26 @@ cbalance_approx = function(Y,X){
 #'           b5 = b~f,
 #'           b6 = c~g, data = X)
 #' @export
-sbp_basis = function(..., data = NULL, fill = FALSE, silent=FALSE){
-  sbp = list(...)
-  if(is.null(data) & is.matrix(sbp[[1]])){
-    P = t(sbp[[1]])
-    df = as.data.frame(matrix(1, ncol(P), nrow = 1))
+sbp_basis = function(sbp, data = NULL, fill = FALSE, silent=FALSE){
+  if(is.null(data) & is.matrix(sbp)){
+    # P = t(sbp)
+    df = as.data.frame(matrix(1, nrow(sbp), nrow = 1))
+    if(!is.null(rownames(sbp))){
+      colnames(df) = rownames(sbp)
+    }
     str_to_frm = function(vec){
       frm = paste(stats::aggregate(nm ~ vec, subset(data.frame(nm = paste0('`',names(df), '`'), vec = -1 * vec,
                                                                stringsAsFactors = FALSE), vec != 0),
                                    FUN = paste, collapse= ' + ')[['nm']], collapse=' ~ ')
       stats::as.formula(frm)
     }
-    return(do.call('sbp_basis', c(apply(P, 1, str_to_frm), list(data=df,
-                                                                fill = fill,
-                                                                silent = silent)))) #, envir = as.environment('package:coda.base')
+    return(sbp_basis(apply(sbp, 2, str_to_frm),
+                     data = df,
+                     fill = fill,
+                     silent = silent))
+    # return(do.call('sbp_basis', c(apply(P, 1, str_to_frm), list(data=df,
+                                                                # fill = fill,
+                                                                # silent = silent)))) #, envir = as.environment('package:coda.base')
   }
 
   if (!is.data.frame(data) && !is.environment(data) && ( (is.matrix(data) && !is.null(colnames(data))) | !is.null(attr(data, "class"))))

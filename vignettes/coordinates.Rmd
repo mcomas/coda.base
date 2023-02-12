@@ -178,9 +178,9 @@ head(H1.man)
 We can also define balances using formula `numerator~denominator`:
 
 ```{r}
-B.man = sbp_basis(b1 = erc~jxcat,
-                  b2 = psc~cs,
-                  b3 = erc+jxcat~psc+cs, 
+B.man = sbp_basis(list(b1 = erc~jxcat,
+                       b2 = psc~cs,
+                       b3 = erc+jxcat~psc+cs), 
                   data=X)
 H2.man = coordinates(X, basis = B.man)
 head(H2.man)
@@ -189,7 +189,7 @@ head(H2.man)
 With `sbp_basis` we do not need to define neither a basis nor a system generator
 
 ```{r}
-B = sbp_basis(b1 = erc+jxcat~psc+cs, 
+B = sbp_basis(list(b1 = erc+jxcat~psc+cs), 
               data=X)
 H3.man = coordinates(X, basis = B)
 head(H3.man)
@@ -198,10 +198,10 @@ head(H3.man)
 or 
 
 ```{r}
-B = sbp_basis(b1 = erc~jxcat+psc~cs, 
-              b2 = jxcat~erc+psc+cs,
-              b3 = psc~erc+jxcat+cs,
-              b4 = cs~erc+jxcat+psc,
+B = sbp_basis(list(b1 = erc~jxcat+psc~cs, 
+                   b2 = jxcat~erc+psc+cs,
+                   b3 = psc~erc+jxcat+cs,
+                   b4 = cs~erc+jxcat+psc),
               data=X)
 H4.man = coordinates(X, basis = B)
 head(H4.man)
@@ -211,7 +211,7 @@ If interested, we can complete a sequential binary partition giving only some pa
 
 
 ```{r}
-B = sbp_basis(b1 = erc+jxcat~psc, 
+B = sbp_basis(list(b1 = erc+jxcat~psc), 
               data=X, fill = TRUE)
 sign(B)
 ```

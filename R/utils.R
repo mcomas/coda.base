@@ -145,6 +145,11 @@ fill_sbp = function(iRES){
   }
   # Set branches
   iROOT = which.max(colSums(iRES!=0))
+  free_comp = iRES[,iROOT]==0
+  if(sum(free_comp) > 0){
+    iRES = cbind(iRES, 1-2*free_comp)
+    iROOT = ncol(iRES)
+  }
   iBAL = which(iRES[,iROOT] > 0)
 
   BAL = matrix(0,nrow(iRES),nrow(iRES)-1)
