@@ -6,16 +6,22 @@
 Build an \code{\link{ilr_basis}} using a sequential binary partition or
 a generic coordinate system based on balances.}
 \usage{
-sbp_basis(..., data = NULL, fill = FALSE, silent = FALSE)
+sbp_basis(sbp, data = NULL, fill = FALSE, silent = FALSE)
 }
 \arguments{
-\item{...}{balances to consider}
+\item{sbp}{parts to consider in the numerator and the denominator. Can be
+defined either using a list of formulas setting parts (see examples) or using
+a matrix where each column define a balance. Positive values are parts in
+the numerator, negative values are parts in the denominator, zeros are parts
+not used to build the balance.}
 
 \item{data}{composition from where name parts are extracted}
 
-\item{silent}{inform about orthogonality}
+\item{fill}{should the balances be completed to become an orthonormal basis?
+if the given balances are not orthonormal, the function will complete the
+balance to become a basis.}
 
-\item{complete}{should the balances be completed to become an orthonormal basis? if the given balances are not orthonormal, the function will complete the balance to become a basis.}
+\item{silent}{inform about orthogonality}
 }
 \value{
 matrix

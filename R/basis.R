@@ -145,7 +145,6 @@ pc_basis = function(X){
 #' @param X explanatory dataset
 #' @return matrix
 #'
-#' @export
 cc_basis = function(Y, X){
   Y = as.matrix(Y)
   X = cbind(X)
