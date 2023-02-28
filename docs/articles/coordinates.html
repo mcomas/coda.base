@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">coda.base</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.4.2</span>
       </span>
     </div>
 
@@ -87,7 +87,7 @@
                         <h4 data-toc-skip class="author">Marc
 Comas-Cufí</h4>
             
-            <h4 data-toc-skip class="date">2023-02-08</h4>
+            <h4 data-toc-skip class="date">2023-02-28</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/mcomas/coda.base/blob/HEAD/vignettes/coordinates.Rmd" class="external-link"><code>vignettes/coordinates.Rmd</code></a></small>
       <div class="hidden name"><code>coordinates.Rmd</code></div>
@@ -283,7 +283,7 @@ balance) with respect to the principal components.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">PC_approx</span><span class="op">)</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'PC'</span>, <span class="st">'Ward'</span>, <span class="st">'Constrained'</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">PC_approx</span>, <span class="fl">2</span>, <span class="va">var</span><span class="op">)</span></span>
 <span><span class="co">#&gt;       h1       h2       h3 </span></span>
-<span><span class="co">#&gt; 1.674438 1.325367 1.543138</span></span></code></pre></div>
+<span><span class="co">#&gt; 1.667033 1.356397 1.541664</span></span></code></pre></div>
 <p>Finally, <code>coda.base</code> allows to define the default CoDaPack
 basis which consists in defining well balanced balances, i.e. equal
 number of branches in each balance.</p>
@@ -327,9 +327,9 @@ matrix.</p>
 <p>We can also define balances using formula
 <code>numerator~denominator</code>:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">B.man</span> <span class="op">=</span> <span class="fu"><a href="../reference/sbp_basis.html">sbp_basis</a></span><span class="op">(</span>b1 <span class="op">=</span> <span class="va">erc</span><span class="op">~</span><span class="va">jxcat</span>,</span>
-<span>                  b2 <span class="op">=</span> <span class="va">psc</span><span class="op">~</span><span class="va">cs</span>,</span>
-<span>                  b3 <span class="op">=</span> <span class="va">erc</span><span class="op">+</span><span class="va">jxcat</span><span class="op">~</span><span class="va">psc</span><span class="op">+</span><span class="va">cs</span>, </span>
+<code class="sourceCode R"><span><span class="va">B.man</span> <span class="op">=</span> <span class="fu"><a href="../reference/sbp_basis.html">sbp_basis</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>b1 <span class="op">=</span> <span class="va">erc</span><span class="op">~</span><span class="va">jxcat</span>,</span>
+<span>                       b2 <span class="op">=</span> <span class="va">psc</span><span class="op">~</span><span class="va">cs</span>,</span>
+<span>                       b3 <span class="op">=</span> <span class="va">erc</span><span class="op">+</span><span class="va">jxcat</span><span class="op">~</span><span class="va">psc</span><span class="op">+</span><span class="va">cs</span><span class="op">)</span>, </span>
 <span>                  data<span class="op">=</span><span class="va">X</span><span class="op">)</span></span>
 <span><span class="va">H2.man</span> <span class="op">=</span> <span class="fu"><a href="../reference/coordinates.html">coordinates</a></span><span class="op">(</span><span class="va">X</span>, basis <span class="op">=</span> <span class="va">B.man</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">H2.man</span><span class="op">)</span></span>
@@ -343,10 +343,10 @@ matrix.</p>
 <p>With <code>sbp_basis</code> we do not need to define neither a basis
 nor a system generator</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">B</span> <span class="op">=</span> <span class="fu"><a href="../reference/sbp_basis.html">sbp_basis</a></span><span class="op">(</span>b1 <span class="op">=</span> <span class="va">erc</span><span class="op">+</span><span class="va">jxcat</span><span class="op">~</span><span class="va">psc</span><span class="op">+</span><span class="va">cs</span>, </span>
+<code class="sourceCode R"><span><span class="va">B</span> <span class="op">=</span> <span class="fu"><a href="../reference/sbp_basis.html">sbp_basis</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>b1 <span class="op">=</span> <span class="va">erc</span><span class="op">+</span><span class="va">jxcat</span><span class="op">~</span><span class="va">psc</span><span class="op">+</span><span class="va">cs</span><span class="op">)</span>, </span>
 <span>              data<span class="op">=</span><span class="va">X</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in sbp_basis(b1 = erc + jxcat ~ psc + cs, data = X): Given partition is</span></span>
-<span><span class="co">#&gt; not a basis</span></span>
+<span><span class="co">#&gt; Warning in sbp_basis(list(b1 = erc + jxcat ~ psc + cs), data = X): Given</span></span>
+<span><span class="co">#&gt; partition is not a basis</span></span>
 <span><span class="va">H3.man</span> <span class="op">=</span> <span class="fu"><a href="../reference/coordinates.html">coordinates</a></span><span class="op">(</span><span class="va">X</span>, basis <span class="op">=</span> <span class="va">B</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">H3.man</span><span class="op">)</span></span>
 <span><span class="co">#&gt;          b1</span></span>
@@ -358,12 +358,12 @@ nor a system generator</p>
 <span><span class="co">#&gt; 6 0.2956308</span></span></code></pre></div>
 <p>or</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">B</span> <span class="op">=</span> <span class="fu"><a href="../reference/sbp_basis.html">sbp_basis</a></span><span class="op">(</span>b1 <span class="op">=</span> <span class="va">erc</span><span class="op">~</span><span class="va">jxcat</span><span class="op">+</span><span class="va">psc</span><span class="op">~</span><span class="va">cs</span>, </span>
-<span>              b2 <span class="op">=</span> <span class="va">jxcat</span><span class="op">~</span><span class="va">erc</span><span class="op">+</span><span class="va">psc</span><span class="op">+</span><span class="va">cs</span>,</span>
-<span>              b3 <span class="op">=</span> <span class="va">psc</span><span class="op">~</span><span class="va">erc</span><span class="op">+</span><span class="va">jxcat</span><span class="op">+</span><span class="va">cs</span>,</span>
-<span>              b4 <span class="op">=</span> <span class="va">cs</span><span class="op">~</span><span class="va">erc</span><span class="op">+</span><span class="va">jxcat</span><span class="op">+</span><span class="va">psc</span>,</span>
+<code class="sourceCode R"><span><span class="va">B</span> <span class="op">=</span> <span class="fu"><a href="../reference/sbp_basis.html">sbp_basis</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>b1 <span class="op">=</span> <span class="va">erc</span><span class="op">~</span><span class="va">jxcat</span><span class="op">+</span><span class="va">psc</span><span class="op">~</span><span class="va">cs</span>, </span>
+<span>                   b2 <span class="op">=</span> <span class="va">jxcat</span><span class="op">~</span><span class="va">erc</span><span class="op">+</span><span class="va">psc</span><span class="op">+</span><span class="va">cs</span>,</span>
+<span>                   b3 <span class="op">=</span> <span class="va">psc</span><span class="op">~</span><span class="va">erc</span><span class="op">+</span><span class="va">jxcat</span><span class="op">+</span><span class="va">cs</span>,</span>
+<span>                   b4 <span class="op">=</span> <span class="va">cs</span><span class="op">~</span><span class="va">erc</span><span class="op">+</span><span class="va">jxcat</span><span class="op">+</span><span class="va">psc</span><span class="op">)</span>,</span>
 <span>              data<span class="op">=</span><span class="va">X</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in sbp_basis(b1 = erc ~ jxcat + psc ~ cs, b2 = jxcat ~ erc + psc + :</span></span>
+<span><span class="co">#&gt; Warning in sbp_basis(list(b1 = erc ~ jxcat + psc ~ cs, b2 = jxcat ~ erc + :</span></span>
 <span><span class="co">#&gt; Given basis is not orthogonal</span></span>
 <span><span class="va">H4.man</span> <span class="op">=</span> <span class="fu"><a href="../reference/coordinates.html">coordinates</a></span><span class="op">(</span><span class="va">X</span>, basis <span class="op">=</span> <span class="va">B</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">H4.man</span><span class="op">)</span></span>
@@ -377,7 +377,7 @@ nor a system generator</p>
 <p>If interested, we can complete a sequential binary partition giving
 only some partitions</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">B</span> <span class="op">=</span> <span class="fu"><a href="../reference/sbp_basis.html">sbp_basis</a></span><span class="op">(</span>b1 <span class="op">=</span> <span class="va">erc</span><span class="op">+</span><span class="va">jxcat</span><span class="op">~</span><span class="va">psc</span>, </span>
+<code class="sourceCode R"><span><span class="va">B</span> <span class="op">=</span> <span class="fu"><a href="../reference/sbp_basis.html">sbp_basis</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>b1 <span class="op">=</span> <span class="va">erc</span><span class="op">+</span><span class="va">jxcat</span><span class="op">~</span><span class="va">psc</span><span class="op">)</span>, </span>
 <span>              data<span class="op">=</span><span class="va">X</span>, fill <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/sign.html" class="external-link">sign</a></span><span class="op">(</span><span class="va">B</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    [,1] [,2] [,3]</span></span>

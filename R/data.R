@@ -44,3 +44,113 @@
 #' * Other: Other goods, including clothing, footwear and durable goods.
 #' @name household_budget
 "household_budget"
+
+#' Food consumption in European countries
+#'
+#' The alimentation data set contains the percentages of consumption of several
+#' types of food in 25 European countries during the 80s. The categories are:
+#' * RM: red meat (pork, veal, beef),
+#' * WM: white meat (chicken),
+#' * E: eggs,
+#' * M: milk,
+#' * F: fish,
+#' * C: cereals,
+#' * S: starch (potatoes),
+#' * N: nuts, and
+#' * FV: fruits and vegetables.
+#'
+#' Moreover, the dataset contains a categorical variable that
+#' shows if the country is from the North or a Southern Mediterranean country. In
+#' addition, the countries are classified as Eastern European or as Western European.
+#' @name alimentation
+"alimentation"
+
+#' The MN blood system
+#' @description
+#'
+#' \loadmathjax
+#' In humans the main blood group systems are the ABO system, the Rh system and
+#' the MN system. The MN blood system is a system of blood antigens also related
+#' to proteins of the red blood cell plasma membrane. The inheritance pattern of the
+#' MN blood system is autosomal with codominance, a type of lack of dominance in
+#' which the heterozygous manifests a phenotype totally distinct from the homozygous.
+#' The possible phenotypical forms are three blood types: type M blood, type
+#' N blood and type MN blood. The frequencies of M, N and MN blood types vary
+#' widely depending on the ethnic population. However, the Hardy-Weinberg
+#' principle states that allele and genotype frequencies in a population will
+#' remain constant from generation to generation in the absence of other
+#' evolutionary influences. This implies that, in the long run, it holds that
+#'
+#' \mjeqn{\frac{x_{MM}x_{NN}}{x_{MN}} = \frac{1}{4}}{ (x_MM x_NN) / x_MN = 1/4}
+#'
+#'where xM M and xN N are the genotype relative frequencies of MM and NN
+#'homozygotes, respectively, and xM N is the genotype relative frequency
+#'of MN heterozygotes. This principle was named after G.H. Hardy and W.
+#' Weinberg demonstrated it mathematically.
+#' @name blood_mn
+"blood_mn"
+
+#' Physical activity and body mass index
+#'
+#' @name bmi_activity
+"bmi_activity"
+
+#' Employment distribution in EUROSTAT countries
+#'
+#' @name eurostat_employment
+"eurostat_employment"
+
+#' Paleocological compositions
+#'
+#' @name foraminiferals
+"foraminiferals"
+
+#' Household expenditures
+#'
+#' @name house_expend
+"house_expend"
+
+#' Mammal’s milk
+#'
+#' @name mammals_milk
+"mammals_milk"
+
+#' Milk composition study
+#'
+#' @name milk_cows
+"milk_cows"
+
+#' Concentration of minor elements in carbon ashes
+#'
+#' @name montana
+"montana"
+
+#' Calc-alkaline and tholeiitic volcanic rocks
+#'
+#' @name petrafm
+"petrafm"
+
+#' Pollen composition in fossils
+#'
+#' @name pollen
+"pollen"
+
+#' Serum proteins
+#'
+#' @name serprot
+"serprot"
+
+#' A statistician’s time budget
+#'
+#' @name statistitian_time
+"statistitian_time"
+
+#' The waste composition in Catalonia
+#'
+#' @name waste
+"waste"
+
+#' Hotel posts in social media
+#'
+#' @name weibo_hotels
+"weibo_hotels"

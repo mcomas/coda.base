@@ -22,6 +22,9 @@
     <loc>/index.html</loc>
   </url>
   <url>
+    <loc>/reference/alimentation.html</loc>
+  </url>
+  <url>
     <loc>/reference/alr_basis.html</loc>
   </url>
   <url>
@@ -29,6 +32,12 @@
   </url>
   <url>
     <loc>/reference/basis.html</loc>
+  </url>
+  <url>
+    <loc>/reference/blood_mn.html</loc>
+  </url>
+  <url>
+    <loc>/reference/bmi_activity.html</loc>
   </url>
   <url>
     <loc>/reference/cbalance_approx.html</loc>
@@ -61,7 +70,16 @@
     <loc>/reference/dist.html</loc>
   </url>
   <url>
+    <loc>/reference/eurostat_employment.html</loc>
+  </url>
+  <url>
+    <loc>/reference/foraminiferals.html</loc>
+  </url>
+  <url>
     <loc>/reference/gmean.html</loc>
+  </url>
+  <url>
+    <loc>/reference/house_expend.html</loc>
   </url>
   <url>
     <loc>/reference/household_budget.html</loc>
@@ -71,6 +89,15 @@
   </url>
   <url>
     <loc>/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>/reference/mammals_milk.html</loc>
+  </url>
+  <url>
+    <loc>/reference/milk_cows.html</loc>
+  </url>
+  <url>
+    <loc>/reference/montana.html</loc>
   </url>
   <url>
     <loc>/reference/pairwise_basis.html</loc>
@@ -85,7 +112,13 @@
     <loc>/reference/pc_basis.html</loc>
   </url>
   <url>
+    <loc>/reference/petrafm.html</loc>
+  </url>
+  <url>
     <loc>/reference/plot_balance.html</loc>
+  </url>
+  <url>
+    <loc>/reference/pollen.html</loc>
   </url>
   <url>
     <loc>/reference/pottery.html</loc>
@@ -100,6 +133,18 @@
     <loc>/reference/sbp_basis.html</loc>
   </url>
   <url>
+    <loc>/reference/serprot.html</loc>
+  </url>
+  <url>
+    <loc>/reference/statistitian_time.html</loc>
+  </url>
+  <url>
     <loc>/reference/variation_array.html</loc>
+  </url>
+  <url>
+    <loc>/reference/waste.html</loc>
+  </url>
+  <url>
+    <loc>/reference/weibo_hotels.html</loc>
   </url>
 </urlset>
