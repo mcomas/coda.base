@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">coda.base</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.4.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.4.3</span>
       </span>
     </div>
 
@@ -144,10 +144,10 @@ a compositions from given coordinates.</p></div>
 <span class="r-in"><span><span class="va">X</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">*</span><span class="va">K</span><span class="op">)</span><span class="op">)</span>, nrow<span class="op">=</span><span class="va">N</span>, ncol<span class="op">=</span><span class="va">K</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="fu">coordinates</span><span class="op">(</span><span class="va">X</span>, <span class="fu"><a href="alr_basis.html">alr_basis</a></span><span class="op">(</span><span class="va">K</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    user  system elapsed </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   0.010   0.009   0.019 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   0.015   0.004   0.019 </span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="fu">coordinates</span><span class="op">(</span><span class="va">X</span>, <span class="st">'alr'</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    user  system elapsed </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   0.000   0.012   0.013 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   0.010   0.000   0.011 </span>
 </code></pre></div>
     </div>
   </div>

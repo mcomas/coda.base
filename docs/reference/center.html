@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">coda.base</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.4.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.4.3</span>
       </span>
     </div>
 
@@ -91,26 +91,26 @@ before the computation proceeds.</p></dd>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">X</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">5</span><span class="op">*</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span>, nrow<span class="op">=</span><span class="fl">100</span>, ncol<span class="op">=</span><span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">g</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'c'</span>,<span class="st">'d'</span><span class="op">)</span>, <span class="fl">25</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">center</span><span class="op">(</span><span class="va">X</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.1902446 0.2062813 0.2035755 0.2117834 0.1881151</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.1869451 0.2499482 0.1622342 0.1932624 0.2076102</span>
 <span class="r-in"><span><span class="op">(</span><span class="va">by_g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/by.html" class="external-link">by</a></span><span class="op">(</span><span class="va">X</span>, <span class="va">g</span>, <span class="va">center</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> INDICES: a</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        V1        V2        V3        V4        V5 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.1268374 0.2065651 0.2039739 0.3007352 0.1618883 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.1666041 0.2577717 0.1846411 0.1898717 0.2011114 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ------------------------------------------------------------ </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> INDICES: b</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        V1        V2        V3        V4        V5 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.2028263 0.1768852 0.1911562 0.1801563 0.2489760 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.2269412 0.2141864 0.1617915 0.2088780 0.1882029 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ------------------------------------------------------------ </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> INDICES: c</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        V1        V2        V3        V4        V5 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.2261062 0.2309305 0.2038056 0.1755355 0.1636222 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.2462371 0.2566625 0.1096549 0.1976456 0.1897999 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ------------------------------------------------------------ </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> INDICES: d</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        V1        V2        V3        V4        V5 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.2129876 0.2029545 0.2044147 0.2000589 0.1795843 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.1243905 0.2611523 0.2005123 0.1687458 0.2451992 </span>
 <span class="r-in"><span><span class="fu">center</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">simplify2array</a></span><span class="op">(</span><span class="va">by_g</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        V1        V2        V3        V4        V5 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.1902446 0.2062813 0.2035755 0.2117834 0.1881151 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.1869451 0.2499482 0.1622342 0.1932624 0.2076102 </span>
 </code></pre></div>
     </div>
   </div>
