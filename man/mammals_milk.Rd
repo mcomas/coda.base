@@ -11,6 +11,8 @@ An object of class \code{data.frame} with 24 rows and 6 columns.
 mammals_milk
 }
 \description{
-Mammal’s milk
+The mammalsmilk data set contains the percentages of five constituents (W: water,
+P: protein, F: fat, L: lactose, and A: ash) of the milk of 24 mammals. The data are
+taken from [Har75].
 }
 \keyword{datasets}

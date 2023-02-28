@@ -12,6 +12,7 @@ blood_mn
 }
 \description{
 \loadmathjax
+
 In humans the main blood group systems are the ABO system, the Rh system and
 the MN system. The MN blood system is a system of blood antigens also related
 to proteins of the red blood cell plasma membrane. The inheritance pattern of the

@@ -11,6 +11,14 @@ An object of class \code{data.frame} with 27 rows and 15 columns.
 house_expend
 }
 \description{
-Household expenditures
+From Eurostat (the European Union’s statistical information service) the
+houseexpend data set records the composition on proportions of mean
+consumption expenditure of households expenditures on 12 domestic year
+costs in 27 states of the European Union. Some values in the data set are
+rounded zeros. In addition the data set contains the gross domestic
+product (GDP05) and (GDP14) in years 2005 and 2014, respectively. An
+interesting analysis is the potential association between expenditures
+compositions and GDP. Once a linear regression model is established,
+predictions can be provided.
 }
 \keyword{datasets}

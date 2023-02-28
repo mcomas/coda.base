@@ -11,6 +11,10 @@ An object of class \code{data.frame} with 36 rows and 7 columns.
 serprot
 }
 \description{
-Serum proteins
+The `serprot` data set records the percentages of the four serum proteins
+from the blood samples of 30 patients. Fourteen patients have one
+disease (1) and sixteen are known to have another different disease (2).
+The 4-compositions are formed by the proteins [albumin, pre-albumin,
+globulin A, globulin B].
 }
 \keyword{datasets}

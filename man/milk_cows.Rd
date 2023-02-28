@@ -11,6 +11,15 @@ An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) w
 milk_cows
 }
 \description{
-Milk composition study
+In an attempt to improve the quality of cow milk, milk from each of thirty cows
+was assessed by dietary composition before and after a strictly controlled dietary
+and hormonal regime over a period of eight weeks. Although seasonal variations in
+milk quality might have been regarded as negligible over this period, it was decided
+to have a control group of thirty cows kept under the same conditions but on a
+regular established regime. The sixty cows were of course allocated to control and
+treatment groups at random. The `milk_cows` data set provides the complete set of
+before and after milk compositions for the sixty cows, showing the protein (pr),
+milk fat (mf), carbohydrate (ch), calcium (Ca), sodium (Na) and potassium (K)
+proportions by weight of total dietary content.
 }
 \keyword{datasets}

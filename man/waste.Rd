@@ -11,6 +11,34 @@ An object of class \code{data.frame} with 215 rows and 10 columns.
 waste
 }
 \description{
-The waste composition in Catalonia
+The actual population residing in a municipality of Catalonia is composed by the
+census count and the so-called floating population (tourists, seasonal visitors,
+hostel students, short-time employees, and the like). Since actual population
+combines long and short term residents it is convenient to express it as
+equivalent full-time residents. Floating population may be positive if the +
+municipality is receiving more short term residents than it is sending elsewhere,
+or negative if the opposite holds (expressed as a percentage above –if positive–
+or below –if negative–  the census count). The waste data set includes this
+information in the variable floating population. Floating population has a
+large impact on solid waste generation and thus waste can be used to predict
+floating population which is a hard to estimate demographic variable. This
+case study was presented in
+}
+\details{
+Tourists and census population do not generate the same volume of waste and have
+different consumption and recycling patterns (waste composition). The Catalan
+Statistical Institute (IDESCAT) publishes official floating population data for all
+municipalities in Catalonia (Spain) above 5000 census habitants. The composition
+of urban solid waste is classified into D = 5 parts:
+* x1 : non recyclable (grey waste container in Catalonia),
+* x2 : glass (bottles and jars of any colour: green waste container),
+* x3 : light containers (plastic packaging, cans and tetra packs: yellow container),
+* x4 : paper and cardboard (blue container), and
+* x5 : biodegradable waste (brown container).
+}
+\references{
+G. Coenders, J.A.Martín-Fernández and B. Ferrer-Rosell, \emph{When relative and
+absolute information matter: compositional predictor with a total in generalized
+linear models}. Statistical Modelling \strong{17}(6) (2017), 494–512.
 }
 \keyword{datasets}

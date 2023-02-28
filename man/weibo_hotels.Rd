@@ -11,6 +11,13 @@ An object of class \code{data.frame} with 10 rows and 5 columns.
 weibo_hotels
 }
 \description{
-Hotel posts in social media
+The `weibo_hotels` data set aims at comparing the use of Weibo (Facebook
+equivalent in China) in hospitality e-marketing between small and medium
+accommodation establishments (private hostels, small hotels) and big and
+well-established business (such as international hotel chains or large hotels)
+in China. The 50 latest posts of the Weibo pages of each hotel (n = 10) are
+content-analyzed and coded regarding the count of posts featuring information
+ on a 4-part composition [facilities, food, events, promotions]. Hotels were
+ coded as large “L” or small “S” in the hotel size categorical variable.
 }
 \keyword{datasets}

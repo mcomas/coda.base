@@ -11,6 +11,8 @@ An object of class \code{data.frame} with 30 rows and 4 columns.
 pollen
 }
 \description{
-Pollen composition in fossils
+The pollen data set is formed by 30 fossil pollen samples from three different
+locations (recorded in variable group) . The samples were analysed and the 3-part
+composition [pinus, abies, quercus] was measured.
 }
 \keyword{datasets}

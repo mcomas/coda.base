@@ -11,6 +11,23 @@ An object of class \code{data.frame} with 393 rows and 8 columns.
 bmi_activity
 }
 \description{
-Physical activity and body mass index
+The `bmi_activity` data set records the proportion of daily time spent to sleep
+(sleep), sedentary behaviour (sedent), light physical activity (Lpa), moderate
+physical activity (Mpa) and vigorous physical activity (Vpa) measured on a small
+population of 393 children. Moreover the standardized body mass index (zBMI) of
+each child was also registered.
+
+This data set was used in the example of the article (Dumuid et al. 2019) to examine the
+expected differences in zBMI for reallocations of daily time between sleep, physical
+activity and sedentary behaviour. Because the original data is confidential, the
+data set BMIPhisActi includes simulated data that mimics the main features of the
+original data.
+}
+\references{
+D. Dumuid, Z. Pedisic, T.E. Stanford, J.A. Martı́n-Fernández, K. Hron, C.
+Maher, L.K. Lewis and T.S. Olds, \emph{The Compositional Isotemporal Sub-
+ stitution Model: a Method for Estimating Changes in a Health Outcome
+for Reallocation of Time between Sleep, Sedentary Behaviour, and Physical
+Activity}. Statistical Methods in Medical Research \strong{28}(3) (2019), 846–857
 }
 \keyword{datasets}

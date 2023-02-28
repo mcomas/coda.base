@@ -11,6 +11,23 @@ An object of class \code{data.frame} with 229 rows and 6 columns.
 montana
 }
 \description{
-Concentration of minor elements in carbon ashes
+The montana data set consists of 229 samples of the concentration (in ppm) of
+minor elements [Cr, Cu, Hg, U, V] in carbon ashes from the Fort Union
+formation (Montana, USA), side of the Powder River Basin. The formation is
+mostly Palaeocene in age, and the coal is the result of deposition in
+conditions ranging from fluvial to lacustrine. All samples were taken from
+the same seam at different sites over an area of 430 km by 300 km, which
+implies that on average, the sampling spacing is 24 km. Using the spatial
+coordinates of the data, a semivariogram analysis was conducted for each
+chemical element in order to check for a potential spatial dependence
+structure in the data (not shown here). No spatial dependence patterns
+were observed for any component, which allowed us to assume an independence
+of the chemical samples at different locations.
+
+The aforementioned chemical components actually represent a fully observed
+subcomposition of a much larger chemical composition. The five elements are
+not closed to a constant sum. Note that, as the samples are expressed in
+parts per million and all concentrations were originally measured, a residual
+element could be defined to fill up the gap to 10^6.
 }
 \keyword{datasets}
