@@ -2,7 +2,7 @@ Package: coda.base
 Type: Package
 Title: A Basic Set of Functions for Compositional Data Analysis
 Version: 0.5.4.3
-Date: 2022-07-06
+Date: 2023-03-01
 Authors@R: c(person("Marc", "Comas-Cufí", role = c("aut", "cre"), 
                     email = "mcomas@imae.udg.edu", comment = c(ORCID = "0000-0001-9759-0622")))
 Description: A minimum set of functions to perform compositional data analysis
@@ -12,7 +12,7 @@ URL: https://mcomas.net/coda.base/,
      https://github.com/mcomas/coda.base
 Depends: R (>= 3.5)
 Imports: Rcpp (>= 0.12.12), stats, Matrix, jsonlite, mathjaxr
-LinkingTo: Rcpp, RcppArmadillo (>= 0.11.2)
+LinkingTo: Rcpp, RcppArmadillo
 License: GPL
 Encoding: UTF-8
 LazyData: true
