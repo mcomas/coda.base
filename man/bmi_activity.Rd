@@ -24,7 +24,7 @@ data set BMIPhisActi includes simulated data that mimics the main features of th
 original data.
 }
 \references{
-D. Dumuid, Z. Pedisic, T.E. Stanford, J.A. Martı́n-Fernández, K. Hron, C.
+D. Dumuid, Z. Pedisic, T.E. Stanford, J.A. Martín-Fernández, K. Hron, C.
 Maher, L.K. Lewis and T.S. Olds, \emph{The Compositional Isotemporal Sub-
  stitution Model: a Method for Estimating Changes in a Health Outcome
 for Reallocation of Time between Sleep, Sedentary Behaviour, and Physical

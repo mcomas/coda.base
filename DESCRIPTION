@@ -6,12 +6,12 @@ Date: 2023-03-01
 Authors@R: c(person("Marc", "Comas-Cufí", role = c("aut", "cre"), 
                     email = "mcomas@imae.udg.edu", comment = c(ORCID = "0000-0001-9759-0622")))
 Description: A minimum set of functions to perform compositional data analysis
-    using the log-ratio approach introduced by John Aitchison (1982) <http://www.jstor.org/stable/2345821>. Main functions
+    using the log-ratio approach introduced by John Aitchison (1982). Main functions
     have been implemented in c++ for better performance.
 URL: https://mcomas.net/coda.base/,
      https://github.com/mcomas/coda.base
 Depends: R (>= 3.5)
-Imports: Rcpp (>= 0.12.12), stats, Matrix, jsonlite, mathjaxr
+Imports: Rcpp (>= 0.12.12), stats, Matrix, jsonlite
 LinkingTo: Rcpp, RcppArmadillo
 License: GPL
 Encoding: UTF-8
@@ -24,4 +24,3 @@ Suggests:
     testthat (>= 2.1.0), 
     ggplot2
 VignetteBuilder: knitr
-RdMacros: mathjaxr

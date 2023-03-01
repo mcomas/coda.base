@@ -11,8 +11,6 @@ An object of class \code{data.frame} with 49 rows and 5 columns.
 blood_mn
 }
 \description{
-\loadmathjax
-
 In humans the main blood group systems are the ABO system, the Rh system and
 the MN system. The MN blood system is a system of blood antigens also related
 to proteins of the red blood cell plasma membrane. The inheritance pattern of the
@@ -25,7 +23,7 @@ principle states that allele and genotype frequencies in a population will
 remain constant from generation to generation in the absence of other
 evolutionary influences. This implies that, in the long run, it holds that
 
-\mjeqn{\frac{x_{MM}x_{NN}}{x_{MN}} = \frac{1}{4}}{ (x_MM x_NN) / x_MN = 1/4}
+\eqn{\frac{x_{MM}x_{NN}}{x_{MN}} = \frac{1}{4}}{ (x_MM x_NN) / x_MN = 1/4}
 
 where xM M and xN N are the genotype relative frequencies of MM and NN
 homozygotes, respectively, and xM N is the genotype relative frequency

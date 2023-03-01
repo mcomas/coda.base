@@ -91,26 +91,26 @@ before the computation proceeds.</p></dd>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">X</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">5</span><span class="op">*</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span>, nrow<span class="op">=</span><span class="fl">100</span>, ncol<span class="op">=</span><span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">g</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'c'</span>,<span class="st">'d'</span><span class="op">)</span>, <span class="fl">25</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">center</span><span class="op">(</span><span class="va">X</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.1738956 0.1588675 0.2039835 0.2692836 0.1939699</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.2070000 0.1789933 0.2089134 0.2009646 0.2041288</span>
 <span class="r-in"><span><span class="op">(</span><span class="va">by_g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/by.html" class="external-link">by</a></span><span class="op">(</span><span class="va">X</span>, <span class="va">g</span>, <span class="va">center</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> INDICES: a</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        V1        V2        V3        V4        V5 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.1506055 0.1516898 0.2390869 0.3032758 0.1553420 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.1720041 0.1668044 0.2000373 0.2613382 0.1998160 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ------------------------------------------------------------ </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> INDICES: b</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        V1        V2        V3        V4        V5 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.2375392 0.1636616 0.1888173 0.2113025 0.1986795 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.1966641 0.1893118 0.2606635 0.1846654 0.1686952 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ------------------------------------------------------------ </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> INDICES: c</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        V1        V2        V3        V4        V5 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.1524840 0.1629082 0.1737091 0.3308402 0.1800586 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.2373103 0.1612755 0.1796525 0.2138514 0.2079103 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ------------------------------------------------------------ </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> INDICES: d</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        V1        V2        V3        V4        V5 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.1598521 0.1501960 0.2105349 0.2365066 0.2429103 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.2200457 0.1939126 0.1956377 0.1520513 0.2383527 </span>
 <span class="r-in"><span><span class="fu">center</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">simplify2array</a></span><span class="op">(</span><span class="va">by_g</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        V1        V2        V3        V4        V5 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.1738956 0.1588675 0.2039835 0.2692836 0.1939699 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.2070000 0.1789933 0.2089134 0.2009646 0.2041288 </span>
 </code></pre></div>
     </div>
   </div>

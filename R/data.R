@@ -68,8 +68,6 @@
 #' The MN blood system
 #' @description
 #'
-#' \loadmathjax
-#'
 #' In humans the main blood group systems are the ABO system, the Rh system and
 #' the MN system. The MN blood system is a system of blood antigens also related
 #' to proteins of the red blood cell plasma membrane. The inheritance pattern of the
@@ -82,7 +80,7 @@
 #' remain constant from generation to generation in the absence of other
 #' evolutionary influences. This implies that, in the long run, it holds that
 #'
-#' \mjeqn{\frac{x_{MM}x_{NN}}{x_{MN}} = \frac{1}{4}}{ (x_MM x_NN) / x_MN = 1/4}
+#' \eqn{\frac{x_{MM}x_{NN}}{x_{MN}} = \frac{1}{4}}{ (x_MM x_NN) / x_MN = 1/4}
 #'
 #'where xM M and xN N are the genotype relative frequencies of MM and NN
 #'homozygotes, respectively, and xM N is the genotype relative frequency
@@ -107,7 +105,7 @@
 #' original data.
 #'
 #' @references
-#' D. Dumuid, Z. Pedisic, T.E. Stanford, J.A. Martı́n-Fernández, K. Hron, C.
+#' D. Dumuid, Z. Pedisic, T.E. Stanford, J.A. Martín-Fernández, K. Hron, C.
 #' Maher, L.K. Lewis and T.S. Olds, \emph{The Compositional Isotemporal Sub-
 #'  stitution Model: a Method for Estimating Changes in a Health Outcome
 #' for Reallocation of Time between Sleep, Sedentary Behaviour, and Physical
@@ -242,12 +240,10 @@
 #'
 #' @description
 #'
-#' \loadmathjax
-#'
 #' This petrafm data set is formed by 100 classified volcanic rock samples from
 #' Ontario (Canada). The three parts are:
 #'
-#' \mjeqn{[A: {Na}_2 O + K_2 O; F: Fe O + 0.8998 Fe_2 O_3 ; M: Mg O]}{[A: Na2 O + K2 O; F: FeO + 0.8998 · Fe2 O3 ; M: MgO]}
+#' \eqn{[A: {Na}_2 O + K_2 O; F: Fe O + 0.8998 Fe_2 O_3 ; M: Mg O]}{[A: Na2 O + K2 O; F: FeO + 0.8998 · Fe2 O3 ; M: MgO]}
 #'
 #' Rocks from the calc-alkaline magma series (25) can be well distinguished from
 #' samples from the tholeiitic magma series (75) on an AFM diagram.
