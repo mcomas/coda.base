@@ -5,7 +5,7 @@
 \alias{alimentation}
 \title{Food consumption in European countries}
 \format{
-An object of class \code{data.frame} with 25 rows and 14 columns.
+An object of class \code{data.frame} with 25 rows and 13 columns.
 }
 \usage{
 alimentation

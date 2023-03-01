@@ -71,7 +71,7 @@ plotNode <- function(x1, x2, subtree, l_balances, type, center, leaflab, dLeaf,
 
     if(getOption("verbose")) {
       cat(if(inner)"inner node" else "leaf", ":")
-      if(!is.null(nPar)) { cat(" with node pars\n"); str(nPar) }
+      if(!is.null(nPar)) { cat(" with node pars\n"); utils::str(nPar) }
       cat(if(inner )paste(" height", formatC(yTop),"; "),
           "(x1,x2)= (", formatC(x1, width = 4), ",", formatC(x2, width = 4), ")",
           "--> xTop=", formatC(xTop, width = 8), "\n", sep = "")

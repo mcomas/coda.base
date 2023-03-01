@@ -10,5 +10,8 @@
 #' @import Rcpp stats mathjaxr
 #' @useDynLib coda.base, .registration = TRUE
 #' @importFrom Rcpp evalCpp
+#' @importFrom grDevices dev.flush dev.hold
+#' @importFrom graphics par points polygon rect segments strheight strwidth text
+#'
 #' @name coda.base
 NULL
