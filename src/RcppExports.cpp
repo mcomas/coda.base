@@ -23,14 +23,14 @@ BEGIN_RCPP
 END_RCPP
 }
 // c_variation_array
-arma::mat c_variation_array(arma::mat X, bool only_variation);
-RcppExport SEXP _coda_base_c_variation_array(SEXP XSEXP, SEXP only_variationSEXP) {
+arma::mat c_variation_array(arma::mat X, bool include_means);
+RcppExport SEXP _coda_base_c_variation_array(SEXP XSEXP, SEXP include_meansSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
-    Rcpp::traits::input_parameter< bool >::type only_variation(only_variationSEXP);
-    rcpp_result_gen = Rcpp::wrap(c_variation_array(X, only_variation));
+    Rcpp::traits::input_parameter< bool >::type include_means(include_meansSEXP);
+    rcpp_result_gen = Rcpp::wrap(c_variation_array(X, include_means));
     return rcpp_result_gen;
 END_RCPP
 }

@@ -480,7 +480,7 @@ pairwise_basis = function(dim){
     b[i] = c(1,-1)
     b
   })
-  colnames(B) = paste0('lr', apply(I, 2, paste, collapse = '_'))
+  colnames(B) = paste0('pw', apply(I, 2, paste, collapse = '_'))
   rownames(B) = paste0("c", 1:dim)
   B
 }

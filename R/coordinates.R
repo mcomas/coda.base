@@ -80,7 +80,7 @@ pb = function(X, basis_return){
 
 pw = function(X, basis_return){
   B = pairwise_basis(ncol(X))
-  COORD = sparse_coordinates(X, B)
+  COORD = sparse_coordinates(X, Matrix::Matrix(B, sparse = TRUE))
   colnames(COORD) = colnames(B)
   if(basis_return){
     if(!is.null(colnames(X))){
@@ -243,14 +243,21 @@ composition = function(H, basis = NULL){
   rnames = rownames(H)
 
   class_type = class(H)
+  is_vector = is.atomic(H) & !is.list(H) & !is.matrix(H)
+  is_data_frame = inherits(H, 'data.frame')
+
   if(is.null(basis) & "basis" %in% names(attributes(H))){
     basis = attr(H, 'basis')
   }
   if(is.null(basis)){
-    stop("Basis is not defined", call. = FALSE)
+    warning("Basis is not defined, default basis is used", call. = FALSE)
+    if(is_vector){
+      basis = ilr_basis(length(H)+1)
+    }else{
+      basis = ilr_basis(ncol(H)+1)
+    }
   }
-  is_vector = is.atomic(H) & !is.list(H) & !is.matrix(H)
-  is_data_frame = inherits(H, 'data.frame')
+
 
   COORD = H
   if(is_vector){
@@ -302,6 +309,9 @@ composition = function(H, basis = NULL){
     RAW = as.data.frame(RAW)
   }
   class(RAW) = setdiff(class_type, 'coda')
+  if(is.matrix(RAW)){
+    class(RAW) = setdiff(class_type, c('matrix', 'array'))
+  }
   suppressWarnings(row.names(RAW) <- row.names(H))
   #attr(RAW, 'basis') = basis
   RAW

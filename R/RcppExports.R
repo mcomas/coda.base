@@ -5,8 +5,8 @@ pinv <- function(X) {
     .Call(`_coda_base_pinv`, X)
 }
 
-c_variation_array <- function(X, only_variation = FALSE) {
-    .Call(`_coda_base_c_variation_array`, X, only_variation)
+c_variation_array <- function(X, include_means = FALSE) {
+    .Call(`_coda_base_c_variation_array`, X, include_means)
 }
 
 alr_basis_default <- function(dim) {

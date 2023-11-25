@@ -14,4 +14,4 @@
 #' @importFrom graphics par points polygon rect segments strheight strwidth text
 #'
 #' @name coda.base
-NULL
+"_PACKAGE"
