@@ -20,7 +20,7 @@ basis = function(H){
   attr(H, 'basis')
 }
 
-#' Isometric log-ratio basis for log-transformed compositions.
+#' Isometric/Orthonormal log-ratio basis for log-transformed compositions.
 #'
 #' By default the basis of the clr-given by Egozcue et al., 2013
 #' Build an isometric log-ratio basis for a composition with k+1 parts
@@ -28,7 +28,7 @@ basis = function(H){
 #' h[i] = \sqrt(i/(i+1)) ( log(x[1] \ldots x[i])/i - log(x[i+1]) )}
 #' for \eqn{i \in 1\ldots k}.
 #'
-#'Modifying parameter type (pivot or cdp) other ilr basis can be generated
+#'Modifying parameter type (pivot or cdp) other ilr/olr basis can be generated
 #'
 #' @param dim number of components
 #' @param type if different than `pivot` (pivot balances) or `cdp` (codapack balances) default balances are returned, which computes a triangular Helmert matrix as defined by Egozcue et al., 2013.
@@ -51,6 +51,23 @@ ilr_basis = function(dim, type = 'default'){
     }
   }
   colnames(B) = sprintf("ilr%d", 1:ncol(B))
+  rownames(B) = sprintf("c%d", 1:nrow(B))
+  B
+}
+
+#' @rdname ilr_basis
+#' @export
+olr_basis = function(dim, type = 'default'){
+  check_dim(dim)
+  if(type == 'cdp'){
+    B = cdp_basis_(dim)
+  }else{
+    B = ilr_basis_default(dim)
+    if(type == 'pivot'){
+      B = (-B)[,ncol(B):1, drop = FALSE][nrow(B):1,]
+    }
+  }
+  colnames(B) = sprintf("olr%d", 1:ncol(B))
   rownames(B) = sprintf("c%d", 1:nrow(B))
   B
 }
@@ -393,7 +410,7 @@ pb_basis = function(X, method, constrained.complete_up = FALSE, cluster.method =
   }else if(method == 'cluster'){
     M = 'CL'
     # Passing arguments to hclust function
-    hh = stats::hclust(stats::as.dist(variation_array(X, only_variation = TRUE)), method=cluster.method, ...)
+    hh = stats::hclust(stats::as.dist(variation_array(X)), method=cluster.method, ...)
     B = matrix(0, ncol = nrow(hh$merge), nrow = ncol(X))
     for(i in 1:nrow(hh$merge)){
       if(hh$merge[i,1] < 0 & hh$merge[i,2] < 0){

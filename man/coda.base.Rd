@@ -3,12 +3,21 @@
 \docType{package}
 \name{coda.base}
 \alias{coda.base}
+\alias{coda.base-package}
 \title{coda.base}
 \description{
 A minimum set of functions to perform compositional data analysis
 using the log-ratio approach introduced by John Aitchison (1982)
 <https://www.jstor.org/stable/2345821>. Main functions
 have been implemented in c++ for better performance.
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://mcomas.net/coda.base/}
+  \item \url{https://github.com/mcomas/coda.base}
+}
+
 }
 \author{
 Marc Comas-Cufí

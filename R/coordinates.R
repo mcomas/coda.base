@@ -24,6 +24,19 @@ ilr = function(X, basis_return){
   COORD
 }
 
+olr = function(X, basis_return){
+  COORD = coordinates(X, ilr_basis(ncol(X)))
+  colnames(COORD) = paste0('olr', 1:ncol(COORD))
+  if(basis_return){
+    B = ilr_basis(ncol(X))
+    if(!is.null(colnames(X))){
+      rownames(B) = colnames(X)
+    }
+    attr(COORD, 'basis') = B
+  }
+  COORD
+}
+
 clr = function(X, basis_return){
   COORD = clr_coordinates(X)
   colnames(COORD) = paste0('clr', 1:ncol(COORD))
@@ -208,6 +221,30 @@ coord = function(..., basis = 'ilr'){
   # print(lpars)
   # cat("---\n")
   # coordinates(a)
+}
+
+#' @rdname coordinates
+#' @export
+alr_c = function(X){
+  coordinates(X, 'alr', basis_return = FALSE)
+}
+
+#' @rdname coordinates
+#' @export
+clr_c = function(X){
+  coordinates(X, 'clr', basis_return = FALSE)
+}
+
+#' @rdname coordinates
+#' @export
+ilr_c = function(X){
+  coordinates(X, 'ilr', basis_return = FALSE)
+}
+
+#' @rdname coordinates
+#' @export
+olr_c = function(X){
+  coordinates(X, 'olr', basis_return = FALSE)
 }
 
 # #' Define a composition passing parts one by one.

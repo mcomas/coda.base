@@ -28,7 +28,7 @@ data('parliament2017')
 X = parliament2017[,c('erc','jxcat','psc','cs')]
 ```
 
-# Defining classical log-ratio coordinates with `coda.base`
+# Log-ratio coordinates with `coda.base`
 
 ##  The additive logratio (alr) coordinates
 

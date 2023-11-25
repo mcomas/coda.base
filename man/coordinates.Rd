@@ -3,11 +3,23 @@
 \name{coordinates}
 \alias{coordinates}
 \alias{coord}
+\alias{alr_c}
+\alias{clr_c}
+\alias{ilr_c}
+\alias{olr_c}
 \title{Get coordinates from compositions w.r.t. an specific basis}
 \usage{
 coordinates(X, basis = "ilr", basis_return = TRUE)
 
 coord(..., basis = "ilr")
+
+alr_c(X)
+
+clr_c(X)
+
+ilr_c(X)
+
+olr_c(X)
 }
 \arguments{
 \item{X}{compositional dataset. Either a matrix, a data.frame or a vector}

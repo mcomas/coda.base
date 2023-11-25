@@ -4,12 +4,12 @@
 \alias{variation_array}
 \title{Variation array is returned.}
 \usage{
-variation_array(X, only_variation = FALSE)
+variation_array(X, include_means = FALSE)
 }
 \arguments{
 \item{X}{Compositional dataset}
 
-\item{only_variation}{if TRUE only the variation matrix is calculated}
+\item{include_means}{if TRUE logratio means are included in the lower-left triangle}
 }
 \value{
 variation array matrix

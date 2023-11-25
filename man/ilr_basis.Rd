@@ -2,9 +2,12 @@
 % Please edit documentation in R/basis.R
 \name{ilr_basis}
 \alias{ilr_basis}
-\title{Isometric log-ratio basis for log-transformed compositions.}
+\alias{olr_basis}
+\title{Isometric/Orthonormal log-ratio basis for log-transformed compositions.}
 \usage{
 ilr_basis(dim, type = "default")
+
+olr_basis(dim, type = "default")
 }
 \arguments{
 \item{dim}{number of components}
@@ -22,7 +25,7 @@ h[i] = \sqrt(i/(i+1)) ( log(x[1] \ldots x[i])/i - log(x[i+1]) )}
 for \eqn{i \in 1\ldots k}.
 }
 \details{
-Modifying parameter type (pivot or cdp) other ilr basis can be generated
+Modifying parameter type (pivot or cdp) other ilr/olr basis can be generated
 }
 \examples{
 ilr_basis(5)
