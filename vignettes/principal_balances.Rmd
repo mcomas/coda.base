@@ -143,7 +143,7 @@ When the number of part is higher, the exact method should be discarded in favor
 For a composition $X$, @pawlowsky2011 proposed to build the variation array and use it to produce a matrix distance. The variation array calculates the variance between a pair of logratios.
 
 ```{r}
-D = as.dist(variation_array(X, only_variation = TRUE))
+D = as.dist(variation_array(X))
 D
 ```
 
