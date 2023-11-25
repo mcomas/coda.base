@@ -9,7 +9,7 @@ getDim = function(X) ifelse(is.vector(X), length(X), NCOL(X))
 #' set.seed(1)
 #' X = matrix(exp(rnorm(5*100)), nrow=100, ncol=5)
 #' variation_array(X)
-#' variation_array(X, only_variation = TRUE)
+#' variation_array(X, include_means = TRUE)
 #' @export
 variation_array = function(X, include_means = FALSE){
   var_arr = c_variation_array(as.matrix(X), as.logical(include_means))

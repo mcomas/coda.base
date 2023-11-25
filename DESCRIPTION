@@ -11,16 +11,12 @@ Description: A minimum set of functions to perform compositional data analysis
 URL: https://mcomas.net/coda.base/,
      https://github.com/mcomas/coda.base
 Depends: R (>= 3.5)
-Imports: Rcpp (>= 0.12.12), stats, Matrix, jsonlite
+Imports: Rcpp (>= 0.12.12), stats, Matrix
 LinkingTo: Rcpp, RcppArmadillo
 License: GPL
 Encoding: UTF-8
 LazyData: true
 NeedsCompilation: yes
-RoxygenNote: 7.2.0
-Suggests: 
-    knitr,
-    rmarkdown,
-    testthat (>= 2.1.0), 
-    ggplot2
+RoxygenNote: 7.2.3
+Suggests: knitr, rmarkdown, testthat (>= 2.1.0), ggplot2, jsonlite
 VignetteBuilder: knitr
