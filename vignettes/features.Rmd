@@ -66,12 +66,15 @@ coordinates(X)
 By default, `coda.base` uses the isometric log-ratio coordinates defined in Egozcue et al. 2003.
 
 -   `coordinates(X, 'ilr')`: isometric log-ratio coordinates (Egozcue et al. 2003, defaults)
+-   `coordinates(X, 'olr')`: orthonormal log-ratio coordinates (equivalent to `ilr`)
 -   `coordinates(X, 'alr')`: additive log-ratio coordinates
 -   `coordinates(X, 'clr')`: centered log-ratio coordinates
 -   `coordinates(X, 'pw')`: pairwise log-ratio coordinates
 -   `coordinates(X, 'pc')`: principal component coordinates
 -   `coordinates(X, 'pb')`: principal balance coordinates
 -   `coordinates(X, 'cdp')`: balanced isometric log-ratio coordinates
+
+To reduce typing, `alr_c()`, `clr_c()`, `ilr_c()` and `olr_c()` are functions that call `coordinates()` function with the option given by their name.
 
 `coordinates(X, B)` accepts a log-contrast matrix $B$ to build the log-ratio coordinates. Different log-contrast matrices $B$ can be constructed (following section).
 
@@ -88,9 +91,9 @@ all.equal(as.numeric(coordinates(X, 'ilr')),
 
 Log-ratio matrix transformations:
 
-- `ilr_basis(nP)` (Egozcue et al. 2003, defaults)
-- `ilr_basis(nP, type = 'pivot')` to pivot log-ratio coordinates
-- `ilr_basis(nP, type = 'cdp')` to balanced log-ratio coordinates (CoDaPack's default)
+- `ilr_basis(nP)` or `olr_basis(nP)` (Egozcue et al. 2003, defaults)
+- `ilr_basis(nP, type = 'pivot')` or `olr_basis(nP, type = 'pivot')` to pivot log-ratio coordinates
+- `ilr_basis(nP, type = 'cdp')` or `olr_basis(nP, type = 'cdp')` to balanced log-ratio coordinates (CoDaPack's default)
 - `alr_basis(nP)` to additive-log ratio coordinates. Numerator order and denominator can be modified. For example, `alr_basis(nP, denominator = 1, numerator = nP:2)`.
 - `clr_basis(nP)` to centered log-ratio coordinates.
 - `pc_basis(X)` to principal components log-ratio coordinates.
