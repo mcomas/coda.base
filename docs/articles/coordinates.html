@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">coda.base</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.4.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.5</span>
       </span>
     </div>
 
@@ -87,7 +87,7 @@
                         <h4 data-toc-skip class="author">Marc
 Comas-Cufí</h4>
             
-            <h4 data-toc-skip class="date">2023-03-01</h4>
+            <h4 data-toc-skip class="date">2023-11-27</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/mcomas/coda.base/blob/HEAD/vignettes/coordinates.Rmd" class="external-link"><code>vignettes/coordinates.Rmd</code></a></small>
       <div class="hidden name"><code>coordinates.Rmd</code></div>
@@ -108,8 +108,7 @@ elections:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">'parliament2017'</span><span class="op">)</span></span>
 <span><span class="va">X</span> <span class="op">=</span> <span class="va">parliament2017</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'erc'</span>,<span class="st">'jxcat'</span>,<span class="st">'psc'</span>,<span class="st">'cs'</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
 <div class="section level2">
-<h2 id="defining-classical-log-ratio-coordinates-with-coda-base">Defining classical log-ratio coordinates with
-<code>coda.base</code><a class="anchor" aria-label="anchor" href="#defining-classical-log-ratio-coordinates-with-coda-base"></a>
+<h2 id="log-ratio-coordinates-with-coda-base">Log-ratio coordinates with <code>coda.base</code><a class="anchor" aria-label="anchor" href="#log-ratio-coordinates-with-coda-base"></a>
 </h2>
 <div class="section level3">
 <h3 id="the-additive-logratio-alr-coordinates">The additive logratio (alr) coordinates<a class="anchor" aria-label="anchor" href="#the-additive-logratio-alr-coordinates"></a>
@@ -283,7 +282,7 @@ balance) with respect to the principal components.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">PC_approx</span><span class="op">)</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'PC'</span>, <span class="st">'Ward'</span>, <span class="st">'Constrained'</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">PC_approx</span>, <span class="fl">2</span>, <span class="va">var</span><span class="op">)</span></span>
 <span><span class="co">#&gt;       h1       h2       h3 </span></span>
-<span><span class="co">#&gt; 1.726584 1.367661 1.607451</span></span></code></pre></div>
+<span><span class="co">#&gt; 1.678207 1.395698 1.582873</span></span></code></pre></div>
 <p>Finally, <code>coda.base</code> allows to define the default CoDaPack
 basis which consists in defining well balanced balances, i.e. equal
 number of branches in each balance.</p>
@@ -424,7 +423,7 @@ row names (if available).</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

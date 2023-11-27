@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">coda.base</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.4.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.5</span>
       </span>
     </div>
 
@@ -66,7 +66,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">variation_array</span><span class="op">(</span><span class="va">X</span>, only_variation <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">variation_array</span><span class="op">(</span><span class="va">X</span>, include_means <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -75,8 +75,8 @@
 <dd><p>Compositional dataset</p></dd>
 
 
-<dt>only_variation</dt>
-<dd><p>if TRUE only the variation matrix is calculated</p></dd>
+<dt>include_means</dt>
+<dd><p>if TRUE logratio means are included in the lower-left triangle</p></dd>
 
 </dl></div>
     <div id="value">
@@ -91,19 +91,19 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">X</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">5</span><span class="op">*</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span>, nrow<span class="op">=</span><span class="fl">100</span>, ncol<span class="op">=</span><span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">variation_array</span><span class="op">(</span><span class="va">X</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>            [,1]         [,2]        [,3]      [,4]     [,5]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.00000000  1.726005360  1.84231397 1.8800325 1.865787</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.14669544  0.000000000  2.08538862 2.0119435 1.982605</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.07921383 -0.067481612  0.00000000 1.8258798 2.365846</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 0.05728551 -0.089409935 -0.02192832 0.0000000 2.295994</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] 0.14802161  0.001326164  0.06880778 0.0907361 0.000000</span>
-<span class="r-in"><span><span class="fu">variation_array</span><span class="op">(</span><span class="va">X</span>, only_variation <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          [,1]     [,2]     [,3]     [,4]     [,5]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.000000 1.726005 1.842314 1.880032 1.865787</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 1.726005 0.000000 2.085389 2.011943 1.982605</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 1.842314 2.085389 0.000000 1.825880 2.365846</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 1.880032 2.011943 1.825880 0.000000 2.295994</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [5,] 1.865787 1.982605 2.365846 2.295994 0.000000</span>
+<span class="r-in"><span><span class="fu">variation_array</span><span class="op">(</span><span class="va">X</span>, include_means <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            [,1]         [,2]        [,3]      [,4]     [,5]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.00000000  1.726005360  1.84231397 1.8800325 1.865787</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.14669544  0.000000000  2.08538862 2.0119435 1.982605</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.07921383 -0.067481612  0.00000000 1.8258798 2.365846</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 0.05728551 -0.089409935 -0.02192832 0.0000000 2.295994</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] 0.14802161  0.001326164  0.06880778 0.0907361 0.000000</span>
 </code></pre></div>
     </div>
   </div>
@@ -118,7 +118,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

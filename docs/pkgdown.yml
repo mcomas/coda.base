@@ -1,9 +1,9 @@
-pandoc: 2.19.2
-pkgdown: 2.0.5
+pandoc: 3.1.1
+pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
   coordinates: coordinates.html
   features: features.html
   principal_balances: principal_balances.html
-last_built: 2023-03-01T12:30Z
+last_built: 2023-11-27T21:13Z
 

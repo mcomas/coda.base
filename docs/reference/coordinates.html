@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">coda.base</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.4.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.5</span>
       </span>
     </div>
 
@@ -68,7 +68,15 @@
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">coordinates</span><span class="op">(</span><span class="va">X</span>, basis <span class="op">=</span> <span class="st">"ilr"</span>, basis_return <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">coord</span><span class="op">(</span><span class="va">...</span>, basis <span class="op">=</span> <span class="st">"ilr"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">coord</span><span class="op">(</span><span class="va">...</span>, basis <span class="op">=</span> <span class="st">"ilr"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">alr_c</span><span class="op">(</span><span class="va">X</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">clr_c</span><span class="op">(</span><span class="va">X</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">ilr_c</span><span class="op">(</span><span class="va">X</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">olr_c</span><span class="op">(</span><span class="va">X</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -138,16 +146,23 @@ a compositions from given coordinates.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> c3  0.0000000 -0.8164966  0.2886751  0.2236068</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> c4  0.0000000  0.0000000 -0.8660254  0.2236068</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> c5  0.0000000  0.0000000  0.0000000 -0.8944272</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Basis:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          ilr1       ilr2       ilr3       ilr4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> c1  0.7071068  0.4082483  0.2886751  0.2236068</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> c2 -0.7071068  0.4082483  0.2886751  0.2236068</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> c3  0.0000000 -0.8164966  0.2886751  0.2236068</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> c4  0.0000000  0.0000000 -0.8660254  0.2236068</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> c5  0.0000000  0.0000000  0.0000000 -0.8944272</span>
 <span class="r-in"><span><span class="co"># Default transformation can improve performance.</span></span></span>
 <span class="r-in"><span><span class="va">N</span> <span class="op">=</span> <span class="fl">100</span></span></span>
 <span class="r-in"><span><span class="va">K</span> <span class="op">=</span> <span class="fl">1000</span></span></span>
 <span class="r-in"><span><span class="va">X</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">*</span><span class="va">K</span><span class="op">)</span><span class="op">)</span>, nrow<span class="op">=</span><span class="va">N</span>, ncol<span class="op">=</span><span class="va">K</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="fu">coordinates</span><span class="op">(</span><span class="va">X</span>, <span class="fu"><a href="alr_basis.html">alr_basis</a></span><span class="op">(</span><span class="va">K</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    user  system elapsed </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   0.007   0.012   0.020 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   0.014   0.011   0.026 </span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="fu">coordinates</span><span class="op">(</span><span class="va">X</span>, <span class="st">'alr'</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    user  system elapsed </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   0.011   0.004   0.014 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   0.016   0.004   0.020 </span>
 </code></pre></div>
     </div>
   </div>
@@ -162,7 +177,7 @@ a compositions from given coordinates.</p></div>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>
