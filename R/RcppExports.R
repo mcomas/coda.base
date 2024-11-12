@@ -61,6 +61,11 @@ inv_ilr_coordinates <- function(ilrX) {
     .Call(`_coda_base_inv_ilr_coordinates`, ilrX)
 }
 
+#' @export
+c_conditional_obasis <- function(X, C) {
+    .Call(`_coda_base_c_conditional_obasis`, X, C)
+}
+
 get_balance_using_pc <- function(X) {
     .Call(`_coda_base_get_balance_using_pc`, X)
 }

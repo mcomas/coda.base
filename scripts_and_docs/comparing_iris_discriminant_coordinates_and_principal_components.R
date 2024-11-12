@@ -27,7 +27,7 @@ POST = sapply(1:nG, function(i){
 
 library(coda.base)
 PC.coord = coordinates(POST, 'pc')
-plot(-PC.coord[,1], -PC.coord[,2], col=gr)
+plot(-PC.coord[,1], PC.coord[,2], col=gr)
 apply(PC.coord, 2, var)
 attr(PC.coord, 'basis')
 

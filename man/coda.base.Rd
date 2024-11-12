@@ -2,8 +2,8 @@
 % Please edit documentation in R/coda.base.R
 \docType{package}
 \name{coda.base}
-\alias{coda.base}
 \alias{coda.base-package}
+\alias{coda.base}
 \title{coda.base}
 \description{
 A minimum set of functions to perform compositional data analysis

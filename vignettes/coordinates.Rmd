@@ -97,7 +97,7 @@ all.equal( coordinates(X, basis = 'ilr'),
 
 ## Other ilr-coordinates: Principal Components and Principal balances
 
-Other easily accessible coordinates are the Principal Component (PC) coordinates. PC coordinates define the first coordinate as the log-contrast with highest variance, the second the one independent from the first and with highest variance and so on:
+Other easily accessible coordinates are the Principal Component (PC) coordinates. PC coordinates define the first coordinate as the log-contrast with the highest variance, the second the one independent of the first and with the highest variance and so on:
 
 ```{r, fig.width=5.5, fig.height=4, fig.align='center', caption='Variance of principal components coordinates'}
 H2.ilr = coordinates(X, basis = 'pc')
@@ -126,7 +126,7 @@ Moreover, they are not independent:
 cor(H3.ilr)
 ```
 
-Principal Balances are hard to compute when the number of components is very high. `coda.base` allows to build PB approximations using different algorithms.
+Principal Balances are challenging to compute when the number of components is very high. `coda.base` allows building PB approximations using different algorithms.
 
 ```{r}
 X100 = exp(matrix(rnorm(1000*100), ncol = 100))
@@ -144,7 +144,7 @@ PB1.ward = pb_basis(X100, method = 'cluster')
 PB1.constrained = pb_basis(X100, method = 'constrained')
 ```
 
-We can compare they performance (variance explained by the first balance) with respect to the principal components.
+We can compare their performance (variance explained by the first balance) with respect to the principal components.
 
 ```{r}
 PC_approx = coordinates(X100, cbind(pc_basis(X100)[,1], PB1.ward[,1], PB1.constrained[,1]))
