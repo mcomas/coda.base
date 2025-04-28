@@ -4,21 +4,12 @@
 \alias{pb_basis}
 \title{Isometric log-ratio basis based on Principal Balances.}
 \usage{
-pb_basis(
-  X,
-  method,
-  constrained.complete_up = FALSE,
-  cluster.method = "ward.D2",
-  ordering = TRUE,
-  ...
-)
+pb_basis(X, method, cluster.method = "ward.D2", ordering = TRUE, ...)
 }
 \arguments{
 \item{X}{compositional dataset}
 
 \item{method}{method to be used with Principal Balances. Methods available are: 'exact', 'constrained' or 'cluster'.}
-
-\item{constrained.complete_up}{When searching up, should the algorithm try to find possible siblings for the current balance (TRUE) or build a parent directly forcing current balance to be part of the next balance (default: FALSE). While the first is more exhaustive and given better results the second is faster and can be used with highe dimensional datasets.}
 
 \item{cluster.method}{Method to be used with the hclust function (default: `ward.D2`) or any other method available in  hclust function}
 

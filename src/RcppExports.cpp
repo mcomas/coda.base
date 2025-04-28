@@ -183,14 +183,13 @@ BEGIN_RCPP
 END_RCPP
 }
 // c_conditional_obasis
-arma::cube c_conditional_obasis(arma::mat& X, arma::mat& C);
-RcppExport SEXP _coda_base_c_conditional_obasis(SEXP XSEXP, SEXP CSEXP) {
+arma::cube c_conditional_obasis(arma::mat& C);
+RcppExport SEXP _coda_base_c_conditional_obasis(SEXP CSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat& >::type X(XSEXP);
     Rcpp::traits::input_parameter< arma::mat& >::type C(CSEXP);
-    rcpp_result_gen = Rcpp::wrap(c_conditional_obasis(X, C));
+    rcpp_result_gen = Rcpp::wrap(c_conditional_obasis(C));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -266,7 +265,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_coda_base_coordinates_basis", (DL_FUNC) &_coda_base_coordinates_basis, 3},
     {"_coda_base_ilr_coordinates", (DL_FUNC) &_coda_base_ilr_coordinates, 1},
     {"_coda_base_inv_ilr_coordinates", (DL_FUNC) &_coda_base_inv_ilr_coordinates, 1},
-    {"_coda_base_c_conditional_obasis", (DL_FUNC) &_coda_base_c_conditional_obasis, 2},
+    {"_coda_base_c_conditional_obasis", (DL_FUNC) &_coda_base_c_conditional_obasis, 1},
     {"_coda_base_get_balance_using_pc", (DL_FUNC) &_coda_base_get_balance_using_pc, 1},
     {"_coda_base_find_PB", (DL_FUNC) &_coda_base_find_PB, 1},
     {"_coda_base_find_PB_using_pc", (DL_FUNC) &_coda_base_find_PB_using_pc, 1},

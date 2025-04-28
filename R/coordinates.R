@@ -1,109 +1,3 @@
-alr = function(X, basis_return){
-  COORD = alr_coordinates(X, ncol(X))
-  colnames(COORD) = paste0('alr', 1:ncol(COORD))
-  if(basis_return){
-    B = alr_basis(ncol(X))
-    if(!is.null(colnames(X))){
-      rownames(B) = colnames(X)
-    }
-    attr(COORD, 'basis') = B
-  }
-  COORD
-}
-
-ilr = function(X, basis_return){
-  COORD = coordinates(X, ilr_basis(ncol(X)))
-  colnames(COORD) = paste0('ilr', 1:ncol(COORD))
-  if(basis_return){
-    B = ilr_basis(ncol(X))
-    if(!is.null(colnames(X))){
-      rownames(B) = colnames(X)
-    }
-    attr(COORD, 'basis') = B
-  }
-  COORD
-}
-
-olr = function(X, basis_return){
-  COORD = coordinates(X, ilr_basis(ncol(X)))
-  colnames(COORD) = paste0('olr', 1:ncol(COORD))
-  if(basis_return){
-    B = ilr_basis(ncol(X))
-    if(!is.null(colnames(X))){
-      rownames(B) = colnames(X)
-    }
-    attr(COORD, 'basis') = B
-  }
-  COORD
-}
-
-clr = function(X, basis_return){
-  COORD = clr_coordinates(X)
-  colnames(COORD) = paste0('clr', 1:ncol(COORD))
-  if(basis_return){
-    B = clr_basis(ncol(X))
-    if(!is.null(colnames(X))){
-      rownames(B) = colnames(X)
-    }
-    attr(COORD, 'basis') = B
-  }
-  COORD
-}
-
-pc = function(X, basis_return){
-  B = ilr_basis(ncol(X))
-  B = B %*% svd(scale(log(X) %*% B, scale=FALSE))$v
-  COORD = matrix_coordinates(X, B)
-  colnames(COORD) = paste0('pc', 1:ncol(B))
-  if(basis_return){
-    colnames(B) = paste0('pc', 1:ncol(B))
-    if(!is.null(colnames(X))){
-      rownames(B) = colnames(X)
-    }
-    attr(COORD, 'basis') = B
-  }
-  COORD
-}
-
-cdp = function(X, basis_return){
-  B = cdp_basis(ncol(X))
-  COORD = sparse_coordinates(X, Matrix::Matrix(B, sparse = TRUE))
-  colnames(COORD) = colnames(B)
-  if(basis_return){
-    if(!is.null(colnames(X))){
-      rownames(B) = colnames(X)
-    }
-    attr(COORD, 'basis') = B
-  }
-  COORD
-}
-
-pb = function(X, basis_return){
-  B = pb_basis(X, method = 'exact')
-  COORD = sparse_coordinates(X, Matrix::Matrix(B, sparse = TRUE))
-  colnames(COORD) = colnames(B)
-  if(basis_return){
-    if(!is.null(colnames(X))){
-      rownames(B) = colnames(X)
-    }
-    attr(COORD, 'basis') = B
-  }
-  COORD
-}
-
-pw = function(X, basis_return){
-  B = pairwise_basis(ncol(X))
-  COORD = sparse_coordinates(X, Matrix::Matrix(B, sparse = TRUE))
-  colnames(COORD) = colnames(B)
-  if(basis_return){
-    if(!is.null(colnames(X))){
-      rownames(B) = colnames(X)
-    }
-    attr(COORD, 'basis') = B
-  }
-  COORD
-}
-
 #' @title Get coordinates from compositions w.r.t. an specific basis
 #'
 #' @description
@@ -119,7 +13,6 @@ pw = function(X, basis_return){
 #' @param basis basis used to calculate the coordinates. \code{basis} can be either a string or a matrix.
 #' Accepted values for strings are: 'ilr' (default), 'clr', 'alr', 'pw', 'pc', 'pb' and 'cdp'. If \code{basis} is a matrix, it is expected
 #' to have log-ratio basis given in columns.
-#' @param basis_return Should the basis be returned as attribute? (default: \code{TRUE})
 #' @param ... components of the compositional data
 #'
 #' @return
@@ -131,62 +24,148 @@ pw = function(X, basis_return){
 #' See function \code{\link{composition}} to obtain details on how to calculate
 #' a compositions from given coordinates.
 #' @examples
-#' coordinates(c(1,2,3,4,5))
-#' h = coordinates(c(1,2,3,4,5))
-#' basis(h)
-#' # basis is shown if 'coda.base.basis' option is set to TRUE
-#' options('coda.base.basis' = TRUE)
-#' coordinates(c(1,2,3,4,5))
-#' # Default transformation can improve performance.
-#' N = 100
-#' K = 1000
-#' X = matrix(exp(rnorm(N*K)), nrow=N, ncol=K)
-#' system.time(coordinates(X, alr_basis(K)))
-#' system.time(coordinates(X, 'alr'))
+#' # Default ilr given by ilr_basis(5) is given
+#' coordinates(1:5)
+#' B = ilr_basis(5)
+#' coordinates(1:5, B)
 #' @export
-coordinates = function(X, basis = 'ilr', basis_return = TRUE){
+coordinates = function(X, basis = 'ilr'){
   if(is.matrix(X)){
     if(!is.numeric(X)){
       stop("Composition must be numeric", call. = FALSE)
     }
     if(is.character(basis)){   # default's basis with characters
-      COORD = get(basis)(X, basis_return)
-      #sprintf(sprintf('%s%%0%dd', basis, 1+floor(log(ncol(COORD), 10))),1:ncol(COORD))
+      COORD = get(basis)(X)
     }else{                      # matrix basis
-      if(ncol(basis) <= 5 || mean(basis == 0) > 0.3){
-        COORD = sparse_coordinates(X, Matrix::Matrix(basis, sparse = TRUE))
-      }else{
-        COORD = matrix_coordinates(X, basis)
-      }
-      if(basis_return) attr(COORD, 'basis') = basis
-      if(!is.null(colnames(basis))){
-        colnames(COORD) = colnames(basis)
-      }else{
+      COORD = coordinates.matrix(X, basis)
+      colnames(COORD) = colnames(basis)
+      if(is.null(colnames(COORD))){
         colnames(COORD) = sprintf("h%d", 1:ncol(COORD))
       }
     }
   }else{
     if(is.atomic(X) & !is.list(X)){ # vector
-      COORD = Recall(matrix(X, nrow = 1), basis, basis_return)
-      B = attr(COORD, 'basis')
+      COORD = Recall(matrix(X, nrow=1), basis)
       COORD = COORD[1,]
-      attr(COORD, 'basis') = B
     }else{
       class_type = class(X)
       if(inherits(X, 'data.frame')){
         if(!all(sapply(X, is.numeric))) stop("All parts must be numeric", call. = FALSE)
-        mCOORD = Recall(as.matrix(X), basis, basis_return)
+        mCOORD = Recall(as.matrix(X), basis)
         COORD = as.data.frame(mCOORD)
-        attr(COORD, 'basis') = attr(mCOORD, 'basis')
       }
-
       class(COORD) = class_type
     }
-
   }
   suppressWarnings(row.names(COORD) <- row.names(X))
-  set.coda(COORD)
+  COORD
 }
+
+#' Get composition from coordinates w.r.t.  an specific basis
+#'
+#' Calculate a composition from coordinates with respect a given basis
+#'
+#' @param H coordinates of a composition. Either a matrix, a data.frame or a vector
+#' @param basis basis used to calculate the coordinates
+#' @return coordinates with respect the given basis
+#' @seealso See functions \code{\link{ilr_basis}}, \code{\link{alr_basis}},
+#' \code{\link{clr_basis}}, \code{\link{sbp_basis}}
+#' to define different compositional basis.
+#' See function \code{\link{coordinates}} to obtain details on how to calculate
+#' coordinates of a given composition.
+#' @export
+composition = function(H, basis = 'ilr'){
+  if(is.matrix(H)){
+    D = ncol(H) + 1
+    if(!is.numeric(H)){
+      stop("Coordinates must be numeric", call. = FALSE)
+    }
+    P = NULL
+    if(is.character(basis)){   # default's basis with characters
+      if(basis == 'ilr' | basis == 'olr') P = exp(H %*% t(ilr_basis(D)))
+      if(basis == 'alr') P = cbind(exp(H), 1)
+      if(basis == 'clr') P = exp(H)
+      if(is.null(P)){
+        stop(sprintf("Basis '%s' not recognized", basis))
+      }
+    }else{
+      if(is.matrix(basis)){
+        P = exp(as.matrix(H) %*% pinv(basis))
+      }else{
+        stop(sprintf('Basis need to be either a string or a matrix'))
+      }
+    }
+    P = P / rowSums(P)
+  }else{
+    if(is.atomic(H) & !is.list(H)){ # vector
+      P = Recall(matrix(H, nrow=1), basis)[1,]
+    }else{
+      class_type = class(H)
+      if(inherits(H, 'data.frame')){
+        if(!all(sapply(H, is.numeric))) stop("All parts must be numeric", call. = FALSE)
+        P = as.data.frame(Recall(as.matrix(H), basis))
+      }
+      class(P) = class_type
+    }
+  }
+  suppressWarnings(row.names(P) <- row.names(H))
+  P
+}
+
+
+
+alr = function(X){
+  COORD = alr_coordinates(X, ncol(X))
+  colnames(COORD) = paste0('alr', 1:ncol(COORD))
+  COORD
+}
+
+ilr = function(X){
+  COORD = coordinates(X, ilr_basis(ncol(X)))
+  colnames(COORD) = paste0('ilr', 1:ncol(COORD))
+  COORD
+}
+
+olr = function(X){
+  COORD = coordinates(X, ilr_basis(ncol(X)))
+  colnames(COORD) = paste0('olr', 1:ncol(COORD))
+  COORD
+}
+
+clr = function(X){
+  COORD = clr_coordinates(X)
+  colnames(COORD) = paste0('clr', 1:ncol(COORD))
+  COORD
+}
+
+pc = function(X){
+  B = ilr_basis(ncol(X))
+  B = B %*% svd(scale(log(X) %*% B, scale=FALSE))$v
+  COORD = matrix_coordinates(X, B)
+  colnames(COORD) = paste0('pc', 1:ncol(B))
+  COORD
+}
+
+cdp = function(X){
+  B = cdp_basis(ncol(X))
+  COORD = matrix_coordinates(X, B)
+  colnames(COORD) = colnames(B)
+  COORD
+}
+pb = function(X){
+  B = pb_basis(X, method = 'exact')
+  COORD = matrix_coordinates(X, B)
+  colnames(COORD) = colnames(B)
+  COORD
+}
+
+pw = function(X){
+  B = pairwise_basis(ncol(X))
+  COORD = matrix_coordinates(X, B)
+  colnames(COORD) = colnames(B)
+  COORD
+}
+
 
 #' @rdname coordinates
 #' @export
@@ -226,135 +205,35 @@ coord = function(..., basis = 'ilr'){
 #' @rdname coordinates
 #' @export
 alr_c = function(X){
-  coordinates(X, 'alr', basis_return = FALSE)
+  coordinates(X, 'alr')
 }
 
 #' @rdname coordinates
 #' @export
 clr_c = function(X){
-  coordinates(X, 'clr', basis_return = FALSE)
+  coordinates(X, 'clr')
 }
 
 #' @rdname coordinates
 #' @export
 ilr_c = function(X){
-  coordinates(X, 'ilr', basis_return = FALSE)
+  coordinates(X, 'ilr')
 }
 
 #' @rdname coordinates
 #' @export
 olr_c = function(X){
-  coordinates(X, 'olr', basis_return = FALSE)
-}
-
-# #' Define a composition passing parts one by one.
-# #'
-# #' @param ... compositional dataset. Composition column names
-# #' @param basis basis used to calculate the coordinates. \code{basis} can be either a string or a matrix.
-# #' Accepted values for strings are: 'ilr' (default), 'clr', 'alr', 'pw', 'pc', 'pb' and 'cdp'. If \code{basis} is a matrix, it is expected
-# #' to have log-ratio basis given in columns.
-# #' @export
-# coda = function(..., basis = 'ilr'){
-#   X = coordinates(cbind(...), basis = basis)
-#   X
-# }
-
-coordinates_sparse = function(X, B, sparse){
-  coordinates_basis(X,B,sparse)
-}
-
-#' Get composition from coordinates w.r.t.  an specific basis
-#'
-#' Calculate a composition from coordinates with respect a given basis
-#'
-#' @param H coordinates of a composition. Either a matrix, a data.frame or a vector
-#' @param basis basis used to calculate the coordinates
-#' @return coordinates with respect the given basis
-#' @seealso See functions \code{\link{ilr_basis}}, \code{\link{alr_basis}},
-#' \code{\link{clr_basis}}, \code{\link{sbp_basis}}
-#' to define different compositional basis.
-#' See function \code{\link{coordinates}} to obtain details on how to calculate
-#' coordinates of a given composition.
-#' @export
-composition = function(H, basis = NULL){
-  rnames = rownames(H)
-
-  class_type = class(H)
-  is_vector = is.atomic(H) & !is.list(H) & !is.matrix(H)
-  is_data_frame = inherits(H, 'data.frame')
-
-  if(is.null(basis) & "basis" %in% names(attributes(H))){
-    basis = attr(H, 'basis')
-  }
-  if(is.null(basis)){
-    warning("Basis is not defined, default basis is used", call. = FALSE)
-    if(is_vector){
-      basis = ilr_basis(length(H)+1)
-    }else{
-      basis = ilr_basis(ncol(H)+1)
-    }
-  }
-
-
-  COORD = H
-  if(is_vector){
-    class_type = 'double'
-    COORD = matrix(H, nrow=1)
-  }
-  if(is_data_frame){
-    COORD = as.matrix(H)
-  }
-  if(is.character(basis)){
-    dim = ncol(COORD)+1
-    if(basis == 'ilr'){
-      basis = ilr_basis(dim)
-      RAW = exp(COORD %*% t(basis))
-    }else{
-      if(basis == 'alr'){
-        RAW = cbind(exp(COORD), 1)
-      }else{
-        if(basis == 'clr'){
-          dim = ncol(COORD)
-          RAW = exp(COORD)
-        }else{
-          if(basis == 'cdp'){
-            basis = sbp_basis(cdp_partition(dim))
-            RAW = composition(COORD, basis = basis)
-          }else{
-            stop(sprintf('Basis %d not recognized'))
-          }
-        }
-      }
-    }
-  }else{
-    if(is.matrix(basis)){
-      RAW = exp(as.matrix(COORD) %*% pinv(basis))
-    }else{
-      stop(sprintf('Basis need to be either an string or a matrix'))
-    }
-  }
-  RAW = RAW / rowSums(RAW)
-  cnames = sprintf('c%d', 1:ncol(RAW))
-  if(!is.character(basis) & !is.null(colnames(basis))){
-    cnames = rownames(basis)
-  }
-  colnames(RAW) = cnames
-  if(is_vector){
-    RAW = RAW[1,]
-  }
-  if(is_data_frame){
-    RAW = as.data.frame(RAW)
-  }
-  class(RAW) = setdiff(class_type, 'coda')
-  if(is.matrix(RAW)){
-    class(RAW) = setdiff(class_type, c('matrix', 'array'))
-  }
-  suppressWarnings(row.names(RAW) <- row.names(H))
-  #attr(RAW, 'basis') = basis
-  RAW
+  coordinates(X, 'olr')
 }
 
 #' @rdname composition
 #' @export
 comp = composition
 
+coordinates.matrix = function(X, basis){
+  if(inherits(basis, "sparseMatrix")){
+    sparse_coordinates(X, basis)
+  }else{
+    matrix_coordinates(X, basis)
+  }
+}

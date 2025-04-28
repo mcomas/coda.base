@@ -2,18 +2,19 @@
 % Please edit documentation in R/basis.R
 \name{cc_basis}
 \alias{cc_basis}
-\title{Isometric log-ratio basis based on canonical correlations}
+\title{Isometric Log-Ratio Basis Based on Canonical Correlations}
 \usage{
 cc_basis(Y, X)
 }
 \arguments{
-\item{Y}{compositional dataset}
+\item{Y}{A compositional dataset (matrix or data frame).}
 
-\item{X}{explanatory dataset}
+\item{X}{An explanatory dataset (matrix or data frame).}
 }
 \value{
-matrix
+A matrix representing the isometric log-ratio basis.
 }
 \description{
-Isometric log-ratio basis based on canonical correlations
+Constructs an isometric log-ratio (ilr) basis for a compositional dataset,
+optimized with respect to canonical correlations with an explanatory dataset.
 }

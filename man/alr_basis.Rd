@@ -4,10 +4,11 @@
 \alias{alr_basis}
 \title{Additive log-ratio basis}
 \usage{
-alr_basis(dim, denominator = dim, numerator = which(denominator != 1:dim))
+alr_basis(dim, denominator = NULL, numerator = NULL)
 }
 \arguments{
-\item{dim}{number of parts}
+\item{dim}{An integer indicating the number of components.
+If a dataframe or matrix is provided, the number of components is inferred from the number of columns. If a character vector specifying the names of the parts is provided the number of component is its length.}
 
 \item{denominator}{part used as denominator (default behaviour is to use last part)}
 

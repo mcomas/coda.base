@@ -7,7 +7,8 @@
 clr_basis(dim)
 }
 \arguments{
-\item{dim}{number of parts}
+\item{dim}{An integer indicating the number of components.
+If a dataframe or matrix is provided, the number of components is inferred from the number of columns. If a character vector specifying the names of the parts is provided the number of component is its length.}
 }
 \value{
 matrix

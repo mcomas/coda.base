@@ -7,7 +7,8 @@
 pairwise_basis(dim)
 }
 \arguments{
-\item{dim}{dimension to build the pairwise log-ratio generator system}
+\item{dim}{An integer indicating the number of components.
+If a dataframe or matrix is provided, the number of components is inferred from the number of columns. If a character vector specifying the names of the parts is provided the number of component is its length.}
 }
 \value{
 matrix

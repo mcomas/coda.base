@@ -1,74 +1,67 @@
-check_dim = function(dim){
-  if(!is.numeric(dim)){
-    stop("Dimension should be a number", call. = FALSE)
-  }
-  if(!dim>0){
-    stop("dimension should be positive", call. = FALSE)
-  }
-}
-
-
-#' @title Coordinates basis
+#' Isometric/Orthonormal Log-Ratio Basis for Log-Transformed Compositions
 #'
-#' @description
-#' Obtain coordinates basis
-#' @param H coordinates for which basis should be shown
-#' @return basis used to create coordinates H
-#' @export
-basis = function(H){
-  if(is.null(attr(H, 'basis'))) return(message('No basis specified'))
-  attr(H, 'basis')
-}
-
-#' Isometric/Orthonormal log-ratio basis for log-transformed compositions.
+#' Builds an isometric log-ratio (ilr) basis for a composition with \code{k+1} parts, also called orthonormal log-ratio (olr) basis.
 #'
-#' By default the basis of the clr-given by Egozcue et al., 2013
-#' Build an isometric log-ratio basis for a composition with k+1 parts
+#' The basis vectors are constructed as:
 #' \deqn{h_i = \sqrt{\frac{i}{i+1}} \log\frac{\sqrt[i]{\prod_{j=1}^i x_j}}{x_{i+1}}}{%
-#' h[i] = \sqrt(i/(i+1)) ( log(x[1] \ldots x[i])/i - log(x[i+1]) )}
-#' for \eqn{i \in 1\ldots k}.
+#' h[i] = sqrt(i/(i+1)) * ( log(x[1] * ... * x[i]) / i - log(x[i+1]) )}
+#' for \eqn{i = 1, \ldots, k}.
 #'
-#'Modifying parameter type (pivot or cdp) other ilr/olr basis can be generated
+#' Setting the \code{type} parameter to \code{"pivot"} (pivot balances) or \code{"cdp"} (codapack balances) allows generating alternative ilr/olr bases.
 #'
-#' @param dim number of components
-#' @param type if different than `pivot` (pivot balances) or `cdp` (codapack balances) default balances are returned, which computes a triangular Helmert matrix as defined by Egozcue et al., 2013.
-#' @return matrix
+#' @param dim An integer indicating the number of components.
+#'            If a dataframe or matrix is provided, the number of components is inferred from the number of columns. If a character vector specifying the names of the parts is provided the number of component is its length.
+#' @param type Character string specifying the type of basis to generate.
+#'             Options are \code{"pivot"}, \code{"cdp"}. Any other option will return the Helmert basis defined by Egozcue et al., 2013..
+#' @return A matrix representing the orthonormal basis.
 #' @references
-#' Egozcue, J.J., Pawlowsky-Glahn, V., Mateu-Figueras, G. and Barceló-Vidal C. (2003).
+#' Egozcue, J.J., Pawlowsky-Glahn, V., Mateu-Figueras, G., & Barceló-Vidal, C. (2003).
 #' \emph{Isometric logratio transformations for compositional data analysis}.
-#' Mathematical Geology, \strong{35}(3) 279-300
+#' Mathematical Geology, \strong{35}(3), 279–300.
 #' @examples
 #' ilr_basis(5)
+#' ilr_basis(alimentation[,1:9])
 #' @export
 ilr_basis = function(dim, type = 'default'){
-  check_dim(dim)
+  parts = colnames(dim)
+  if(is.character(dim)){
+    parts = dim
+    dim = length(dim)
+  }
+  D = check_dim(dim)
   if(type == 'cdp'){
-    B = cdp_basis_(dim)
+    B = cdp_basis_(D)
   }else{
-    B = ilr_basis_default(dim)
+    B = ilr_basis_default(D)
     if(type == 'pivot'){
       B = (-B)[,ncol(B):1, drop = FALSE][nrow(B):1,]
     }
   }
-  colnames(B) = sprintf("ilr%d", 1:ncol(B))
   rownames(B) = sprintf("c%d", 1:nrow(B))
+  if(!is.null(parts)) rownames(B) = parts
+  colnames(B) = sprintf("ilr%d", 1:ncol(B))
   B
 }
 
 #' @rdname ilr_basis
 #' @export
 olr_basis = function(dim, type = 'default'){
-  check_dim(dim)
-  if(type == 'cdp'){
-    B = cdp_basis_(dim)
-  }else{
-    B = ilr_basis_default(dim)
-    if(type == 'pivot'){
-      B = (-B)[,ncol(B):1, drop = FALSE][nrow(B):1,]
-    }
-  }
+  B = ilr_basis(dim, type)
   colnames(B) = sprintf("olr%d", 1:ncol(B))
-  rownames(B) = sprintf("c%d", 1:nrow(B))
+  B
+}
+
+cdp_basis = function(dim){
+  parts = colnames(dim)
+  if(is.character(dim)){
+    parts = dim
+    dim = length(dim)
+  }
+  D = check_dim(dim)
+  B = cdp_basis_(D)
+  rownames(B) = paste0("c", 1:D)
+  if(!is.null(parts)) rownames(B) = parts
+  colnames(B) = paste0("ilr", 1:ncol(B))
   B
 }
 
@@ -77,7 +70,8 @@ olr_basis = function(dim, type = 'default'){
 #' Compute the transformation matrix to express a composition using
 #' the linearly dependant centered log-ratio coordinates.
 #'
-#' @param dim number of parts
+#' @param dim An integer indicating the number of components.
+#'            If a dataframe or matrix is provided, the number of components is inferred from the number of columns. If a character vector specifying the names of the parts is provided the number of component is its length.
 #' @return matrix
 #' @references
 #' Aitchison, J. (1986)
@@ -91,10 +85,16 @@ olr_basis = function(dim, type = 'default'){
 #' sum(clr_coordinates) < 1e-15
 #' @export
 clr_basis = function(dim){
-  check_dim(dim)
-  B = clr_basis_default(dim)
+  parts = colnames(dim)
+  if(is.character(dim)){
+    parts = dim
+    dim = length(dim)
+  }
+  D = check_dim(dim)
+  B = clr_basis_default(D)
   colnames(B) = sprintf("clr%d", 1:ncol(B))
   rownames(B) = sprintf("c%d", 1:nrow(B))
+  if(!is.null(parts)) rownames(B) = parts
   B
 }
 
@@ -104,7 +104,8 @@ clr_basis = function(dim){
 #' Compute the transformation matrix to express a composition using the oblique additive log-ratio
 #' coordinates.
 #'
-#' @param dim number of parts
+#' @param dim An integer indicating the number of components.
+#'            If a dataframe or matrix is provided, the number of components is inferred from the number of columns. If a character vector specifying the names of the parts is provided the number of component is its length.
 #' @param denominator part used as denominator (default behaviour is to use last part)
 #' @param numerator parts to be used as numerator. By default all except the denominator parts are chosen following original order.
 #' @return matrix
@@ -120,17 +121,25 @@ clr_basis = function(dim){
 #' \emph{The Statistical Analysis of Compositional Data}.
 #' Monographs on Statistics and Applied Probability. Chapman & Hall Ltd., London (UK). 416p.
 #' @export
-alr_basis = function(dim, denominator = dim, numerator = which(denominator != 1:dim)){
-  check_dim(dim)
-  res = alr_basis_default(dim)
+alr_basis = function(dim, denominator = NULL, numerator = NULL){
+  parts = colnames(dim)
+  if(is.character(dim)){
+    parts = dim
+    dim = length(dim)
+  }
+  D = check_dim(dim)
+  if(is.null(denominator)) denominator = D
+  if(is.null(numerator)) numerator = which(1:D != denominator)
+  res = alr_basis_default(D)
   res = cbind(res, 0)
-  if(dim != denominator){
-    res[c(denominator, dim),] = res[c(dim, denominator),, drop = FALSE]
-    res[,c(denominator, dim)] = res[,c(dim, denominator), drop = FALSE]
+  if(D != denominator){
+    res[c(denominator, D),] = res[c(D, denominator),, drop = FALSE]
+    res[,c(denominator, D)] = res[,c(D, denominator), drop = FALSE]
   }
   B = res[,numerator, drop = FALSE]
   colnames(B) = sprintf("alr%d", 1:ncol(B))
   rownames(B) = sprintf("c%d", 1:nrow(B))
+  if(!is.null(parts)) rownames(B) = parts
   B
 }
 
@@ -155,13 +164,15 @@ pc_basis = function(X){
   as.matrix(B)
 }
 
-#' Isometric log-ratio basis based on canonical correlations
+#' Isometric Log-Ratio Basis Based on Canonical Correlations
 #'
+#' Constructs an isometric log-ratio (ilr) basis for a compositional dataset,
+#' optimized with respect to canonical correlations with an explanatory dataset.
 #'
-#' @param Y compositional dataset
-#' @param X explanatory dataset
-#' @return matrix
-#'
+#' @param Y A compositional dataset (matrix or data frame).
+#' @param X An explanatory dataset (matrix or data frame).
+#' @return A matrix representing the isometric log-ratio basis.
+#' @export
 cc_basis = function(Y, X){
   Y = as.matrix(Y)
   X = cbind(X)
@@ -177,33 +188,7 @@ cc_basis = function(Y, X){
   B
 }
 
-#' Balance generated from the first canonical correlation component
-#'
-#'
-#' @param Y compositional dataset
-#' @param X explanatory dataset
-#' @return matrix
-#'
-#' @export
-cbalance_approx = function(Y,X){
-  Y = as.matrix(Y)
-  X = cbind(X)
-  B = ilr_basis(ncol(Y))
-  cc1 = B %*% stats::cancor(coordinates(Y), X)$xcoef[,1,drop=F]
-  ord = order(abs(cc1))
-  cb1_ = sign(cc1)
-  cb1 = cb1_
-  cor1 = abs(suppressWarnings(stats::cancor(coordinates(Y,sbp_basis(cb1_)), X)$cor))
-  for(i in 1:(ncol(Y)-2)){
-    cb1_[ord[i]] = 0
-    cor1_ = abs(suppressWarnings(stats::cancor(coordinates(Y,sbp_basis(cb1_)), X)$cor))
-    if(cor1_ > cor1){
-      cb1 = cb1_
-      cor1 = cor1_
-    }
-  }
-  suppressWarnings(sbp_basis(cb1))
-}
+
 
 #' Isometric log-ratio basis based on Balances
 #'
@@ -350,7 +335,6 @@ sbp_basis = function(sbp, data = NULL, fill = FALSE, silent=FALSE){
 #'
 #' @param X compositional dataset
 #' @param method method to be used with Principal Balances. Methods available are: 'exact', 'constrained' or 'cluster'.
-#' @param constrained.complete_up When searching up, should the algorithm try to find possible siblings for the current balance (TRUE) or build a parent directly forcing current balance to be part of the next balance (default: FALSE). While the first is more exhaustive and given better results the second is faster and can be used with highe dimensional datasets.
 #' @param cluster.method Method to be used with the hclust function (default: `ward.D2`) or any other method available in  hclust function
 #' @param ordering should the principal balances found be returned ordered? (first column, first
 #' principal balance and so on)
@@ -380,7 +364,7 @@ sbp_basis = function(sbp, data = NULL, fill = FALSE, silent=FALSE){
 #'         names = paste0('Comp.', 1:4), args.legend = list(cex = 0.8), ylab = 'Variance')
 #'
 #' @export
-pb_basis = function(X, method, constrained.complete_up = FALSE, cluster.method = 'ward.D2',
+pb_basis = function(X, method, cluster.method = 'ward.D2',
                     ordering = TRUE, ...){
   X = as.matrix(X)
   if(!(all(X > 0))){
@@ -393,12 +377,7 @@ pb_basis = function(X, method, constrained.complete_up = FALSE, cluster.method =
     }
     if(method == 'constrained'){
       M = 'CS'
-      # B = t(fBalChip(X)$bal)
       B = constrained_pb(as.matrix(X))
-    }
-    if(method == 'constrained2'){
-      M = 'CS'
-      B = find_PB_using_pc(X)
     }
     # if(method == 'lsearch'){
     #   if(rep == 0){
@@ -433,7 +412,9 @@ pb_basis = function(X, method, constrained.complete_up = FALSE, cluster.method =
     stop(sprintf("Method %s does not exist", method))
   }
   if(ordering){
-    B = B[,order(apply(coordinates(X, B, basis_return = FALSE), 2, stats::var), decreasing = TRUE), drop = FALSE]
+    B = B[,order(apply(coordinates(X, B), 2, stats::var),
+                 decreasing = TRUE),
+          drop = FALSE]
   }
   parts = colnames(X)
   if(is.null(parts)){
@@ -444,20 +425,35 @@ pb_basis = function(X, method, constrained.complete_up = FALSE, cluster.method =
   B
 }
 
-#' Isometric log-ratio basis based on Balances.
+
+
+#' Pairwise log-ratio generator system
 #'
-#' The function return default balances used in CoDaPack software.
+#' The function returns all combinations of pairs of log-ratios.
 #'
-#' @param dim dimension to build the ILR basis based on balanced balances
+#' @param dim An integer indicating the number of components.
+#'            If a dataframe or matrix is provided, the number of components is inferred from the number of columns. If a character vector specifying the names of the parts is provided the number of component is its length.
 #' @return matrix
 #' @export
-cdp_basis = function(dim){
-  check_dim(dim)
-  B = cdp_basis_(dim)
-  rownames(B) = paste0("c", 1:dim)
-  colnames(B) = paste0("ilr", 1:ncol(B))
+pairwise_basis = function(dim){
+  parts = colnames(dim)
+  if(is.character(dim)){
+    parts = dim
+    dim = length(dim)
+  }
+  D = check_dim(dim)
+  I = utils::combn(D,2)
+  B = apply(I, 2, function(i){
+    b = rep(0, D)
+    b[i] = c(1,-1)
+    b
+  })
+  colnames(B) = paste0('pw', apply(I, 2, paste, collapse = '_'))
+  rownames(B) = paste0("c", 1:D)
+  if(!is.null(parts)) rownames(B) = parts
   B
 }
+
 
 cdp_basis_ = function(dim, wR = 1:ceiling(dim/2), wL = ceiling(dim/2) + 1:floor(dim/2)){
   R = length(wR)
@@ -482,22 +478,15 @@ cdp_basis_ = function(dim, wR = 1:ceiling(dim/2), wL = ceiling(dim/2) + 1:floor(
         Recall(dim, wR = wL[1:ceiling(L/2)], wL = wL[ceiling(L/2) + 1:floor(L/2)]))
 }
 
-#' Pairwise log-ratio generator system
-#'
-#' The function returns all combinations of pairs of log-ratios.
-#'
-#' @param dim dimension to build the pairwise log-ratio generator system
-#' @return matrix
-#' @export
-pairwise_basis = function(dim){
-  check_dim(dim)
-  I = utils::combn(dim,2)
-  B = apply(I, 2, function(i){
-    b = rep(0, dim)
-    b[i] = c(1,-1)
-    b
-  })
-  colnames(B) = paste0('pw', apply(I, 2, paste, collapse = '_'))
-  rownames(B) = paste0("c", 1:dim)
-  B
+check_dim = function(dim){
+  if(!is.null(ncol(dim))){
+    dim = ncol(dim)
+  }
+  if(!is.numeric(dim)){
+    stop("Dimension should be a number", call. = FALSE)
+  }
+  if(!dim>1){
+    stop("Dimension should be at least 2", call. = FALSE)
+  }
+  dim
 }

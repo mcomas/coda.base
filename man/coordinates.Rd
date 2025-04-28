@@ -9,7 +9,7 @@
 \alias{olr_c}
 \title{Get coordinates from compositions w.r.t. an specific basis}
 \usage{
-coordinates(X, basis = "ilr", basis_return = TRUE)
+coordinates(X, basis = "ilr")
 
 coord(..., basis = "ilr")
 
@@ -28,8 +28,6 @@ olr_c(X)
 Accepted values for strings are: 'ilr' (default), 'clr', 'alr', 'pw', 'pc', 'pb' and 'cdp'. If \code{basis} is a matrix, it is expected
 to have log-ratio basis given in columns.}
 
-\item{basis_return}{Should the basis be returned as attribute? (default: \code{TRUE})}
-
 \item{...}{components of the compositional data}
 }
 \value{
@@ -45,18 +43,10 @@ log-contrast: 'alr' 'clr', 'ilr', 'pw', 'pc', 'pb' and 'cdp', for the additive l
 pairwise log-ratio, clr principal components, clr principal balances or default's CoDaPack balances respectively.
 }
 \examples{
-coordinates(c(1,2,3,4,5))
-h = coordinates(c(1,2,3,4,5))
-basis(h)
-# basis is shown if 'coda.base.basis' option is set to TRUE
-options('coda.base.basis' = TRUE)
-coordinates(c(1,2,3,4,5))
-# Default transformation can improve performance.
-N = 100
-K = 1000
-X = matrix(exp(rnorm(N*K)), nrow=N, ncol=K)
-system.time(coordinates(X, alr_basis(K)))
-system.time(coordinates(X, 'alr'))
+# Default ilr given by ilr_basis(5) is given
+coordinates(1:5)
+B = ilr_basis(5)
+coordinates(1:5, B)
 }
 \seealso{
 See functions \code{\link{ilr_basis}}, \code{\link{alr_basis}},

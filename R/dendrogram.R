@@ -1,3 +1,27 @@
+#' Plot a balance
+#'
+#' @param B Balance to plot
+#' @param data (Optional) Data used to calculate the statistics associated to a balance
+#' @param main Plot title
+#' @param ... further arguments passed to plot
+#' @return Balance plot
+#'
+#' @export
+plot_balance = function(B, data = NULL, main = 'Balance dendrogram', ...){
+  if(is.null(data)){
+    hclust_B = hclust_dendrogram(B)
+    dendo = as.dendrogram(hclust_B)
+    l_balances_B = apply(B != 0, 2, function(x) rownames(B)[x != 0])
+    plot_dendrogram(dendo, main = main,
+                    l_balances = l_balances_B,
+                    type = 'rectangle', ylab = "", axes = FALSE)
+  }else{
+
+  }
+
+}
+
+
 hclust_dendrogram = function(B){
   MERGE = matrix(0, nrow = ncol(B), ncol = 2)
   ORD = order(colSums(B != 0))
@@ -44,29 +68,3 @@ hclust_dendrogram = function(B){
     list(merge = MERGE, height = HEIGHT, order = ORDER, labels = rownames(B)), class = 'hclust'
   )
 }
-
-#' Plot a balance
-#'
-#' @param B Balance to plot
-#' @param data (Optional) Data used to calculate the statistics associated to a balance
-#' @param main Plot title
-#' @param ... further arguments passed to plot
-#' @return Balance plot
-#'
-#' @export
-plot_balance = function(B, data = NULL, main = 'Balance dendrogram', ...){
-  if(is.null(data)){
-    hclust_B = hclust_dendrogram(B)
-    dendo = as.dendrogram(hclust_B)
-    l_balances_B = apply(B != 0, 2, function(x) rownames(B)[x != 0])
-    plot_dendrogram(dendo, main = main,
-                    l_balances = l_balances_B,
-                    type = 'rectangle', ylab = "", axes = FALSE)
-  }else{
-
-  }
-
-}
-
-
-#######

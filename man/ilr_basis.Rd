@@ -3,35 +3,39 @@
 \name{ilr_basis}
 \alias{ilr_basis}
 \alias{olr_basis}
-\title{Isometric/Orthonormal log-ratio basis for log-transformed compositions.}
+\title{Isometric/Orthonormal Log-Ratio Basis for Log-Transformed Compositions}
 \usage{
 ilr_basis(dim, type = "default")
 
 olr_basis(dim, type = "default")
 }
 \arguments{
-\item{dim}{number of components}
+\item{dim}{An integer indicating the number of components.
+If a dataframe or matrix is provided, the number of components is inferred from the number of columns. If a character vector specifying the names of the parts is provided the number of component is its length.}
 
-\item{type}{if different than `pivot` (pivot balances) or `cdp` (codapack balances) default balances are returned, which computes a triangular Helmert matrix as defined by Egozcue et al., 2013.}
+\item{type}{Character string specifying the type of basis to generate.
+Options are \code{"pivot"}, \code{"cdp"}. Any other option will return the Helmert basis defined by Egozcue et al., 2013..}
 }
 \value{
-matrix
+A matrix representing the orthonormal basis.
 }
 \description{
-By default the basis of the clr-given by Egozcue et al., 2013
-Build an isometric log-ratio basis for a composition with k+1 parts
-\deqn{h_i = \sqrt{\frac{i}{i+1}} \log\frac{\sqrt[i]{\prod_{j=1}^i x_j}}{x_{i+1}}}{%
-h[i] = \sqrt(i/(i+1)) ( log(x[1] \ldots x[i])/i - log(x[i+1]) )}
-for \eqn{i \in 1\ldots k}.
+Builds an isometric log-ratio (ilr) basis for a composition with \code{k+1} parts, also called orthonormal log-ratio (olr) basis.
 }
 \details{
-Modifying parameter type (pivot or cdp) other ilr/olr basis can be generated
+The basis vectors are constructed as:
+\deqn{h_i = \sqrt{\frac{i}{i+1}} \log\frac{\sqrt[i]{\prod_{j=1}^i x_j}}{x_{i+1}}}{%
+h[i] = sqrt(i/(i+1)) * ( log(x[1] * ... * x[i]) / i - log(x[i+1]) )}
+for \eqn{i = 1, \ldots, k}.
+
+Setting the \code{type} parameter to \code{"pivot"} (pivot balances) or \code{"cdp"} (codapack balances) allows generating alternative ilr/olr bases.
 }
 \examples{
 ilr_basis(5)
+ilr_basis(alimentation[,1:9])
 }
 \references{
-Egozcue, J.J., Pawlowsky-Glahn, V., Mateu-Figueras, G. and Barceló-Vidal C. (2003).
+Egozcue, J.J., Pawlowsky-Glahn, V., Mateu-Figueras, G., & Barceló-Vidal, C. (2003).
 \emph{Isometric logratio transformations for compositional data analysis}.
-Mathematical Geology, \strong{35}(3) 279-300
+Mathematical Geology, \strong{35}(3), 279–300.
 }
