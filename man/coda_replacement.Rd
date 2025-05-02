@@ -23,6 +23,8 @@ coda_replacement(
 \item{eps}{A small positive value controlling the convergence criterion for the EM algorithm (default is \code{1e-4}).}
 
 \item{parameters}{Logical. If \code{TRUE}, returns additional output including estimated multivariate normal parameters (default is \code{FALSE}).}
+
+\item{debug}{Logical. Show the log-likelihood in every iteration.}
 }
 \value{
 If \code{parameters = FALSE}, returns a numeric matrix with imputed values.
@@ -33,8 +35,7 @@ If \code{parameters = TRUE}, returns a list with two components:
 }
 }
 \description{
-Performs imputation (replacement) of missing values and/or values below the detection limit (BDL) in compositional datasets,
-using a parametric approach based on the multivariate normal distribution.
+Performs imputation (replacement) of missing values and/or values below the detection limit (BDL) in compositional datasets using the EM-algorithm assuming normality on the Simplex.
 This function is designed to prepare compositional data for subsequent log-ratio transformations.
 }
 \details{
@@ -47,9 +48,9 @@ This function is designed to prepare compositional data for subsequent log-ratio
 set.seed(123)
 X <- abs(matrix(rnorm(100), ncol = 5))
 X[sample(length(X), 10)] <- 0  # Introduce some zeros
-
+X[sample(length(X), 10)] <- NA  # Introduce some NAs
 # Apply replacement
-X_imp <- coda_replacement(X)
-summary(X_imp)
+summary(X/rowSums(X, na.rm=TRUE))
+summary(coda_replacement(X))
 
 }
