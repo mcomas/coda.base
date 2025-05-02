@@ -1,3 +1,8 @@
+colnames_names = function(x){
+  if(is.vector(x)) return(names(x))
+  colnames(x)
+}
+
 #' Isometric/Orthonormal Log-Ratio Basis for Log-Transformed Compositions
 #'
 #' Builds an isometric log-ratio (ilr) basis for a composition with \code{k+1} parts, also called orthonormal log-ratio (olr) basis.
@@ -23,7 +28,7 @@
 #' ilr_basis(alimentation[,1:9])
 #' @export
 ilr_basis = function(dim, type = 'default'){
-  parts = colnames(dim)
+  parts = colnames_names(dim)
   if(is.character(dim)){
     parts = dim
     dim = length(dim)
@@ -52,7 +57,7 @@ olr_basis = function(dim, type = 'default'){
 }
 
 cdp_basis = function(dim){
-  parts = colnames(dim)
+  parts = colnames_names(dim)
   if(is.character(dim)){
     parts = dim
     dim = length(dim)
@@ -85,7 +90,7 @@ cdp_basis = function(dim){
 #' sum(clr_coordinates) < 1e-15
 #' @export
 clr_basis = function(dim){
-  parts = colnames(dim)
+  parts = colnames_names(dim)
   if(is.character(dim)){
     parts = dim
     dim = length(dim)
@@ -122,7 +127,7 @@ clr_basis = function(dim){
 #' Monographs on Statistics and Applied Probability. Chapman & Hall Ltd., London (UK). 416p.
 #' @export
 alr_basis = function(dim, denominator = NULL, numerator = NULL){
-  parts = colnames(dim)
+  parts = colnames_names(dim)
   if(is.character(dim)){
     parts = dim
     dim = length(dim)
@@ -155,7 +160,7 @@ pc_basis = function(X){
   B = ilr_basis(ncol(X))
   B = B %*% svd(scale(log(as.matrix(X)) %*% B, scale=FALSE))$v
 
-  parts = colnames(X)
+  parts = colnames_names(X)
   if(is.null(parts)){
     parts = paste0('c', 1:nrow(B))
   }
@@ -436,7 +441,7 @@ pb_basis = function(X, method, cluster.method = 'ward.D2',
 #' @return matrix
 #' @export
 pairwise_basis = function(dim){
-  parts = colnames(dim)
+  parts = colnames_names(dim)
   if(is.character(dim)){
     parts = dim
     dim = length(dim)
@@ -481,6 +486,9 @@ cdp_basis_ = function(dim, wR = 1:ceiling(dim/2), wL = ceiling(dim/2) + 1:floor(
 check_dim = function(dim){
   if(!is.null(ncol(dim))){
     dim = ncol(dim)
+  }
+  if(is.vector(dim) & length(dim) > 1){
+    dim = length(dim)
   }
   if(!is.numeric(dim)){
     stop("Dimension should be a number", call. = FALSE)
