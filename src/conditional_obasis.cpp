@@ -5,7 +5,6 @@
 
 using namespace Rcpp;
 
-//' @export
  // [[Rcpp::export]]
 arma::cube c_conditional_obasis(arma::mat& C){
 

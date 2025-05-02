@@ -11,7 +11,7 @@ Description: A minimum set of functions to perform compositional data analysis
 URL: https://mcomas.net/coda.base/,
      https://github.com/mcomas/coda.base
 Depends: R (>= 3.5)
-Imports: Rcpp (>= 0.12.12), stats, Matrix
+Imports: Rcpp (>= 0.12.12), stats
 LinkingTo: Rcpp, RcppArmadillo
 License: GPL
 Encoding: UTF-8

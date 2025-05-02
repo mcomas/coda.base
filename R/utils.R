@@ -187,3 +187,6 @@ fill_sbp = function(iRES){
 #' cdp_partition(4)
 #' @export
 cdp_partition = function(ncomp) unname(t(fill_partition(matrix(0, nrow = 1, ncol = ncomp), 0, 1, ncomp)))
+
+#' @export
+conditional_obasis = c_conditional_obasis

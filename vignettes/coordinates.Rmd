@@ -41,22 +41,16 @@ H1.alr = coordinates(X, basis = 'alr')
 head(H1.alr)
 ```
 
-It defines an alr-coordinates were the last part is used in the denominator. We can obtain the basis used to build the coordinates with function `basis()`:
+It defines an alr-coordinates were the last part is used in the denominator. The basis used to build `H1.alr` can be obtained with the function `alr_bases()`:
 
 ```{r}
-basis(H1.alr)
-```
-
-The basis can be reproduced using the function `alr_basis`:
-
-```{r}
-alr_basis(dim = 4)
+alr_basis(X)
 ```
 
 In fact, function `alr_basis` allows to define any type of alr-like coordinate by defining the numerator and the denominator:
 
 ```{r}
-B.alr = alr_basis(dim = 4, numerator = c(4,2,3), denominator = 1)
+B.alr = alr_basis(X, numerator = c(4,2,3), denominator = 1)
 B.alr
 ```
 
@@ -64,7 +58,7 @@ The log-contrast matrix can be used as `basis` parameter in `coordinates()` func
 
 ```{r}
 H2.alr = coordinates(X, basis = B.alr)
-basis(H2.alr)
+head(H2.alr)
 ```
 
 ##  The centered logratio (clr) coordinates

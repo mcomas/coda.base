@@ -57,43 +57,43 @@ v_truncnorm = function(b, m, s){
   r = exp(phi_beta - Phi_beta)
   s * s * (1.0 - r * ( beta - r))
 }
-zero_na_conditional_obasis = function(tX){
-  D = nrow(tX)
-
-  tX_na = is.na(tX)
-  tX_zero = !tX_na & tX == 0
-  n_na = colSums(tX_na)
-  n_zero = colSums(tX_zero)
-  n_positive = D - n_na - n_zero
-  l_B = list(NULL)
-  for(nparts in 2:D){
-    l_B[[nparts]] = t(ilr_basis(nparts))
-  }
-  B = array(0, dim = c(D-1, D, ncol(tX)))
-  for(i in 1:ncol(tX)){
-    I = c(which(tX_na[,i]), which(tX_zero[,i]), which(!tX_na[,i] & !tX_zero[,i]))
-    if(n_na[i] > 0){
-      if(n_na[i] > 1){
-        B[1:(n_na[i]-1), I[1:n_na[i]],i] = l_B[[n_na[i]]]
-      }
-      w = sqrt((n_na[i] * n_positive[i]) / (n_na[i] + n_positive[i]))
-      B[n_na[i], I[1:n_na[i]], i] = 1/n_na[i] * w
-      B[n_na[i], I[(n_na[i]+n_zero[i]+1):D], i] = -1/n_positive[i] * w
-    }
-    if(n_zero[i] > 0){
-      if(n_zero[i] > 1){
-        B[n_na[i] + 1:(n_zero[i]-1), I[(n_na[i] + 1):(n_na[i]+n_zero[i])], i] = l_B[[n_zero[i]]]
-      }
-      w = sqrt((n_zero[i] * n_positive[i]) / (n_zero[i] + n_positive[i]))
-      B[n_na[i]+n_zero[i], I[n_na[i] + 1:n_zero[i]], i] = 1/n_zero[i] * w
-      B[n_na[i]+n_zero[i], I[(n_na[i]+n_zero[i]+1):D], i] = -1/n_positive[i] * w
-    }
-    if(n_positive[i] > 1){
-      B[n_na[i]+n_zero[i]+1:(n_positive[i]-1), I[(n_na[i]+n_zero[i]+1):D], i] = l_B[[n_positive[i]]]
-    }
-  }
-  B
-}
+# zero_na_conditional_obasis = function(tX){
+#   D = nrow(tX)
+#
+#   tX_na = is.na(tX)
+#   tX_zero = !tX_na & tX == 0
+#   n_na = colSums(tX_na)
+#   n_zero = colSums(tX_zero)
+#   n_positive = D - n_na - n_zero
+#   l_B = list(NULL)
+#   for(nparts in 2:D){
+#     l_B[[nparts]] = t(ilr_basis(nparts))
+#   }
+#   B = array(0, dim = c(D-1, D, ncol(tX)))
+#   for(i in 1:ncol(tX)){
+#     I = c(which(tX_na[,i]), which(tX_zero[,i]), which(!tX_na[,i] & !tX_zero[,i]))
+#     if(n_na[i] > 0){
+#       if(n_na[i] > 1){
+#         B[1:(n_na[i]-1), I[1:n_na[i]],i] = l_B[[n_na[i]]]
+#       }
+#       w = sqrt((n_na[i] * n_positive[i]) / (n_na[i] + n_positive[i]))
+#       B[n_na[i], I[1:n_na[i]], i] = 1/n_na[i] * w
+#       B[n_na[i], I[(n_na[i]+n_zero[i]+1):D], i] = -1/n_positive[i] * w
+#     }
+#     if(n_zero[i] > 0){
+#       if(n_zero[i] > 1){
+#         B[n_na[i] + 1:(n_zero[i]-1), I[(n_na[i] + 1):(n_na[i]+n_zero[i])], i] = l_B[[n_zero[i]]]
+#       }
+#       w = sqrt((n_zero[i] * n_positive[i]) / (n_zero[i] + n_positive[i]))
+#       B[n_na[i]+n_zero[i], I[n_na[i] + 1:n_zero[i]], i] = 1/n_zero[i] * w
+#       B[n_na[i]+n_zero[i], I[(n_na[i]+n_zero[i]+1):D], i] = -1/n_positive[i] * w
+#     }
+#     if(n_positive[i] > 1){
+#       B[n_na[i]+n_zero[i]+1:(n_positive[i]-1), I[(n_na[i]+n_zero[i]+1):D], i] = l_B[[n_positive[i]]]
+#     }
+#   }
+#   B
+# }
 
 
 coda_zero_replace = function(X, DL, dl_prop = 0.65, eps = 1e-4, debug = FALSE, parameters = FALSE){

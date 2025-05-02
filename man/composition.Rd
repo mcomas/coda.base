@@ -5,9 +5,9 @@
 \alias{comp}
 \title{Get composition from coordinates w.r.t.  an specific basis}
 \usage{
-composition(H, basis = NULL)
+composition(H, basis = "ilr")
 
-comp(H, basis = NULL)
+comp(H, basis = "ilr")
 }
 \arguments{
 \item{H}{coordinates of a composition. Either a matrix, a data.frame or a vector}

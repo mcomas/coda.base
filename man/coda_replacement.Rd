@@ -9,8 +9,8 @@ coda_replacement(
   DL = NULL,
   dl_prop = 0.65,
   eps = 1e-04,
-  debug = FALSE,
-  parameters = FALSE
+  parameters = FALSE,
+  debug = FALSE
 )
 }
 \arguments{
@@ -21,8 +21,6 @@ coda_replacement(
 \item{dl_prop}{A numeric value between 0 and 1, used for initialization in the EM algorithm (default is 0.65).}
 
 \item{eps}{A small positive value controlling the convergence criterion for the EM algorithm (default is \code{1e-4}).}
-
-\item{debug}{Logical. If \code{TRUE}, displays intermediate steps and diagnostic messages (default is \code{FALSE}).}
 
 \item{parameters}{Logical. If \code{TRUE}, returns additional output including estimated multivariate normal parameters (default is \code{FALSE}).}
 }
@@ -54,7 +52,4 @@ X[sample(length(X), 10)] <- 0  # Introduce some zeros
 X_imp <- coda_replacement(X)
 summary(X_imp)
 
-}
-\seealso{
-\code{\link{cenLR}}, \code{\link{multRepl}} for alternative imputation methods.
 }
