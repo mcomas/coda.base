@@ -39,9 +39,10 @@ Performs imputation (replacement) of missing values and/or values below the dete
 This function is designed to prepare compositional data for subsequent log-ratio transformations.
 }
 \details{
-- Missing values are imputed based on a multivariate normal model.
+- Missing values are imputed based on a multivariate normal model on the simplex.
 - Zeros are treated as censored values and replaced accordingly.
 - The EM algorithm iteratively estimates the missing parts and model parameters.
+- To initialize the EM algorithm, zero values (considered below the detection limit) are replaced with a small positive value. Specifically, each zero is replaced by \code{dl_prop} times the detection limit of that part (column). This restrictions is imposed in the geometric mean of the parts with zeros against the non-missing positive values, helping to preserve the compositional structure in the simplex.
 }
 \examples{
 # Simulate compositional data with zeros
