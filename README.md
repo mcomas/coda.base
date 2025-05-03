@@ -1,10 +1,10 @@
 # coda.base
 
-# Compositional Bases for Log-Ratio Transformations
+# Log-Ratio Coordinates for Compositional Data
 
-This R package provides tools for working with compositional data using log-ratio methodology, following the foundational work of Aitchison and further developments by Egozcue and collaborators.
+This R package provides tools for analyzing compositional data using log-ratio coordinates. It enables users to define coordinate systems tailored to compositional datasets and to generate coordinates based on these systems.
 
-The package is focused on the construction and use of **orthonormal and non-orthonormal bases** for the representation of compositions in real coordinates, enabling advanced statistical modeling and interpretation.
+The package focuses on the construction and application of orthonormal and non-orthonormal coordinate systems for representing compositions in real space, facilitating advanced statistical modeling and interpretation.
 
 ## Key Functions
 

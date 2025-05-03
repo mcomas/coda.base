@@ -96,7 +96,7 @@ composition = function(H, basis = 'ilr'){
       }
     }
     P = P / rowSums(P)
-    colnames(P) = rownames(B)
+    colnames(P) = rownames(basis)
   }else{
     if(is.atomic(H) & !is.list(H)){ # vector
       P = Recall(matrix(H, nrow=1), basis)[1,]
