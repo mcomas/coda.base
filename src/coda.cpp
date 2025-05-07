@@ -1,4 +1,5 @@
 #define ARMA_NO_DEBUG
+#define ARMA_64BIT_WORD
 
 // [[Rcpp::depends(RcppArmadillo)]]
 

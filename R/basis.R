@@ -448,11 +448,19 @@ pairwise_basis = function(dim){
   }
   D = check_dim(dim)
   I = utils::combn(D,2)
-  B = apply(I, 2, function(i){
-    b = rep(0, D)
-    b[i] = c(1,-1)
-    b
-  })
+  if(D > 100){
+    B = Matrix::sparseMatrix(i = c(I[1,],
+                                   I[2,]),
+                             j = c(1:ncol(I),
+                                   1:ncol(I)),
+                             x = rep(c(1,-1), each = ncol(I)))
+  }else{
+    B = apply(I, 2, function(i){
+      b = rep(0, D)
+      b[i] = c(1,-1)
+      b
+    })
+  }
   colnames(B) = paste0('pw', apply(I, 2, paste, collapse = '_'))
   rownames(B) = paste0("c", 1:D)
   if(!is.null(parts)) rownames(B) = parts

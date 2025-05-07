@@ -340,3 +340,27 @@
 #'  coded as large “L” or small “S” in the hotel size categorical variable.
 #' @name weibo_hotels
 "weibo_hotels"
+
+#' @title Chemical Composition of Volcanic Rocks from Kilauea Iki
+#' @description This dataset contains the chemical composition of volcanic rocks sampled from the lava lake at Kilauea Iki (Hawaii). The data represents major oxide concentrations in fractional form.
+#'
+#' @format A data frame with 17 observations and 11 variables:
+#' \describe{
+#'   \item{SiO2}{Silicon dioxide (fraction)}
+#'   \item{TiO2}{Titanium dioxide (fraction)}
+#'   \item{Al2O3}{Aluminium oxide (fraction)}
+#'   \item{Fe2O3}{Ferric oxide (fraction)}
+#'   \item{FeO}{Ferrous oxide (fraction)}
+#'   \item{MnO}{Manganese oxide (fraction)}
+#'   \item{MgO}{Magnesium oxide (fraction)}
+#'   \item{CaO}{Calcium oxide (fraction)}
+#'   \item{Na2O}{Sodium oxide (fraction)}
+#'   \item{K2O}{Potassium oxide (fraction)}
+#'   \item{P2O5}{Phosphorus pentoxide (fraction)}
+#' }
+#'
+#' @details The variability in the oxide concentrations is attributed to magnesic olivine fractionation, starting from a single magmatic mass as suggested by Richter & Moore (1966).
+#'
+#' @source Richter, D.H., & Moore, J.G. (1966). Petrology of Kilauea Iki lava lake, Hawaii. *Geological Survey Professional Paper* 537-B.
+#' @name kilauea_iki
+"kilauea_iki"
