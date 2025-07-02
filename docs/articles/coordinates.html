@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">coda.base</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.3</span>
       </span>
     </div>
 
@@ -86,7 +86,7 @@
                         <h4 data-toc-skip class="author">Marc
 Comas-Cufí</h4>
             
-            <h4 data-toc-skip class="date">2025-05-07</h4>
+            <h4 data-toc-skip class="date">2025-07-02</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/mcomas/coda.base/blob/HEAD/vignettes/coordinates.Rmd" class="external-link"><code>vignettes/coordinates.Rmd</code></a></small>
       <div class="hidden name"><code>coordinates.Rmd</code></div>
@@ -371,11 +371,11 @@ only some partitions</p>
 <code class="sourceCode R"><span><span class="va">B</span> <span class="op">=</span> <span class="fu"><a href="../reference/sbp_basis.html">sbp_basis</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>b1 <span class="op">=</span> <span class="va">erc</span><span class="op">+</span><span class="va">jxcat</span><span class="op">~</span><span class="va">psc</span><span class="op">)</span>, </span>
 <span>              data<span class="op">=</span><span class="va">X</span>, fill <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/sign.html" class="external-link">sign</a></span><span class="op">(</span><span class="va">B</span><span class="op">)</span></span>
-<span><span class="co">#&gt;    [,1] [,2] [,3]</span></span>
-<span><span class="co">#&gt; V1    1    1    1</span></span>
-<span><span class="co">#&gt; V2    1    1   -1</span></span>
-<span><span class="co">#&gt; V3   -1    1    0</span></span>
-<span><span class="co">#&gt; V4    0   -1    0</span></span></code></pre></div>
+<span><span class="co">#&gt;       b1 .b2 .b3</span></span>
+<span><span class="co">#&gt; erc    1   1   1</span></span>
+<span><span class="co">#&gt; jxcat  1   1  -1</span></span>
+<span><span class="co">#&gt; psc   -1   1   0</span></span>
+<span><span class="co">#&gt; cs     0  -1   0</span></span></code></pre></div>
 <p>We can also define sequential binary partition using a matrix. By
 using a matrix we don’t need to include a dataset. The number of
 components is obtained with the number of rows and component names from

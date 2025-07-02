@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">coda.base</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.3</span>
       </span>
     </div>
 
@@ -66,7 +66,14 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">pb_basis</span><span class="op">(</span><span class="va">X</span>, <span class="va">method</span>, cluster.method <span class="op">=</span> <span class="st">"ward.D2"</span>, ordering <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">pb_basis</span><span class="op">(</span></span>
+<span>  <span class="va">X</span>,</span>
+<span>  <span class="va">method</span>,</span>
+<span>  constrained.criterion <span class="op">=</span> <span class="st">"variance"</span>,</span>
+<span>  cluster.method <span class="op">=</span> <span class="st">"ward.D2"</span>,</span>
+<span>  ordering <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -79,6 +86,10 @@
 
 <dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
 <dd><p>method to be used with Principal Balances. Methods available are: 'exact', 'constrained' or 'cluster'.</p></dd>
+
+
+<dt id="arg-constrained-criterion">constrained.criterion<a class="anchor" aria-label="anchor" href="#arg-constrained-criterion"></a></dt>
+<dd><p>Criterion used to compare the partition and the principal balance. Either `variance` (default) or `angle`.</p></dd>
 
 
 <dt id="arg-cluster-method">cluster.method<a class="anchor" aria-label="anchor" href="#arg-cluster-method"></a></dt>
