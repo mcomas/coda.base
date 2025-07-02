@@ -65,8 +65,8 @@ c_conditional_obasis <- function(C) {
     .Call(`_coda_base_c_conditional_obasis`, C)
 }
 
-get_balance_using_pc <- function(X) {
-    .Call(`_coda_base_get_balance_using_pc`, X)
+get_balance_using_pc <- function(X, angle = FALSE) {
+    .Call(`_coda_base_get_balance_using_pc`, X, angle)
 }
 
 find_PB <- function(X) {

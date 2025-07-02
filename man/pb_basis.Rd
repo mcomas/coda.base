@@ -4,12 +4,21 @@
 \alias{pb_basis}
 \title{Isometric log-ratio basis based on Principal Balances.}
 \usage{
-pb_basis(X, method, cluster.method = "ward.D2", ordering = TRUE, ...)
+pb_basis(
+  X,
+  method,
+  constrained.criterion = "variance",
+  cluster.method = "ward.D2",
+  ordering = TRUE,
+  ...
+)
 }
 \arguments{
 \item{X}{compositional dataset}
 
 \item{method}{method to be used with Principal Balances. Methods available are: 'exact', 'constrained' or 'cluster'.}
+
+\item{constrained.criterion}{Criterion used to compare the partition and the principal balance. Either `variance` (default) or `angle`.}
 
 \item{cluster.method}{Method to be used with the hclust function (default: `ward.D2`) or any other method available in  hclust function}
 

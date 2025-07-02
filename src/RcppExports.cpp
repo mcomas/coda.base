@@ -194,13 +194,14 @@ BEGIN_RCPP
 END_RCPP
 }
 // get_balance_using_pc
-arma::vec get_balance_using_pc(arma::mat& X);
-RcppExport SEXP _coda_base_get_balance_using_pc(SEXP XSEXP) {
+arma::vec get_balance_using_pc(arma::mat& X, bool angle);
+RcppExport SEXP _coda_base_get_balance_using_pc(SEXP XSEXP, SEXP angleSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::mat& >::type X(XSEXP);
-    rcpp_result_gen = Rcpp::wrap(get_balance_using_pc(X));
+    Rcpp::traits::input_parameter< bool >::type angle(angleSEXP);
+    rcpp_result_gen = Rcpp::wrap(get_balance_using_pc(X, angle));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -266,7 +267,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_coda_base_ilr_coordinates", (DL_FUNC) &_coda_base_ilr_coordinates, 1},
     {"_coda_base_inv_ilr_coordinates", (DL_FUNC) &_coda_base_inv_ilr_coordinates, 1},
     {"_coda_base_c_conditional_obasis", (DL_FUNC) &_coda_base_c_conditional_obasis, 1},
-    {"_coda_base_get_balance_using_pc", (DL_FUNC) &_coda_base_get_balance_using_pc, 1},
+    {"_coda_base_get_balance_using_pc", (DL_FUNC) &_coda_base_get_balance_using_pc, 2},
     {"_coda_base_find_PB", (DL_FUNC) &_coda_base_find_PB, 1},
     {"_coda_base_find_PB_using_pc", (DL_FUNC) &_coda_base_find_PB_using_pc, 1},
     {"_coda_base_find_PB_using_pc_recursively", (DL_FUNC) &_coda_base_find_PB_using_pc_recursively, 1},

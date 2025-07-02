@@ -40,7 +40,7 @@ void optimise_balance_using_pc(Balance<MaximumVariance>& balance, arma::mat& X){
 }
 
 // [[Rcpp::export]]
-arma::vec get_balance_using_pc(arma::mat& X){
+arma::vec get_balance_using_pc(arma::mat& X, bool angle = false){
   unsigned D = X.n_cols;
   if(D == 2){
     arma::vec balance = {+SQR2DIV2, -SQR2DIV2};
@@ -69,8 +69,8 @@ arma::vec get_balance_using_pc(arma::mat& X){
     balance[imin] = -SQR2DIV2;
     balance[imax] = +SQR2DIV2;
     double bestScore = as_scalar(balance.t() * S * balance);
-    // Rcpp::Rcout << bestScore << std::endl;
-    //double bestScore = fabs(dot(eigvec.tail_cols(1), balance));
+    if(angle)  bestScore = fabs(dot(eigvec.tail_cols(1), balance));
+
     double bestR = 1, bestL = 1;
     for(unsigned i = 0; i < D-2; i++){
       if(V(ord[i]) < 0) uL(l++) = ord[i];
@@ -80,8 +80,8 @@ arma::vec get_balance_using_pc(arma::mat& X){
       balance(uR.head(r)).fill(+1.0/r * sqrt((double)l*r/(l+r)));
 
       double score = as_scalar(balance.t() * S * balance);
-      //double score = fabs(dot(eigvec.tail_cols(1), balance));
-      // Rcpp::Rcout << score << std::endl;
+      if(angle) score = fabs(dot(eigvec.tail_cols(1), balance));
+
       //Rcpp::Rcout << balance.t();
       //Rcpp::Rcout << "Value:" << score <<std::endl;
       if(score > bestScore){

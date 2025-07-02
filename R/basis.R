@@ -241,25 +241,32 @@ sbp_basis = function(sbp, data = NULL, fill = FALSE, silent=FALSE){
       colnames(df) = rownames(sbp)
     }
     str_to_frm = function(vec){
-      frm = paste(stats::aggregate(nm ~ vec, subset(data.frame(nm = paste0('`',names(df), '`'), vec = -1 * vec,
-                                                               stringsAsFactors = FALSE), vec != 0),
-                                   FUN = paste, collapse= ' + ')[['nm']], collapse=' ~ ')
+      frm = paste(
+        stats::aggregate(nm ~ vec,
+                         subset(data.frame(nm = paste0('`',names(df), '`'),
+                                           vec = -1 * vec,
+                                           stringsAsFactors = FALSE),
+                                vec != 0),
+                         FUN = paste, collapse= ' + ')[['nm']],
+        collapse=' ~ ')
       stats::as.formula(frm)
     }
     return(sbp_basis(apply(sbp, 2, str_to_frm),
                      data = df,
                      fill = fill,
                      silent = silent))
-    # return(do.call('sbp_basis', c(apply(P, 1, str_to_frm), list(data=df,
-                                                                # fill = fill,
-                                                                # silent = silent)))) #, envir = as.environment('package:coda.base')
   }
 
-  if (!is.data.frame(data) && !is.environment(data) && ( (is.matrix(data) && !is.null(colnames(data))) | !is.null(attr(data, "class"))))
+  if (!is.data.frame(data) &&
+      !is.environment(data) &&
+      ( (is.matrix(data) && !is.null(colnames(data))) |
+        !is.null(attr(data, "class")))){
     data <- as.data.frame(data)
-  else if (is.array(data))
-    stop("'data' must be a data.frame or a matrix with column names")
-
+  }else{
+    if (is.array(data)){
+      stop("'data' must be a data.frame or a matrix with column names")
+    }
+  }
 
   if(!all(unlist(lapply(sbp, all.vars)) %in% c(names(data), names(sbp)))){
     stop("Balances should be columns of 'data'")
@@ -312,8 +319,14 @@ sbp_basis = function(sbp, data = NULL, fill = FALSE, silent=FALSE){
     bal[balance[[2]]] = bal[balance[[2]]] + r
     bal
   })
+  rownames(RES) = colnames(data)
+  colnames(RES) = names(sbp)
   if(fill){
-    return(Recall(fill_sbp(sign(RES))))
+    RES_F = Recall(fill_sbp(sign(RES)))
+    rownames(RES_F) = rownames(RES)
+    colnames(RES_F) = paste0(".b",1:ncol(RES_F))
+    colnames(RES_F)[1:ncol(RES)] = colnames(RES)
+    return(RES_F)
   }
   if(!silent){
     if(qr(RES)$rank != NCOL(data)-1){
@@ -340,6 +353,7 @@ sbp_basis = function(sbp, data = NULL, fill = FALSE, silent=FALSE){
 #'
 #' @param X compositional dataset
 #' @param method method to be used with Principal Balances. Methods available are: 'exact', 'constrained' or 'cluster'.
+#' @param constrained.criterion Criterion used to compare the partition and the principal balance. Either `variance` (default) or `angle`.
 #' @param cluster.method Method to be used with the hclust function (default: `ward.D2`) or any other method available in  hclust function
 #' @param ordering should the principal balances found be returned ordered? (first column, first
 #' principal balance and so on)
@@ -369,7 +383,9 @@ sbp_basis = function(sbp, data = NULL, fill = FALSE, silent=FALSE){
 #'         names = paste0('Comp.', 1:4), args.legend = list(cex = 0.8), ylab = 'Variance')
 #'
 #' @export
-pb_basis = function(X, method, cluster.method = 'ward.D2',
+pb_basis = function(X, method,
+                    constrained.criterion = 'variance',
+                    cluster.method = 'ward.D2',
                     ordering = TRUE, ...){
   X = as.matrix(X)
   if(!(all(X > 0))){
@@ -382,7 +398,16 @@ pb_basis = function(X, method, cluster.method = 'ward.D2',
     }
     if(method == 'constrained'){
       M = 'CS'
-      B = constrained_pb(as.matrix(X))
+      if(constrained.criterion %in% c('angle', 'variance')){
+        if (constrained.criterion == "angle") {
+          B = constrained_pb(as.matrix(X), angle = TRUE)
+        }
+        if (constrained.criterion == "variance") {
+          B = constrained_pb(as.matrix(X), angle = FALSE)
+        }
+      }else{
+        stop("Error constrained.criterion is not available")
+      }
     }
     # if(method == 'lsearch'){
     #   if(rep == 0){
