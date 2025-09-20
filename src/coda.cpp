@@ -14,17 +14,23 @@ arma::mat pinv(arma::mat X){
 }
 
 // [[Rcpp::export]]
-arma::mat c_variation_array(arma::mat X, bool include_means = false){
+arma::mat c_variation_array(arma::mat X,
+                            bool include_means = false,
+                            bool ml_covariance = false){
   unsigned int K = X.n_cols;
+  unsigned int n = X.n_rows;
   arma::mat lX = log(X);
   arma::mat varray = arma::mat(K,K);
   varray.diag().zeros();
   arma::mat Xcov = cov(lX);
+  if(ml_covariance){
+    Xcov = (n-1)*Xcov/n;
+  }
   if(include_means){
     arma::mat Xmeans = arma::mean(lX, 0);
     for(unsigned i = 0; i < K; i++){
       for(unsigned j = 0; j < i; j++){
-        varray(i,j) = Xmeans(j) - Xmeans(i);
+        varray(i,j) = Xmeans(i) - Xmeans(j);
         varray(j,i) = Xcov(i,i) + Xcov(j,j) - 2*Xcov(i,j);
       }
     }

@@ -23,14 +23,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // c_variation_array
-arma::mat c_variation_array(arma::mat X, bool include_means);
-RcppExport SEXP _coda_base_c_variation_array(SEXP XSEXP, SEXP include_meansSEXP) {
+arma::mat c_variation_array(arma::mat X, bool include_means, bool ml_covariance);
+RcppExport SEXP _coda_base_c_variation_array(SEXP XSEXP, SEXP include_meansSEXP, SEXP ml_covarianceSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
     Rcpp::traits::input_parameter< bool >::type include_means(include_meansSEXP);
-    rcpp_result_gen = Rcpp::wrap(c_variation_array(X, include_means));
+    Rcpp::traits::input_parameter< bool >::type ml_covariance(ml_covarianceSEXP);
+    rcpp_result_gen = Rcpp::wrap(c_variation_array(X, include_means, ml_covariance));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -252,7 +253,7 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_coda_base_pinv", (DL_FUNC) &_coda_base_pinv, 1},
-    {"_coda_base_c_variation_array", (DL_FUNC) &_coda_base_c_variation_array, 2},
+    {"_coda_base_c_variation_array", (DL_FUNC) &_coda_base_c_variation_array, 3},
     {"_coda_base_alr_basis_default", (DL_FUNC) &_coda_base_alr_basis_default, 1},
     {"_coda_base_clr_basis_default", (DL_FUNC) &_coda_base_clr_basis_default, 1},
     {"_coda_base_ilr_basis_default", (DL_FUNC) &_coda_base_ilr_basis_default, 1},

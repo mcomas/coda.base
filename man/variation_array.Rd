@@ -4,12 +4,14 @@
 \alias{variation_array}
 \title{Variation array is returned.}
 \usage{
-variation_array(X, include_means = FALSE)
+variation_array(X, include_means = FALSE, ml_covariance = FALSE)
 }
 \arguments{
 \item{X}{Compositional dataset}
 
 \item{include_means}{if TRUE logratio means are included in the lower-left triangle}
+
+\item{ml_covariance}{if TRUE Maximum-likelihood estimation of the covariance for the multivariate normal distribution is used (dividing the scatter matrix by n instead of n-1)}
 }
 \value{
 variation array matrix

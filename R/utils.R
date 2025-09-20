@@ -4,6 +4,7 @@ getDim = function(X) ifelse(is.vector(X), length(X), NCOL(X))
 #'
 #' @param X Compositional dataset
 #' @param include_means if TRUE logratio means are included in the lower-left triangle
+#' @param ml_covariance if TRUE Maximum-likelihood estimation of the covariance for the multivariate normal distribution is used (dividing the scatter matrix by n instead of n-1)
 #' @return variation array matrix
 #' @examples
 #' set.seed(1)
@@ -11,8 +12,8 @@ getDim = function(X) ifelse(is.vector(X), length(X), NCOL(X))
 #' variation_array(X)
 #' variation_array(X, include_means = TRUE)
 #' @export
-variation_array = function(X, include_means = FALSE){
-  var_arr = c_variation_array(as.matrix(X), as.logical(include_means))
+variation_array = function(X, include_means = FALSE, ml_covariance  = FALSE){
+  var_arr = c_variation_array(as.matrix(X), as.logical(include_means), as.logical(ml_covariance))
   if(!is.null(colnames(X))) colnames(var_arr) = rownames(var_arr) = colnames(X)
   var_arr
 }
