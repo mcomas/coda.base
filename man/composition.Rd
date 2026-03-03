@@ -3,27 +3,26 @@
 \name{composition}
 \alias{composition}
 \alias{comp}
-\title{Get composition from coordinates w.r.t.  an specific basis}
+\title{Compositions from coordinates with respect to a basis}
 \usage{
 composition(H, basis = "ilr")
 
 comp(H, basis = "ilr")
 }
 \arguments{
-\item{H}{coordinates of a composition. Either a matrix, a data.frame or a vector}
+\item{H}{Coordinates of a composition. It can be a numeric matrix, a data
+frame, or a numeric vector.}
 
-\item{basis}{basis used to calculate the coordinates}
+\item{basis}{Basis used to interpret the coordinates. Either a character
+string naming a predefined basis or a matrix.}
 }
 \value{
-coordinates with respect the given basis
+A composition corresponding to the given coordinates.
 }
 \description{
-Calculate a composition from coordinates with respect a given basis
+Reconstruct a composition from coordinates with respect to a given basis.
 }
 \seealso{
-See functions \code{\link{ilr_basis}}, \code{\link{alr_basis}},
+\code{\link{coordinates}}, \code{\link{ilr_basis}}, \code{\link{alr_basis}},
 \code{\link{clr_basis}}, \code{\link{sbp_basis}}
-to define different compositional basis.
-See function \code{\link{coordinates}} to obtain details on how to calculate
-coordinates of a given composition.
 }

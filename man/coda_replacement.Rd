@@ -10,7 +10,8 @@ coda_replacement(
   dl_prop = 0.65,
   eps = 1e-04,
   parameters = FALSE,
-  debug = FALSE
+  debug = FALSE,
+  maxit = 500
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ the EM algorithm.}
 \item{parameters}{Logical; if `TRUE`, return additional estimated parameters.}
 
 \item{debug}{Logical; if `TRUE`, print the log-likelihood at each iteration.}
+
+\item{maxit}{Maximum number of iterations}
 }
 \value{
 If `parameters = FALSE`, a numeric matrix with imputed values.

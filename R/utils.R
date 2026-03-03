@@ -448,7 +448,7 @@ gen_coda_with_zeros_and_missings <- function(n, d,
   d <- as.integer(d)
 
   gen_X <- function(n, d) {
-    H <- mvtnorm::rmvnorm(n, rep(0, d))
+    H <- matrix(stats::rnorm(n * d), nrow = n, ncol = d)
     S <- stats::cov(H)
     EIG <- eigen(S)
 

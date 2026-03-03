@@ -7,7 +7,7 @@
 \alias{clr_c}
 \alias{ilr_c}
 \alias{olr_c}
-\title{Get coordinates from compositions w.r.t. an specific basis}
+\title{Coordinates of compositions with respect to a basis}
 \usage{
 coordinates(X, basis = "ilr")
 
@@ -22,36 +22,52 @@ ilr_c(X)
 olr_c(X)
 }
 \arguments{
-\item{X}{compositional dataset. Either a matrix, a data.frame or a vector}
+\item{X}{A compositional data set. It can be a numeric matrix, a data frame,
+or a numeric vector.}
 
-\item{basis}{basis used to calculate the coordinates. \code{basis} can be either a string or a matrix.
-Accepted values for strings are: 'ilr' (default), 'clr', 'alr', 'pw', 'pc', 'pb' and 'cdp'. If \code{basis} is a matrix, it is expected
-to have log-ratio basis given in columns.}
+\item{basis}{Basis used to compute the coordinates. Either a character string
+naming a predefined basis or a matrix with log-ratio basis vectors in
+columns.}
 
-\item{...}{components of the compositional data}
+\item{...}{components of the composition}
 }
 \value{
-Coordinates of composition \code{X} with respect the given \code{basis}.
+Coordinates of `X` with respect to the given `basis`. The returned object has
+the same general type as the input when possible.
 }
 \description{
-Calculate the coordinates of a composition with respect a given basis
+Compute coordinates of a composition or a compositional data set with respect
+to a given log-ratio basis.
+
+The `basis` argument can be either:
+\itemize{
+  \item a character string identifying a predefined coordinate system, or
+  \item a matrix whose columns define a system of log-contrasts.
 }
-\details{
-\code{coordinates} function calculates the coordinates of a compositiona w.r.t. a given basis. `basis` parameter is
-used to set the basis, it can be either a matrix defining the log-contrasts in columns or a string defining some well-known
-log-contrast: 'alr' 'clr', 'ilr', 'pw', 'pc', 'pb' and 'cdp', for the additive log-ratio, centered log-ratio, isometric log-ratio,
-pairwise log-ratio, clr principal components, clr principal balances or default's CoDaPack balances respectively.
+
+The predefined options are:
+\itemize{
+  \item `"ilr"`: isometric log-ratio coordinates,
+  \item `"olr"`: orthonormal log-ratio coordinates,
+  \item `"clr"`: centered log-ratio coordinates,
+  \item `"alr"`: additive log-ratio coordinates,
+  \item `"pw"`: pairwise log-ratios,
+  \item `"pc"`: principal component log-ratio coordinates,
+  \item `"pb"`: principal balance coordinates,
+  \item `"cdp"`: CoDaPack default balances.
+}
 }
 \examples{
-# Default ilr given by ilr_basis(5) is given
 coordinates(1:5)
-B = ilr_basis(5)
+
+B <- ilr_basis(5)
 coordinates(1:5, B)
+
+X <- rbind(1:5, 2:6)
+coordinates(X, "clr")
+
 }
 \seealso{
-See functions \code{\link{ilr_basis}}, \code{\link{alr_basis}},
-\code{\link{clr_basis}}, \code{\link{sbp_basis}}
-to define different compositional basis.
-See function \code{\link{composition}} to obtain details on how to calculate
-a compositions from given coordinates.
+\code{\link{ilr_basis}}, \code{\link{alr_basis}}, \code{\link{clr_basis}},
+\code{\link{sbp_basis}}, \code{\link{composition}}
 }
