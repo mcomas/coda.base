@@ -3,7 +3,7 @@
 \docType{data}
 \name{mammals_milk}
 \alias{mammals_milk}
-\title{Mammal’s milk}
+\title{Mammals' milk}
 \format{
 An object of class \code{data.frame} with 24 rows and 6 columns.
 }
@@ -11,8 +11,10 @@ An object of class \code{data.frame} with 24 rows and 6 columns.
 mammals_milk
 }
 \description{
-The mammalsmilk data set contains the percentages of five constituents (W: water,
-P: protein, F: fat, L: lactose, and A: ash) of the milk of 24 mammals. The data are
-taken from [Har75].
+The `mammals_milk` data set contains the percentages of five constituents of
+the milk of 24 mammals:
+\eqn{[W, P, F, L, A]}{[W, P, F, L, A]},
+where `W` is water, `P` is protein, `F` is fat, `L` is lactose, and `A` is
+ash.
 }
 \keyword{datasets}

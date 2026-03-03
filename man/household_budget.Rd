@@ -11,13 +11,16 @@ An object of class \code{data.frame} with 40 rows and 6 columns.
 household_budget
 }
 \description{
-In a sample survey of single persons living alone in rented accommodation, twenty
-men and twenty women were randomly selected and asked to record over a period of
-one month their expenditures on the following four mutually exclusive and
+In a sample survey of single persons living alone in rented accommodation,
+twenty men and twenty women were randomly selected and asked to record their
+expenditure over one month in the following four mutually exclusive and
 exhaustive commodity groups:
-* Hous: Housing, including fuel and light.
-* Food: Foodstuffs, including alcohol and tobacco.
-* Serv: Services, including transport and vehicles.
-* Other: Other goods, including clothing, footwear and durable goods.
+
+\itemize{
+  \item `Hous`: housing, including fuel and light,
+  \item `Food`: foodstuffs, including alcohol and tobacco,
+  \item `Serv`: services, including transport and vehicles,
+  \item `Other`: other goods, including clothing, footwear, and durable goods.
+}
 }
 \keyword{datasets}

@@ -11,43 +11,31 @@ An object of class \code{data.frame} with 29 rows and 17 columns.
 eurostat_employment
 }
 \description{
-According to the three–sector theory, as a country’s economy develops, employment
-shifts from the primary sector (raw material extraction: farming, hunting, fishing,
-mining) to the secondary sector (industry, energy and construction) and finally to
-the tertiary sector (services). Thus, a country’s employment distribution can be
-used as a predictor of economic wealth.
+According to the three-sector theory, employment shifts from the primary
+sector (raw material extraction), to the secondary sector (industry, energy,
+and construction), and then to the tertiary sector (services) as economies
+develop. The `eurostat_employment` data set contains EUROSTAT data on
+employment, aggregated for both sexes and all ages, distributed by economic
+activity in 2008 for 29 EUROSTAT member countries.
 
-The `eurostat_employment` data set contains EUROSTAT data on employment
-aggregated for both sexes, and all ages distributed by economic activity
-(classification 1983-2008, NACE Rev. 1.1) in 2008 for the 29 EUROSTAT member
-countries, thus reflecting reality just before the 2008 financial crisis.
-Country codes in alphabetical order according to the country name in its
-own language are: Belgium (BE), Cyprus (CY), Czechia (CZ), Denmark (DK),
-Deutchland–Germany (DE), Eesti–Estonia (EE), Eire–Ireland (IE),
-España–Spain (ES), France (FR), Hellas-Greece (GR), Hrvatska–Croatia (HR),
-Iceland (IS), Italy (IT), Latvia (LV), Lithuania (LT), Luxembourg (LU),
-Macedonia (MK), Magyarország-Hungary (HU), Malta (MT), Netherlands (NL),
-Norway (NO), Österreich–Austria (AT), Portugal (PT), Romania (RO),
-Slovakia (SK), Suomi–Finland (FI), Switzerland (CH), Turkey (TR),
-United Kingdom (GB).
+A related variable is the logarithm of gross domestic product per person in
+EUR at current prices (`logGDP`). For exploratory purposes, it is also
+categorised as a binary variable indicating values above or below the median
+(`Binary GDP`).
 
-A key related variable is the logarithm of gross domestic product per person in
-EUR at current prices (“logGDP”). For the purposes of exploratory data analyses
-it has also been categorised as a binary variable indicating values higher or lower
-than the median (“Binary GDP”). The employment composition (D = 11) is:
-
-* Primary sector (agriculture, hunting, forestry, fishing, mining, quarrying)
-* Manufacturing
-* Energy (electricity, gas and water supply)
-* Construction
-* Trade repair transport (wholesale and retail trade, repair, transport,
-storage, communications)
-* Hotels restaurants
-* Financial intermediation
-* Real estate (real estate, renting and business activities)
-* Educ admin defense soc sec (education, public administration, defence,
-social security)
-* Health social work
-* Other services (other community, social and personal service activities)
+The employment composition has 11 parts:
+\itemize{
+  \item Primary sector
+  \item Manufacturing
+  \item Energy
+  \item Construction
+  \item Trade repair transport
+  \item Hotels restaurants
+  \item Financial intermediation
+  \item Real estate
+  \item Educ admin defense soc sec
+  \item Health social work
+  \item Other services
+}
 }
 \keyword{datasets}

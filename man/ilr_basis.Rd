@@ -3,39 +3,59 @@
 \name{ilr_basis}
 \alias{ilr_basis}
 \alias{olr_basis}
-\title{Isometric/Orthonormal Log-Ratio Basis for Log-Transformed Compositions}
+\title{Isometric and orthonormal log-ratio bases}
 \usage{
 ilr_basis(dim, type = "default")
 
 olr_basis(dim, type = "default")
 }
 \arguments{
-\item{dim}{An integer indicating the number of components.
-If a dataframe or matrix is provided, the number of components is inferred from the number of columns. If a character vector specifying the names of the parts is provided the number of component is its length.}
+\item{dim}{Number of parts. It can be:
+\itemize{
+\item a single integer,
+\item a matrix or data frame, in which case the number of columns is used,
+\item a character vector of part names, in which case its length is used.
+}}
 
-\item{type}{Character string specifying the type of basis to generate.
-Options are \code{"pivot"}, \code{"cdp"}. Any other option will return the Helmert basis defined by Egozcue et al., 2013..}
+\item{type}{Type of ilr basis to construct. Available options are:
+\itemize{
+\item `"default"`: standard Helmert-type ilr basis,
+\item `"pivot"`: pivot balance basis,
+\item `"cdp"`: CoDaPack default basis.
+}}
 }
 \value{
-A matrix representing the orthonormal basis.
+A matrix with \eqn{D} rows and \eqn{D - 1} columns representing an
+  orthonormal log-ratio basis.
 }
 \description{
-Builds an isometric log-ratio (ilr) basis for a composition with \code{k+1} parts, also called orthonormal log-ratio (olr) basis.
+Construct an isometric log-ratio (ilr) basis for a composition with
+\eqn{D} parts. The ilr basis is an orthonormal basis of the clr-plane and
+provides \eqn{D - 1} coordinates. The same basis is sometimes referred to as
+an orthonormal log-ratio (olr) basis.
 }
 \details{
-The basis vectors are constructed as:
-\deqn{h_i = \sqrt{\frac{i}{i+1}} \log\frac{\sqrt[i]{\prod_{j=1}^i x_j}}{x_{i+1}}}{%
-h[i] = sqrt(i/(i+1)) * ( log(x[1] * ... * x[i]) / i - log(x[i+1]) )}
-for \eqn{i = 1, \ldots, k}.
+For `type = "default"`, the function returns the standard Helmert-type ilr
+basis. Alternative constructions are available through `type = "pivot"` and
+`type = "cdp"`.
 
-Setting the \code{type} parameter to \code{"pivot"} (pivot balances) or \code{"cdp"} (codapack balances) allows generating alternative ilr/olr bases.
+The default basis vectors are:
+\deqn{
+h_i = \sqrt{\frac{i}{i+1}}
+\log \frac{\sqrt[i]{\prod_{j=1}^i x_j}}{x_{i+1}},
+\qquad i = 1, \ldots, D - 1
+}{
+h[i] = sqrt(i / (i + 1)) * (log(x[1] * ... * x[i]) / i - log(x[i + 1]))
+}
 }
 \examples{
 ilr_basis(5)
-ilr_basis(alimentation[,1:9])
+ilr_basis(alimentation[, 1:9])
+ilr_basis(c("a", "b", "c", "d"), type = "pivot")
+
 }
 \references{
-Egozcue, J.J., Pawlowsky-Glahn, V., Mateu-Figueras, G., & Barceló-Vidal, C. (2003).
-\emph{Isometric logratio transformations for compositional data analysis}.
-Mathematical Geology, \strong{35}(3), 279–300.
+Egozcue, J. J., Pawlowsky-Glahn, V., Mateu-Figueras, G., & Barceló-Vidal, C.
+(2003). \emph{Isometric logratio transformations for compositional data
+analysis}. Mathematical Geology, \strong{35}(3), 279--300.
 }

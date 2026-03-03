@@ -11,13 +11,13 @@ An object of class \code{data.frame} with 30 rows and 5 columns.
 foraminiferals
 }
 \description{
-The foraminiferal data set (Aitchison, 1986) is a typical example of
-paleocological data. It contains compositions of 4 different fossils
-(Neogloboquadrina atlantica, Neogloboquadrina pachyderma, Globorotalia
-obesa, and Globigerinoides triloba) at 30 different depths. Due to the
-rounded zeros present in the data set we will apply some zero replacement
-techniques to impute these values in advance. After data preprocessing,
-the analysis that should be undertaken is the association between
-the composition and the depth.
+The `foraminiferals` data set (Aitchison, 1986) is a classical example of
+paleocological compositional data. It contains the composition of four fossil
+types (Neogloboquadrina atlantica, Neogloboquadrina pachyderma,
+Globorotalia obesa, and Globigerinoides triloba) at 30 different depths.
+
+Because the data contain rounded zeros, zero-replacement techniques are
+typically required before analysis. A natural goal is then to study the
+association between fossil composition and depth.
 }
 \keyword{datasets}

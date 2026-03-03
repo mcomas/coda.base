@@ -2,51 +2,80 @@
 % Please edit documentation in R/basis.R
 \name{sbp_basis}
 \alias{sbp_basis}
-\title{Isometric log-ratio basis based on Balances}
+\title{Basis from a sequential binary partition}
 \usage{
 sbp_basis(sbp, data = NULL, fill = FALSE, silent = FALSE)
 }
 \arguments{
-\item{sbp}{parts to consider in the numerator and the denominator. Can be
-defined either using a list of formulas setting parts (see examples) or using
-a matrix where each column define a balance. Positive values are parts in
-the numerator, negative values are parts in the denominator, zeros are parts
-not used to build the balance.}
+\item{sbp}{A list of formulas or a matrix describing balances.}
 
-\item{data}{composition from where name parts are extracted}
+\item{data}{Optional compositional data set used to extract part names when
+`sbp` is given as a list of formulas.}
 
-\item{fill}{should the balances be completed to become an orthonormal basis?
-if the given balances are not orthonormal, the function will complete the
-balance to become a basis.}
+\item{fill}{Logical; if `TRUE`, complete the supplied balances to obtain a
+full basis.}
 
-\item{silent}{inform about orthogonality}
+\item{silent}{Logical; if `FALSE`, report whether the resulting balances form
+a basis, and whether they are orthogonal or orthonormal.}
 }
 \value{
-matrix
+A matrix whose columns are balances.
 }
 \description{
-Build an \code{\link{ilr_basis}} using a sequential binary partition or
-a generic coordinate system based on balances.
+Construct a balance basis from a sequential binary partition (SBP) or from a
+more general collection of balances.
+}
+\details{
+The argument `sbp` can be specified in two ways:
+\itemize{
+\item as a list of formulas, where each formula defines the numerator and the
+  denominator groups of a balance,
+\item as a matrix with one column per balance and one row per part. Positive
+  entries indicate parts in the numerator, negative entries indicate parts in
+  the denominator, and zeros indicate unused parts.
+}
 }
 \examples{
-X = data.frame(a=1:2, b=2:3, c=4:5, d=5:6, e=10:11, f=100:101, g=1:2)
-sbp_basis(list(b1 = a~b+c+d+e+f+g,
-               b2 = b~c+d+e+f+g,
-               b3 = c~d+e+f+g,
-               b4 = d~e+f+g,
-               b5 = e~f+g,
-               b6 = f~g), data = X)
-sbp_basis(list(b1 = a~b,
-               b2 = b1~c,
-               b3 = b2~d,
-               b4 = b3~e,
-               b5 = b4~f,
-               b6 = b5~g), data = X)
-# A non-orthogonal basis can also be calculated.
-sbp_basis(list(b1 = a+b+c~e+f+g,
-              b2 = d~a+b+c,
-              b3 = d~e+g,
-              b4 = a~e+b,
-              b5 = b~f,
-              b6 = c~g), data = X)
+X <- data.frame(
+  a = 1:2, b = 2:3, c = 4:5,
+  d = 5:6, e = 10:11, f = 100:101, g = 1:2
+)
+
+# Sequential SBP construction
+sbp_basis(list(
+  b1 = a ~ b + c + d + e + f + g,
+  b2 = b ~ c + d + e + f + g,
+  b3 = c ~ d + e + f + g,
+  b4 = d ~ e + f + g,
+  b5 = e ~ f + g,
+  b6 = f ~ g
+), data = X)
+
+# Chain construction
+sbp_basis(list(
+  b1 = a ~ b,
+  b2 = b1 ~ c,
+  b3 = b2 ~ d,
+  b4 = b3 ~ e,
+  b5 = b4 ~ f,
+  b6 = b5 ~ g
+), data = X)
+
+# Non-orthogonal system of balances
+sbp_basis(list(
+  b1 = a + b + c ~ e + f + g,
+  b2 = d ~ a + b + c,
+  b3 = d ~ e + g,
+  b4 = a ~ e + b,
+  b5 = b ~ f,
+  b6 = c ~ g
+), data = X)
+
+# Direct construction from a contrast matrix
+sbp_basis(cbind(
+  c( 1,  1, -1, -1),
+  c( 1, -1,  1, -1),
+  c( 1, -1, -1,  1)
+))
+
 }

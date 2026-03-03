@@ -3,33 +3,38 @@
 \docType{data}
 \name{kilauea_iki}
 \alias{kilauea_iki}
-\title{Chemical Composition of Volcanic Rocks from Kilauea Iki}
+\title{Chemical composition of volcanic rocks from Kilauea Iki}
 \format{
 A data frame with 17 observations and 11 variables:
 \describe{
-  \item{SiO2}{Silicon dioxide (fraction)}
-  \item{TiO2}{Titanium dioxide (fraction)}
-  \item{Al2O3}{Aluminium oxide (fraction)}
-  \item{Fe2O3}{Ferric oxide (fraction)}
-  \item{FeO}{Ferrous oxide (fraction)}
-  \item{MnO}{Manganese oxide (fraction)}
-  \item{MgO}{Magnesium oxide (fraction)}
-  \item{CaO}{Calcium oxide (fraction)}
-  \item{Na2O}{Sodium oxide (fraction)}
-  \item{K2O}{Potassium oxide (fraction)}
-  \item{P2O5}{Phosphorus pentoxide (fraction)}
+  \item{SiO2}{Silicon dioxide}
+  \item{TiO2}{Titanium dioxide}
+  \item{Al2O3}{Aluminium oxide}
+  \item{Fe2O3}{Ferric oxide}
+  \item{FeO}{Ferrous oxide}
+  \item{MnO}{Manganese oxide}
+  \item{MgO}{Magnesium oxide}
+  \item{CaO}{Calcium oxide}
+  \item{Na2O}{Sodium oxide}
+  \item{K2O}{Potassium oxide}
+  \item{P2O5}{Phosphorus pentoxide}
 }
 }
 \source{
-Richter, D.H., & Moore, J.G. (1966). Petrology of Kilauea Iki lava lake, Hawaii. *Geological Survey Professional Paper* 537-B.
+Richter, D. H., & Moore, J. G. (1966). \emph{Petrology of Kilauea Iki lava
+lake, Hawaii}. Geological Survey Professional Paper 537-B.
 }
 \usage{
 kilauea_iki
 }
 \description{
-This dataset contains the chemical composition of volcanic rocks sampled from the lava lake at Kilauea Iki (Hawaii). The data represents major oxide concentrations in fractional form.
+The `kilauea_iki` data set contains the chemical composition of volcanic
+rocks sampled from the lava lake at Kilauea Iki (Hawaii). The data represent
+major oxide concentrations in fractional form.
 }
 \details{
-The variability in the oxide concentrations is attributed to magnesic olivine fractionation, starting from a single magmatic mass as suggested by Richter & Moore (1966).
+The variability in oxide concentrations is attributed to magnesian olivine
+fractionation from a single magmatic mass, as suggested by Richter and Moore
+(1966).
 }
 \keyword{datasets}

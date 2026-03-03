@@ -2,16 +2,18 @@
 % Please edit documentation in R/basis.R
 \name{pc_basis}
 \alias{pc_basis}
-\title{Isometric log-ratio basis based on Principal Components.}
+\title{Principal component log-ratio basis}
 \usage{
 pc_basis(X)
 }
 \arguments{
-\item{X}{compositional dataset}
+\item{X}{Compositional data set.}
 }
 \value{
-matrix
+A matrix whose columns define a principal-component-oriented ilr
+  basis.
 }
 \description{
-Different approximations to approximate the principal balances of a compositional dataset.
+Construct an ilr basis rotated according to the principal components of the
+log-ratio coordinates of a compositional data set.
 }

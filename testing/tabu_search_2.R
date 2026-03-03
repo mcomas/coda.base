@@ -2,7 +2,7 @@ set.seed(1)
 library(coda.base)
 
 .CONT = TRUE
-D = 10
+D = 15
 while(.CONT){
   X = matrix(rlnorm(10*D), ncol = D)
   B0 = pb_basis(X, method = 'constrained')

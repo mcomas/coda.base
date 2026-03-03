@@ -1,107 +1,87 @@
-#ifndef balance_evaluate_H
-#define balance_evaluate_H
+#ifndef BALANCE_EVALUATE_H
+#define BALANCE_EVALUATE_H
 
 #include <RcppArmadillo.h>
+#include <limits>
+#include <map>
 
 class EvaluateBalance {
-
 public:
-  EvaluateBalance(){
+  EvaluateBalance() = default;
+  virtual ~EvaluateBalance() = default;
 
+  virtual double eval(const arma::uvec& L, const arma::uvec& R, int l, int r) {
+    return -1.0;
   }
-
-  virtual double eval(arma::uvec& L, arma::uvec& R, int l, int r){
-    return(-1);
-  }
-
 };
 
-class MaximumVariance: public EvaluateBalance {
+class MaximumVariance : public EvaluateBalance {
+private:
   arma::mat M;
   arma::vec N;
-  std::map<int,arma::uvec> nodes;
-
-  double bestScore = -1;
+  double bestScore = -std::numeric_limits<double>::infinity();
 
 public:
   arma::uvec bestL, bestR;
 
-  MaximumVariance(){
-  }
-  MaximumVariance(std::map<int,arma::uvec>& nodes0, arma::mat& X){
+  MaximumVariance() = default;
 
-    nodes = nodes0;
-    arma::mat S = cov(log(X));
+  MaximumVariance(const std::map<int, arma::uvec>& nodes0, const arma::mat& X) {
+    arma::mat S = arma::cov(arma::log(X));
+
     M = arma::mat(nodes0.size(), nodes0.size());
-
     N = arma::vec(nodes0.size());
-    for(int i = 0; i < nodes0.size(); i++){
-      N(i) = nodes0[i].n_elem;
-      for(int j = 0; j < nodes0.size(); j++){
-        M(i,j) = arma::accu(S(nodes0[i], nodes0[j]));
+
+    for (int i = 0; i < static_cast<int>(nodes0.size()); ++i) {
+      N(i) = nodes0.at(i).n_elem;
+      for (int j = 0; j < static_cast<int>(nodes0.size()); ++j) {
+        M(i, j) = arma::accu(S(nodes0.at(i), nodes0.at(j)));
       }
     }
   }
-  void init(){
-    bestScore = -1;
+
+  void init() {
+    bestScore = -std::numeric_limits<double>::infinity();
   }
-  double eval(arma::uvec& L, arma::uvec& R, int l, int r){
-    double nL = 0;
-    for(unsigned int i=0; i<l;nL+=N[L[i++]]);
 
-    double nR = 0;
-    for(unsigned int i=0; i<r;nR+=N[R[i++]]);
+  double eval(const arma::uvec& L, const arma::uvec& R, int l, int r) override {
+    double nL = 0.0;
+    for (unsigned int i = 0; i < static_cast<unsigned int>(l); ++i) {
+      nL += N[L[i]];
+    }
 
-    double variance = 0;
-    for(int i=0;i<l;i++){
-      for(int j=0;j<l;j++){
-        variance += (nR/nL) * M(L[i],L[j]);
+    double nR = 0.0;
+    for (unsigned int i = 0; i < static_cast<unsigned int>(r); ++i) {
+      nR += N[R[i]];
+    }
+
+    double variance = 0.0;
+
+    for (int i = 0; i < l; ++i) {
+      for (int j = 0; j < l; ++j) {
+        variance += (nR / nL) * M(L[i], L[j]);
       }
-      for(int j=0;j<r;j++){
-        variance += - 2 * M(L[i],R[j]);
+      for (int j = 0; j < r; ++j) {
+        variance -= 2.0 * M(L[i], R[j]);
       }
     }
-    for(int i=0;i<r;i++){
-      for(int j=0;j<r;j++){
-        variance += (nL/nR) * M(R[i],R[j]);
+
+    for (int i = 0; i < r; ++i) {
+      for (int j = 0; j < r; ++j) {
+        variance += (nL / nR) * M(R[i], R[j]);
       }
     }
-    variance = variance / (nL+nR);
-    if(variance > bestScore){
+
+    variance /= (nL + nR);
+
+    if (variance > bestScore) {
       bestScore = variance;
       bestL = arma::uvec(L.head(l));
       bestR = arma::uvec(R.head(r));
     }
+
     return variance;
   }
-//
-//   double eval(arma::uvec& L, arma::uvec& R){
-//     return(eval(L, R, L.size(), R.size()));
-//   }
-
 };
-
-// class MaximumDotProduct: public EvaluateBalance {
-//
-//   std::map<int,arma::uvec>& nodes;
-//   arma::vec V;
-// public:
-//   MaximumDotProduct(std::map<int,arma::uvec>& nodes0, arma::vec& V0){
-//     nodes = nodes0;
-//     V = V0;
-//   }
-//   double eval(arma::uvec& L, arma::uvec& R, int l, int r){
-//
-//     double nL = 0, nR = 0;
-//     for(unsigned int i = 0; i< l; i++) nL+=nodes[L[i]].size();
-//     for(unsigned int i = 0; i< r; i++) nR+=nodes[R[i]].size();
-//
-//     arma::vec b = arma::zeros(D);
-//     for(unsigned int i = 0; i< l; i++) b(nodes[L[i]]).fill(-1/nL * sqrt(nL*nR/(nL+nR)));
-//     for(unsigned int i = 0; i< r; i++) b(nodes[R[i]]).fill(+1/nR * sqrt(nL*nR/(nL+nR)));
-//
-//     return(fabs(dot(b, V)));
-//   }
-// };
 
 #endif

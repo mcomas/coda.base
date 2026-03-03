@@ -2,17 +2,18 @@
 % Please edit documentation in R/basis.R
 \name{pairwise_basis}
 \alias{pairwise_basis}
-\title{Pairwise log-ratio generator system}
+\title{Pairwise log-ratio generating system}
 \usage{
 pairwise_basis(dim)
 }
 \arguments{
-\item{dim}{An integer indicating the number of components.
-If a dataframe or matrix is provided, the number of components is inferred from the number of columns. If a character vector specifying the names of the parts is provided the number of component is its length.}
+\item{dim}{Number of parts. It can be a single integer, a matrix or data
+frame, or a character vector of part names.}
 }
 \value{
-matrix
+A matrix, or a sparse matrix for large dimensions, whose columns
+  represent all pairwise log-ratio generators.
 }
 \description{
-The function returns all combinations of pairs of log-ratios.
+Construct the system of all pairwise log-ratios between parts.
 }

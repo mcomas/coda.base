@@ -7,25 +7,27 @@
 clr_basis(dim)
 }
 \arguments{
-\item{dim}{An integer indicating the number of components.
-If a dataframe or matrix is provided, the number of components is inferred from the number of columns. If a character vector specifying the names of the parts is provided the number of component is its length.}
+\item{dim}{Number of parts. It can be a single integer, a matrix or data
+frame, or a character vector of part names.}
 }
 \value{
-matrix
+A square matrix defining the clr coordinate system.
 }
 \description{
-Compute the transformation matrix to express a composition using
-the linearly dependant centered log-ratio coordinates.
+Construct the transformation matrix associated with centered log-ratio (clr)
+coordinates.
+}
+\details{
+CLR coordinates are linearly dependent and lie in the \eqn{D - 1}
+dimensional clr-plane.
 }
 \examples{
-(B <- clr_basis(5))
-# CLR coordinates are linearly dependant coordinates.
-(clr_coordinates <- coordinates(c(1,2,3,4,5), B))
-# The sum of all coordinates equal to zero
+B <- clr_basis(5)
+clr_coordinates <- coordinates(c(1, 2, 3, 4, 5), B)
 sum(clr_coordinates) < 1e-15
+
 }
 \references{
-Aitchison, J. (1986)
-\emph{The Statistical Analysis of Compositional Data}.
-Monographs on Statistics and Applied Probability. Chapman & Hall Ltd., London (UK). 416p.
+Aitchison, J. (1986). \emph{The Statistical Analysis of Compositional Data}.
+Chapman & Hall, London.
 }

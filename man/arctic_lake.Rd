@@ -11,6 +11,8 @@ An object of class \code{data.frame} with 39 rows and 5 columns.
 arctic_lake
 }
 \description{
-The arctic lake data set records the [sand, silt, clay] compositions of 39 sediment
+The `arctic_lake` data set records the three-part composition
+\eqn{[sand, silt, clay]} of 39 sediment samples collected at different water
+depths in an Arctic lake.
 }
 \keyword{datasets}

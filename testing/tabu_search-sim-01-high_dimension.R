@@ -13,13 +13,30 @@ for(d in 5:50){
   SBP_exact = sign(PB)
 
   X = composition(H %*% EIG$vectors, basis = PB)
-  SBP_ts = pb_tabu_search(X, iter = floor(0.5 * ncol(X)))
+  SBP_ts = pb_tabu_search_rcpp(X, iter = floor(0.5 * ncol(X)))
 
   cat(sprintf("D:%d\tOptimum: %d\tStep: %d\n",
               d+1,
               all(SBP_ts == SBP_exact | SBP_ts == -1*SBP_exact),
               attr(SBP_ts, 'max_steps')))
 }
+
+d = 100
+H = rmvnorm(1000, rep(0, d))
+S = cov(H)
+EIG = eigen(S)
+
+PB1 = sample(c(-1,0,1), d+1, replace = TRUE)
+PB = sbp_basis(cbind(PB1), fill = TRUE)
+SBP_exact = sign(PB)
+
+X = composition(H %*% EIG$vectors, basis = PB)
+SBP_ts = pb_tabu_search_rcpp(X, iter = floor(0.5 * ncol(X)))
+
+cat(sprintf("D:%d\tOptimum: %d\tStep: %d\n",
+            d+1,
+            all(SBP_ts == SBP_exact | SBP_ts == -1*SBP_exact),
+            attr(SBP_ts, 'max_steps')))
 
 #
 # set.seed(1)

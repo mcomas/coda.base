@@ -3,19 +3,19 @@
 \docType{data}
 \name{parliament2017}
 \alias{parliament2017}
-\title{Results of catalan parliament elections in 2017 by regions.}
+\title{Catalan Parliament election results in 2017 by region}
 \format{
 A data frame with 42 rows and 9 variables:
 \describe{
-\item{com}{Region}
-\item{cs}{Votes to Ciutadans party}
-\item{jxcat}{Votes to Junts per Catalunya party}
-\item{erc}{Votes to Esquerra republicana de Catalunya party}
-\item{psc}{Votes to Partit socialista de Catalunya party}
-\item{catsp}{Votes to Catalunya si que es pot party}
-\item{cup}{Votes to Candidatura d'unitat popular party}
-\item{pp}{Votes to Partit popular party}
-\item{other}{Votes to other parties}
+  \item{com}{Region}
+  \item{cs}{Votes for the Ciutadans party}
+  \item{jxcat}{Votes for the Junts per Catalunya party}
+  \item{erc}{Votes for the Esquerra Republicana de Catalunya party}
+  \item{psc}{Votes for the Partit Socialista de Catalunya party}
+  \item{catsp}{Votes for the Catalunya Sí que es Pot party}
+  \item{cup}{Votes for the Candidatura d'Unitat Popular party}
+  \item{pp}{Votes for the Partit Popular party}
+  \item{other}{Votes for other parties}
 }
 }
 \source{
@@ -25,6 +25,7 @@ A data frame with 42 rows and 9 variables:
 parliament2017
 }
 \description{
-Results of catalan parliament elections in 2017 by regions.
+The `parliament2017` data set contains the results of the 2017 Catalan
+Parliament election aggregated by region.
 }
 \keyword{datasets}

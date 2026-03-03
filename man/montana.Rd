@@ -3,7 +3,7 @@
 \docType{data}
 \name{montana}
 \alias{montana}
-\title{Concentration of minor elements in carbon ashes}
+\title{Concentration of minor elements in coal ashes}
 \format{
 An object of class \code{data.frame} with 229 rows and 6 columns.
 }
@@ -11,23 +11,13 @@ An object of class \code{data.frame} with 229 rows and 6 columns.
 montana
 }
 \description{
-The montana data set consists of 229 samples of the concentration (in ppm) of
-minor elements [Cr, Cu, Hg, U, V] in carbon ashes from the Fort Union
-formation (Montana, USA), side of the Powder River Basin. The formation is
-mostly Palaeocene in age, and the coal is the result of deposition in
-conditions ranging from fluvial to lacustrine. All samples were taken from
-the same seam at different sites over an area of 430 km by 300 km, which
-implies that on average, the sampling spacing is 24 km. Using the spatial
-coordinates of the data, a semivariogram analysis was conducted for each
-chemical element in order to check for a potential spatial dependence
-structure in the data (not shown here). No spatial dependence patterns
-were observed for any component, which allowed us to assume an independence
-of the chemical samples at different locations.
+The `montana` data set contains 229 samples of the concentration (in ppm) of
+five minor elements \eqn{[Cr, Cu, Hg, U, V]} in coal ashes from the Fort
+Union formation (Montana, USA), in the Powder River Basin.
 
-The aforementioned chemical components actually represent a fully observed
-subcomposition of a much larger chemical composition. The five elements are
-not closed to a constant sum. Note that, as the samples are expressed in
-parts per million and all concentrations were originally measured, a residual
-element could be defined to fill up the gap to 10^6.
+The five measured elements form a fully observed subcomposition of a much
+larger chemical composition. Since the data are given in parts per million and
+all concentrations were measured, a residual component could in principle be
+added to close the compositions to \eqn{10^6}.
 }
 \keyword{datasets}

@@ -11,21 +11,24 @@ An object of class \code{data.frame} with 25 rows and 13 columns.
 alimentation
 }
 \description{
-The alimentation data set contains the percentages of consumption of several
-types of food in 25 European countries during the 80s. The categories are:
-* RM: red meat (pork, veal, beef),
-* WM: white meat (chicken),
-* E: eggs,
-* M: milk,
-* F: fish,
-* C: cereals,
-* S: starch (potatoes),
-* N: nuts, and
-* FV: fruits and vegetables.
+The `alimentation` data set contains the percentage composition of food
+consumption in 25 European countries during the 1980s. The food categories
+are:
+
+\itemize{
+  \item `RM`: red meat (pork, veal, beef),
+  \item `WM`: white meat (chicken),
+  \item `E`: eggs,
+  \item `M`: milk,
+  \item `F`: fish,
+  \item `C`: cereals,
+  \item `S`: starch (potatoes),
+  \item `N`: nuts,
+  \item `FV`: fruits and vegetables.
 }
-\details{
-Moreover, the dataset contains a categorical variable that
-shows if the country is from the North or a Southern Mediterranean country. In
-addition, the countries are classified as Eastern European or as Western European.
+
+The data set also contains categorical variables indicating whether the
+country belongs to the North or South/Mediterranean group, and whether it is
+an Eastern or Western European country.
 }
 \keyword{datasets}

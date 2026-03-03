@@ -2,7 +2,7 @@
 % Please edit documentation in R/basis.R
 \name{pb_basis}
 \alias{pb_basis}
-\title{Isometric log-ratio basis based on Principal Balances.}
+\title{Principal balance basis}
 \usage{
 pb_basis(
   X,
@@ -14,47 +14,63 @@ pb_basis(
 )
 }
 \arguments{
-\item{X}{compositional dataset}
+\item{X}{Compositional data set.}
 
-\item{method}{method to be used with Principal Balances. Methods available are: 'exact', 'constrained' or 'cluster'.}
+\item{method}{Method used to construct the principal balances. One of
+`"exact"`, `"constrained"`, or `"cluster"`.}
 
-\item{constrained.criterion}{Criterion used to compare the partition and the principal balance. Either `variance` (default) or `angle`.}
+\item{constrained.criterion}{Criterion used by the constrained method.
+Either `"variance"` (default) or `"angle"`.}
 
-\item{cluster.method}{Method to be used with the hclust function (default: `ward.D2`) or any other method available in  hclust function}
+\item{cluster.method}{Linkage criterion passed to
+\code{\link[stats]{hclust}} when `method = "cluster"`.}
 
-\item{ordering}{should the principal balances found be returned ordered? (first column, first
-principal balance and so on)}
+\item{ordering}{Logical; if `TRUE`, reorder balances by decreasing explained
+variance.}
 
-\item{...}{parameters passed to hclust function}
+\item{...}{Additional arguments passed to \code{\link[stats]{hclust}}.}
 }
 \value{
-matrix
+A matrix whose columns are principal balances.
 }
 \description{
-Exact method to calculate the principal balances of a compositional dataset. Different methods to approximate the principal balances of a compositional dataset are also included.
+Construct a basis of principal balances for a compositional data set.
+}
+\details{
+Several methods are available:
+\itemize{
+\item `"exact"`: exact computation of principal balances,
+\item `"constrained"`: constrained approximation based on a target criterion,
+\item `"cluster"`: approximation based on hierarchical clustering.
+}
 }
 \examples{
 set.seed(1)
-X = matrix(exp(rnorm(5*100)), nrow=100, ncol=5)
+X <- matrix(exp(rnorm(5 * 100)), nrow = 100, ncol = 5)
 
-# Optimal variance obtained with Principal components
-(v1 <- apply(coordinates(X, 'pc'), 2, var))
-# Optimal variance obtained with Principal balances
-(v2 <- apply(coordinates(X,pb_basis(X, method='exact')), 2, var))
-# Solution obtained using constrained method
-(v3 <- apply(coordinates(X,pb_basis(X, method='constrained')), 2, var))
-# Solution obtained using Ward method
-(v4 <- apply(coordinates(X,pb_basis(X, method='cluster')), 2, var))
+v1 <- apply(coordinates(X, "pc"), 2, var)
+v2 <- apply(coordinates(X, pb_basis(X, method = "exact")), 2, var)
+v3 <- apply(coordinates(X, pb_basis(X, method = "constrained")), 2, var)
+v4 <- apply(coordinates(X, pb_basis(X, method = "cluster")), 2, var)
 
-# Plotting the variances
-barplot(rbind(v1,v2,v3,v4), beside = TRUE, ylim = c(0,2),
-        legend = c('Principal Components','PB (Exact method)',
-                   'PB (Constrained)','PB (Ward approximation)'),
-        names = paste0('Comp.', 1:4), args.legend = list(cex = 0.8), ylab = 'Variance')
+barplot(
+  rbind(v1, v2, v3, v4),
+  beside = TRUE,
+  ylim = c(0, 2),
+  legend = c(
+    "Principal Components",
+    "PB (Exact method)",
+    "PB (Constrained)",
+    "PB (Ward approximation)"
+  ),
+  names = paste0("Comp.", 1:4),
+  args.legend = list(cex = 0.8),
+  ylab = "Variance"
+)
 
 }
 \references{
-Martín-Fernández, J.A., Pawlowsky-Glahn, V., Egozcue, J.J., Tolosana-Delgado R. (2018).
-Advances in Principal Balances for Compositional Data.
-\emph{Mathematical Geosciencies}, 50, 273-298.
+Martín-Fernández, J. A., Pawlowsky-Glahn, V., Egozcue, J. J., &
+Tolosana-Delgado, R. (2018). \emph{Advances in Principal Balances for
+Compositional Data}. Mathematical Geosciences, 50, 273--298.
 }

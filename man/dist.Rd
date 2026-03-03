@@ -7,33 +7,35 @@
 dist(x, method = "euclidean", ...)
 }
 \arguments{
-\item{x}{compositions
-method}
+\item{x}{A data matrix whose rows are compositions.}
 
-\item{method}{the distance measure to be used. This must be one of "aitchison", "euclidean", "maximum",
-"manhattan", "canberra", "binary" or "minkowski". Any unambiguous substring can be given.}
+\item{method}{The distance measure to be used. This must be one of
+\code{"aitchison"}, \code{"euclidean"}, \code{"maximum"},
+\code{"manhattan"}, \code{"canberra"}, \code{"binary"}, or
+\code{"minkowski"}. Any unambiguous abbreviation can be given.}
 
-\item{...}{arguments passed to \code{\link[stats]{dist}} function}
+\item{...}{Additional arguments passed to \code{\link[stats]{dist}}.}
 }
 \value{
-\code{dist} returns an object of class "dist".
+An object of class \code{"dist"}.
 }
 \description{
-This function overwrites \code{\link[stats]{dist}} function to contain Aitchison distance between
-compositions.
+Compute a distance matrix for compositional data, including the Aitchison
+distance as an extension of \code{\link[stats]{dist}}.
 }
 \examples{
-X = exp(matrix(rnorm(10*50), ncol=50, nrow=10))
+X <- exp(matrix(rnorm(10 * 50), ncol = 50, nrow = 10))
 
-(d <- dist(X, method = 'aitchison'))
+(d <- dist(X, method = "aitchison"))
 plot(hclust(d))
 
 # In contrast to Euclidean distance
-dist(rbind(c(1,1,1), c(100, 100, 100)), method = 'euc') # method = 'euclidean'
-# using Aitchison distance, only relative information is of importance
-dist(rbind(c(1,1,1), c(100, 100, 100)), method = 'ait') # method = 'aitchison'
+dist(rbind(c(1, 1, 1), c(100, 100, 100)), method = "euc")
+
+# Using Aitchison distance, only relative information is of importance
+dist(rbind(c(1, 1, 1), c(100, 100, 100)), method = "ait")
 
 }
 \seealso{
-See functions \code{\link[stats]{dist}}.
+\code{\link[stats]{dist}}
 }

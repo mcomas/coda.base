@@ -7,30 +7,29 @@
 alr_basis(dim, denominator = NULL, numerator = NULL)
 }
 \arguments{
-\item{dim}{An integer indicating the number of components.
-If a dataframe or matrix is provided, the number of components is inferred from the number of columns. If a character vector specifying the names of the parts is provided the number of component is its length.}
+\item{dim}{Number of parts. It can be a single integer, a matrix or data
+frame, or a character vector of part names.}
 
-\item{denominator}{part used as denominator (default behaviour is to use last part)}
+\item{denominator}{Part used as denominator. By default, the last part is
+used.}
 
-\item{numerator}{parts to be used as numerator. By default all except the denominator parts are chosen following original order.}
+\item{numerator}{Parts used as numerators. By default, all parts except the
+denominator are used, preserving their original order.}
 }
 \value{
-matrix
+A matrix defining the alr coordinate system.
 }
 \description{
-Compute the transformation matrix to express a composition using the oblique additive log-ratio
+Construct the transformation matrix associated with additive log-ratio (alr)
 coordinates.
 }
 \examples{
 alr_basis(5)
-# Third part is used as denominator
 alr_basis(5, 3)
-# Third part is used as denominator, and
-# other parts are rearranged
-alr_basis(5, 3, c(1,5,2,4))
+alr_basis(5, 3, c(1, 5, 2, 4))
+
 }
 \references{
-Aitchison, J. (1986)
-\emph{The Statistical Analysis of Compositional Data}.
-Monographs on Statistics and Applied Probability. Chapman & Hall Ltd., London (UK). 416p.
+Aitchison, J. (1986). \emph{The Statistical Analysis of Compositional Data}.
+Chapman & Hall, London.
 }

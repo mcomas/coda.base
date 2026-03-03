@@ -11,23 +11,22 @@ An object of class \code{data.frame} with 49 rows and 5 columns.
 blood_mn
 }
 \description{
-In humans the main blood group systems are the ABO system, the Rh system and
-the MN system. The MN blood system is a system of blood antigens also related
-to proteins of the red blood cell plasma membrane. The inheritance pattern of the
-MN blood system is autosomal with codominance, a type of lack of dominance in
-which the heterozygous manifests a phenotype totally distinct from the homozygous.
-The possible phenotypical forms are three blood types: type M blood, type
-N blood and type MN blood. The frequencies of M, N and MN blood types vary
-widely depending on the ethnic population. However, the Hardy-Weinberg
-principle states that allele and genotype frequencies in a population will
-remain constant from generation to generation in the absence of other
-evolutionary influences. This implies that, in the long run, it holds that
+In humans, the main blood group systems are the ABO system, the Rh system,
+and the MN system. The MN blood system is related to proteins of the red
+blood cell plasma membrane. Its inheritance pattern is autosomal with
+codominance, meaning that the heterozygous phenotype is distinct from both
+homozygous phenotypes.
 
-\eqn{\frac{x_{MM}x_{NN}}{x_{MN}} = \frac{1}{4}}{ (x_MM x_NN) / x_MN = 1/4}
+The three phenotypes are M, N, and MN. Their frequencies vary across
+populations. Under the Hardy-Weinberg principle, allele and genotype
+frequencies remain constant across generations in the absence of evolutionary
+forces, implying that
 
-where xM M and xN N are the genotype relative frequencies of MM and NN
-homozygotes, respectively, and xM N is the genotype relative frequency
-of MN heterozygotes. This principle was named after G.H. Hardy and W.
-Weinberg demonstrated it mathematically.
+\eqn{\frac{x_{MM} x_{NN}}{x_{MN}^2} = \frac{1}{4}}{
+(x_MM x_NN) / x_MN^2 = 1/4
+}
+
+where \eqn{x_{MM}} and \eqn{x_{NN}} are the genotype frequencies of the
+homozygotes and \eqn{x_{MN}} is the genotype frequency of heterozygotes.
 }
 \keyword{datasets}
