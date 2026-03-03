@@ -253,11 +253,11 @@ cdp_partition <- function(ncomp) {
 #' Compute orthonormal ilr bases associated with conditioning patterns on the
 #' parts of a composition.
 #'
-#' Each column of `C` defines one conditioning pattern. For a given column, the
-#' ilr basis is constructed by separating the parts marked with `0` from the
-#' parts marked with a positive value.
+#' Each row of `C` defines one conditioning pattern. For a given row, the ilr
+#' basis is constructed by separating the parts marked with `0` from the parts
+#' marked with a positive value.
 #'
-#' If a column contains `nz` zeros, then:
+#' If a conditioning row contains `nz` zeros, then:
 #' \itemize{
 #'   \item the first `nz - 1` coordinates describe the internal log-ratio
 #'   structure of the parts marked with `0`,
@@ -270,20 +270,210 @@ cdp_partition <- function(ncomp) {
 #' Thus, each basis preserves the split defined by the conditioning pattern and
 #' completes it to an orthonormal basis of the clr-plane.
 #'
-#' @param C A numeric matrix with one conditioning pattern per column. Rows
-#'   correspond to parts. For each column, entries equal to `0` define one block
-#'   and positive entries define the complementary block.
+#' @param C A numeric matrix or data frame with one conditioning pattern per
+#'   row. Columns correspond to parts. For each row, entries equal to `0`
+#'   define one block and positive entries define the complementary block.
 #'
-#' @return A three-dimensional array of dimension `(D - 1, D, ncol(C))`, where
+#' @return A three-dimensional array of dimension `(D - 1, D, nrow(C))`, where
 #'   `D` is the number of parts. Each slice contains one orthonormal ilr basis.
 #'
 #' @examples
-#' C <- cbind(
+#' C <- rbind(
 #'   c(0, 0, 1, 1, 0),
 #'   c(0, 1, 0, 1, 0)
 #' )
 #'
 #' conditional_obasis(C)
 #'
+#' Cdf <- data.frame(
+#'   a = c(0, 0),
+#'   b = c(0, 1),
+#'   c = c(1, 0),
+#'   d = c(1, 1),
+#'   e = c(0, 0)
+#' )
+#'
+#' conditional_obasis(Cdf)
+#'
 #' @export
-conditional_obasis <- c_conditional_obasis
+conditional_obasis <- function(C) {
+  if (is.data.frame(C)) {
+    C <- as.matrix(C)
+  }
+
+  if (!is.matrix(C)) {
+    stop("'C' must be a matrix or data.frame.", call. = FALSE)
+  }
+
+  if (!is.numeric(C)) {
+    stop("'C' must be numeric.", call. = FALSE)
+  }
+
+  c_conditional_obasis(t(C))
+}
+
+#' Conditional orthonormal basis for zeros and missing values
+#'
+#' Compute orthonormal ilr bases adapted to patterns of missing values and
+#' structural zeros.
+#'
+#' Each row of `X` is treated as one observation. For each observation, parts are
+#' split into three ordered blocks:
+#' \itemize{
+#'   \item missing values (`NA`),
+#'   \item zeros,
+#'   \item strictly positive values.
+#' }
+#'
+#' The resulting basis is constructed so that:
+#' \itemize{
+#'   \item the first coordinates describe the internal structure of the `NA` block,
+#'   \item the next coordinate contrasts the `NA` block with the positive block,
+#'   \item the following coordinates describe the internal structure of the zero block,
+#'   \item the next coordinate contrasts the zero block with the positive block,
+#'   \item the remaining coordinates describe the internal structure of the
+#'   positive block.
+#' }
+#'
+#' @param X A numeric matrix or data frame with observations in rows and parts in
+#'   columns.
+#'
+#' @return A three-dimensional array of dimension `(D - 1, D, nrow(X))`, where
+#'   `D` is the number of parts. Each slice contains one orthonormal ilr basis.
+#'
+#' @examples
+#' X <- rbind(
+#'   c(1, NA, 0, 2),
+#'   c(NA, 3, 0, 4),
+#'   c(1, 2, 3, 4)
+#' )
+#'
+#' zero_na_conditional_obasis(X)
+#'
+#' Xdf <- data.frame(
+#'   a = c(1, NA, 1),
+#'   b = c(NA, 3, 2),
+#'   c = c(0, 0, 3),
+#'   d = c(2, 4, 4)
+#' )
+#'
+#' zero_na_conditional_obasis(Xdf)
+#'
+#' @export
+zero_na_conditional_obasis <- function(X) {
+  if (is.data.frame(X)) {
+    X <- as.matrix(X)
+  }
+
+  if (!is.matrix(X)) {
+    stop("'X' must be a matrix or data.frame.", call. = FALSE)
+  }
+
+  if (!is.numeric(X)) {
+    stop("'X' must be numeric.", call. = FALSE)
+  }
+
+  c_zero_na_conditional_obasis(t(X))
+}
+
+#' Generate compositional data with zeros and missing values
+#'
+#' @description
+#' Simulate compositional data and optionally introduce structural zeros
+#' (interpreted as values below a detection limit) and missing values.
+#'
+#' The function first generates a compositional data set `X0`, then creates a
+#' modified version `X` by:
+#' \itemize{
+#'   \item replacing values below `dl_par` by zero, if `zeros = TRUE`,
+#'   \item introducing missing values at random, if `missings = TRUE`.
+#' }
+#'
+#' A matrix of detection limits `DL` is also returned. It contains `dl_par` in
+#' the positions that were censored to zero, and `0` elsewhere.
+#'
+#' @param n Number of observations.
+#' @param d Dimension of the latent coordinate space used to generate the
+#'   compositions.
+#' @param missings Logical; if `TRUE`, introduce missing values at random.
+#' @param zeros Logical; if `TRUE`, replace values below `dl_par` by zero.
+#' @param dl_par Detection-limit threshold used to generate zeros.
+#' @param na_p Probability that any entry is replaced by `NA` when
+#'   `missings = TRUE`.
+#'
+#' @return A list with three components:
+#' \describe{
+#'   \item{X}{The generated compositional data set with simulated zeros and/or missing values.}
+#'   \item{DL}{A matrix of detection limits, with `dl_par` in censored positions and `0` elsewhere.}
+#'   \item{X0}{The original simulated compositional data set before introducing zeros or missing values.}
+#' }
+#'
+#' @details
+#' Compositions are generated from multivariate normal coordinates and mapped to
+#' the simplex through `composition()`. The eigenvector rotation is included to
+#' induce a non-trivial covariance structure in the generated coordinates.
+#'
+#' Missing values are introduced completely at random, independently for each
+#' cell, with probability `na_p`.
+#'
+#' @examples
+#' set.seed(123)
+#' sim <- gen_coda_with_zeros_and_missings(100, 4)
+#'
+#' str(sim)
+#' summary(sim$X0)
+#' summary(sim$X)
+#' table(sim$X == 0, useNA = "ifany")
+#'
+#' @export
+gen_coda_with_zeros_and_missings <- function(n, d,
+                                          missings = TRUE,
+                                          zeros = TRUE,
+                                          dl_par = 0.05,
+                                          na_p = 0.15) {
+  if (!is.numeric(n) || length(n) != 1 || is.na(n) || n < 1) {
+    stop("'n' must be a positive integer.", call. = FALSE)
+  }
+  if (!is.numeric(d) || length(d) != 1 || is.na(d) || d < 1) {
+    stop("'d' must be a positive integer.", call. = FALSE)
+  }
+  if (!is.numeric(dl_par) || length(dl_par) != 1 || is.na(dl_par) || dl_par <= 0) {
+    stop("'dl_par' must be a positive number.", call. = FALSE)
+  }
+  if (!is.numeric(na_p) || length(na_p) != 1 || is.na(na_p) || na_p < 0 || na_p > 1) {
+    stop("'na_p' must be a number between 0 and 1.", call. = FALSE)
+  }
+
+  n <- as.integer(n)
+  d <- as.integer(d)
+
+  gen_X <- function(n, d) {
+    H <- mvtnorm::rmvnorm(n, rep(0, d))
+    S <- stats::cov(H)
+    EIG <- eigen(S)
+
+    as.matrix(composition(H %*% EIG$vectors))
+  }
+
+  X0 <- gen_X(n, d)
+  X <- X0
+
+  below_dl <- X < dl_par
+  zero_mask <- matrix(FALSE, nrow = nrow(X), ncol = ncol(X))
+
+  if (zeros) {
+    X[below_dl] <- 0
+    zero_mask <- below_dl
+  }
+
+  if (missings) {
+    miss_mask <- matrix(stats::rbinom(length(X), 1, na_p) == 1,
+                        nrow = nrow(X), ncol = ncol(X))
+    X[miss_mask] <- NA
+  }
+
+  DL <- matrix(0, nrow = nrow(X), ncol = ncol(X))
+  DL[zero_mask] <- dl_par
+
+  list(X = X, DL = DL, X0 = X0)
+}

@@ -57,8 +57,16 @@ ilr_to_alr <- function(dim) {
     .Call(`_coda_base_ilr_to_alr`, dim)
 }
 
+c_coda_replacement <- function(tX, tDL, dl_prop = 0.65, eps = 1e-4, parameters = FALSE, debug = FALSE, maxit = 500L) {
+    .Call(`_coda_base_c_coda_replacement`, tX, tDL, dl_prop, eps, parameters, debug, maxit)
+}
+
 c_conditional_obasis <- function(C) {
     .Call(`_coda_base_c_conditional_obasis`, C)
+}
+
+c_zero_na_conditional_obasis <- function(tX) {
+    .Call(`_coda_base_c_zero_na_conditional_obasis`, tX)
 }
 
 find_PB <- function(X) {

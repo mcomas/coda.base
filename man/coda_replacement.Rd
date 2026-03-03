@@ -2,7 +2,7 @@
 % Please edit documentation in R/zero_replacement_imputation.R
 \name{coda_replacement}
 \alias{coda_replacement}
-\title{Replacement of Missing Values and Below-Detection Zeros in Compositional Data}
+\title{Replacement of missing values and below-detection zeros in compositional data}
 \usage{
 coda_replacement(
   X,
@@ -14,44 +14,27 @@ coda_replacement(
 )
 }
 \arguments{
-\item{X}{A compositional dataset: numeric matrix or data frame where rows represent observations and columns represent parts.}
+\item{X}{A compositional data set: numeric matrix or data frame where rows
+represent observations and columns represent parts.}
 
-\item{DL}{An optional matrix or vector of detection limits. If \code{NULL}, the minimum non-zero value in each column of \code{X} is used.}
+\item{DL}{An optional matrix or vector of detection limits. If `NULL`, the
+minimum non-zero value in each column of `X` is used.}
 
-\item{dl_prop}{A numeric value between 0 and 1, used for initialization in the EM algorithm (default is 0.65).}
+\item{dl_prop}{A numeric value between 0 and 1 used for initialization in
+the EM algorithm.}
 
-\item{eps}{A small positive value controlling the convergence criterion for the EM algorithm (default is \code{1e-4}).}
+\item{eps}{Convergence tolerance.}
 
-\item{parameters}{Logical. If \code{TRUE}, returns additional output including estimated multivariate normal parameters (default is \code{FALSE}).}
+\item{parameters}{Logical; if `TRUE`, return additional estimated parameters.}
 
-\item{debug}{Logical. Show the log-likelihood in every iteration.}
+\item{debug}{Logical; if `TRUE`, print the log-likelihood at each iteration.}
 }
 \value{
-If \code{parameters = FALSE}, returns a numeric matrix with imputed values.
-If \code{parameters = TRUE}, returns a list with two components:
-\describe{
-  \item{X_imp}{The imputed compositional data matrix.}
-  \item{info}{A list containing information about the EM algorithm parameters and convergence diagnostics.}
-}
+If `parameters = FALSE`, a numeric matrix with imputed values.
+If `parameters = TRUE`, a list with the estimated clr mean, clr covariance,
+and imputed clr coordinates.
 }
 \description{
-Performs imputation (replacement) of missing values and/or values below the detection limit (BDL) in compositional datasets using the EM-algorithm assuming normality on the Simplex.
-This function is designed to prepare compositional data for subsequent log-ratio transformations.
-}
-\details{
-- Missing values are imputed based on a multivariate normal model on the simplex.
-- Zeros are treated as censored values and replaced accordingly.
-- The EM algorithm iteratively estimates the missing parts and model parameters.
-- To initialize the EM algorithm, zero values (considered below the detection limit) are replaced with a small positive value. Specifically, each zero is replaced by \code{dl_prop} times the detection limit of that part (column). This restrictions is imposed in the geometric mean of the parts with zeros against the non-missing positive values, helping to preserve the compositional structure in the simplex.
-}
-\examples{
-# Simulate compositional data with zeros
-set.seed(123)
-X <- abs(matrix(rnorm(100), ncol = 5))
-X[sample(length(X), 10)] <- 0  # Introduce some zeros
-X[sample(length(X), 10)] <- NA  # Introduce some NAs
-# Apply replacement
-summary(X/rowSums(X, na.rm=TRUE))
-summary(coda_replacement(X))
-
+Performs imputation of missing values and/or values below the detection limit
+in compositional data using an EM algorithm assuming normality on the simplex.
 }

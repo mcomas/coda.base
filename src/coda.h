@@ -25,4 +25,6 @@ arma::mat sparse_coordinates(const arma::mat& X, const arma::sp_mat& B);
 
 arma::mat ilr_to_alr(unsigned int dim);
 
+arma::cube c_zero_na_conditional_obasis(const arma::mat& tX);
+
 #endif

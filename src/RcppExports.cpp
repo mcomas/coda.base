@@ -170,6 +170,23 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// c_coda_replacement
+SEXP c_coda_replacement(const arma::mat& tX, const arma::mat& tDL, const double dl_prop, const double eps, const bool parameters, const bool debug, const unsigned int maxit);
+RcppExport SEXP _coda_base_c_coda_replacement(SEXP tXSEXP, SEXP tDLSEXP, SEXP dl_propSEXP, SEXP epsSEXP, SEXP parametersSEXP, SEXP debugSEXP, SEXP maxitSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type tX(tXSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type tDL(tDLSEXP);
+    Rcpp::traits::input_parameter< const double >::type dl_prop(dl_propSEXP);
+    Rcpp::traits::input_parameter< const double >::type eps(epsSEXP);
+    Rcpp::traits::input_parameter< const bool >::type parameters(parametersSEXP);
+    Rcpp::traits::input_parameter< const bool >::type debug(debugSEXP);
+    Rcpp::traits::input_parameter< const unsigned int >::type maxit(maxitSEXP);
+    rcpp_result_gen = Rcpp::wrap(c_coda_replacement(tX, tDL, dl_prop, eps, parameters, debug, maxit));
+    return rcpp_result_gen;
+END_RCPP
+}
 // c_conditional_obasis
 arma::cube c_conditional_obasis(const arma::mat& C);
 RcppExport SEXP _coda_base_c_conditional_obasis(SEXP CSEXP) {
@@ -178,6 +195,17 @@ BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::mat& >::type C(CSEXP);
     rcpp_result_gen = Rcpp::wrap(c_conditional_obasis(C));
+    return rcpp_result_gen;
+END_RCPP
+}
+// c_zero_na_conditional_obasis
+arma::cube c_zero_na_conditional_obasis(const arma::mat& tX);
+RcppExport SEXP _coda_base_c_zero_na_conditional_obasis(SEXP tXSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type tX(tXSEXP);
+    rcpp_result_gen = Rcpp::wrap(c_zero_na_conditional_obasis(tX));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -220,7 +248,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_coda_base_matrix_coordinates", (DL_FUNC) &_coda_base_matrix_coordinates, 2},
     {"_coda_base_sparse_coordinates", (DL_FUNC) &_coda_base_sparse_coordinates, 2},
     {"_coda_base_ilr_to_alr", (DL_FUNC) &_coda_base_ilr_to_alr, 1},
+    {"_coda_base_c_coda_replacement", (DL_FUNC) &_coda_base_c_coda_replacement, 7},
     {"_coda_base_c_conditional_obasis", (DL_FUNC) &_coda_base_c_conditional_obasis, 1},
+    {"_coda_base_c_zero_na_conditional_obasis", (DL_FUNC) &_coda_base_c_zero_na_conditional_obasis, 1},
     {"_coda_base_find_PB", (DL_FUNC) &_coda_base_find_PB, 1},
     {"_coda_base_get_balance_using_pc", (DL_FUNC) &_coda_base_get_balance_using_pc, 2},
     {NULL, NULL, 0}
