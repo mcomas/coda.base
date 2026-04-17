@@ -12,13 +12,12 @@ while(.CONT){
   if(abs(v0[1]-v0_opt[1]) > 0.001) .CONT = FALSE
 }
 
+
 var(coordinates(X, pb_basis(X, method = 'constrained'))[,1])
 var(coordinates(X, pb_basis(X, method = 'exact'))[,1])
-
-source('testing/tabu_search_functions_2.R')
-
-PB_tabu_s = pb_tabu_search(X)
-PB_exact = sign(pb_basis(X, method = 'exact'))
-
-all( (PB_tabu_s == PB_exact) | (PB_tabu_s == -PB_exact) )
+TS = partial_pb_tabu_search(X, lapply(1:ncol(X), identity),
+                            iter = 10, tabu_size = 100, debug = TRUE)
+TS$variance
+TS$iter_best
+TS$tabu_size
 

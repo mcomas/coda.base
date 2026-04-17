@@ -2,6 +2,145 @@ getDim <- function(X) {
   if (is.vector(X)) length(X) else NCOL(X)
 }
 
+#' Closure operation for compositional data
+#'
+#' Applies the closure operation to a numeric vector, matrix or data frame so
+#' that each composition sums to a prescribed constant \code{k}.
+#'
+#' If \code{X} is:
+#' \itemize{
+#'   \item a vector, the returned vector sums to \code{k};
+#'   \item a matrix or data frame, closure is applied row-wise, and each row
+#'   sums to the corresponding value of \code{k}.
+#' }
+#'
+#' The argument \code{k} may be:
+#' \itemize{
+#'   \item a single positive number, recycled to all rows;
+#'   \item a numeric vector of length \code{nrow(X)}, specifying a different
+#'   closure constant for each row.
+#' }
+#'
+#' @param X A numeric vector, matrix, data frame, or an object coercible to one
+#'   of these. For matrices and data frames, rows are interpreted as
+#'   compositions.
+#' @param k A numeric vector of length 1 or length \code{nrow(X)}. Must contain
+#'   strictly positive values.
+#'
+#' @return
+#' If \code{X} is a vector, a numeric vector of the same length.
+#'
+#' If \code{X} is a matrix, a numeric matrix with the same dimensions,
+#' dimnames, and row-wise sums equal to \code{k}.
+#'
+#' If \code{X} is a data frame, a data frame with the same row and column names,
+#' and row-wise sums equal to \code{k}.
+#'
+#' @details
+#' For a composition \eqn{x = (x_1, \dots, x_D)} with positive sum,
+#' the closure to constant \eqn{k} is
+#' \deqn{C(x) = k \frac{x}{\sum_{j=1}^D x_j}.}
+#'
+#' This function requires all entries of \code{X} to be finite and
+#' non-negative, and every row sum (or the vector sum) must be strictly
+#' positive.
+#'
+#' @examples
+#' closure(c(2, 3, 5))
+#' closure(c(2, 3, 5), k = 100)
+#'
+#' X <- matrix(c(1, 1, 2,
+#'               2, 3, 5), nrow = 2, byrow = TRUE)
+#' closure(X)
+#' closure(X, k = c(1, 100))
+#'
+#' df <- data.frame(a = c(1, 2), b = c(1, 3), c = c(2, 5))
+#' closure(df, k = 10)
+#'
+#' @export
+closure <- function(X, k = 1) {
+
+  if (is.atomic(X) && is.null(dim(X))) {
+    if (!is.numeric(X)) {
+      stop("'X' must be numeric.")
+    }
+    if (length(k) != 1L) {
+      stop("If 'X' is a vector, 'k' must have length 1.")
+    }
+    if (!is.numeric(k) || !is.finite(k) || k <= 0) {
+      stop("'k' must be a strictly positive finite number.")
+    }
+    if (any(!is.finite(X))) {
+      stop("'X' must contain only finite values.")
+    }
+    if (any(X < 0)) {
+      stop("'X' must contain non-negative values.")
+    }
+
+    s <- sum(X)
+    if (s <= 0) {
+      stop("The sum of 'X' must be strictly positive.")
+    }
+
+    return(k * X / s)
+  }
+
+  is_df <- is.data.frame(X)
+
+  if (is_df) {
+    X_mat <- as.matrix(X)
+  } else if (is.matrix(X)) {
+    X_mat <- X
+  } else {
+    X_mat <- tryCatch(as.matrix(X), error = function(e) NULL)
+    if (is.null(X_mat)) {
+      stop("'X' must be a numeric vector, matrix, data.frame, or coercible to matrix.")
+    }
+  }
+
+  if (!is.numeric(X_mat)) {
+    stop("'X' must be numeric.")
+  }
+  if (any(!is.finite(X_mat))) {
+    stop("'X' must contain only finite values.")
+  }
+  if (any(X_mat < 0)) {
+    stop("'X' must contain non-negative values.")
+  }
+
+  n <- nrow(X_mat)
+  if (is.null(n)) {
+    stop("Could not determine 'nrow(X)'.")
+  }
+
+  if (!(length(k) %in% c(1L, n))) {
+    stop("'k' must have length 1 or length nrow(X).")
+  }
+  if (!is.numeric(k) || any(!is.finite(k)) || any(k <= 0)) {
+    stop("'k' must contain strictly positive finite values.")
+  }
+
+  if (length(k) == 1L) {
+    k <- rep.int(k, n)
+  }
+
+  rs <- rowSums(X_mat)
+  if (any(rs <= 0)) {
+    stop("All row sums of 'X' must be strictly positive.")
+  }
+
+  out <- X_mat / rs
+  out <- out * k
+
+  if (is_df) {
+    out <- as.data.frame(out, stringsAsFactors = FALSE)
+    names(out) <- names(X)
+    rownames(out) <- rownames(X)
+  }
+
+  out
+}
+
 #' Variation array is returned.
 #'
 #' @param X Compositional dataset
@@ -250,31 +389,52 @@ cdp_partition <- function(ncomp) {
 
 #' Conditional orthonormal basis
 #'
-#' Compute orthonormal ilr bases associated with conditioning patterns on the
-#' parts of a composition.
+#' Compute orthonormal ilr bases adapted to row-wise conditioning patterns.
 #'
-#' Each row of `C` defines one conditioning pattern. For a given row, the ilr
-#' basis is constructed by separating the parts marked with `0` from the parts
-#' marked with a positive value.
+#' Each row of `X` defines one conditioning pattern on the parts of a
+#' composition. According to `scheme`, the parts are split into ordered blocks:
 #'
-#' If a conditioning row contains `nz` zeros, then:
 #' \itemize{
-#'   \item the first `nz - 1` coordinates describe the internal log-ratio
-#'   structure of the parts marked with `0`,
-#'   \item the coordinate `nz` describes the balance between the block of parts
-#'   marked with `0` and the block of parts marked with positive values,
-#'   \item the remaining coordinates describe the internal log-ratio structure
-#'   of the parts marked with positive values.
+#'   \item `"zero"`: parts equal to `0` and parts with strictly positive values,
+#'   \item `"zero_na"`: missing values (`NA`), zeros, and strictly positive values.
 #' }
 #'
-#' Thus, each basis preserves the split defined by the conditioning pattern and
-#' completes it to an orthonormal basis of the clr-plane.
+#' For each row, the function constructs an orthonormal basis of the clr-plane
+#' preserving the block structure induced by the selected scheme.
 #'
-#' @param C A numeric matrix or data frame with one conditioning pattern per
-#'   row. Columns correspond to parts. For each row, entries equal to `0`
-#'   define one block and positive entries define the complementary block.
+#' Under `scheme = "zero"`, if a row contains `nz` zeros, then:
+#' \itemize{
+#'   \item the first `nz - 1` coordinates describe the internal log-ratio
+#'   structure of the zero block,
+#'   \item the coordinate `nz` describes the balance between the zero block and
+#'   the positive block,
+#'   \item the remaining coordinates describe the internal log-ratio structure
+#'   of the positive block.
+#' }
 #'
-#' @return A three-dimensional array of dimension `(D - 1, D, nrow(C))`, where
+#' Under `scheme = "zero_na"`, the blocks are ordered as:
+#' \itemize{
+#'   \item missing values (`NA`),
+#'   \item zeros,
+#'   \item strictly positive values.
+#' }
+#'
+#' In this case:
+#' \itemize{
+#'   \item the first coordinates describe the internal structure of the `NA` block,
+#'   \item the next coordinate contrasts the `NA` block with the positive block,
+#'   \item the following coordinates describe the internal structure of the zero block,
+#'   \item the next coordinate contrasts the zero block with the positive block,
+#'   \item the remaining coordinates describe the internal structure of the
+#'   positive block.
+#' }
+#'
+#' @param X A numeric matrix or data frame with one observation or conditioning
+#'   pattern per row and one part per column.
+#' @param scheme Character string indicating the conditioning scheme. Possible
+#'   values are `"zero"` and `"zero_na"`. Default is `"zero"`.
+#'
+#' @return A three-dimensional array of dimension `(D - 1, D, nrow(X))`, where
 #'   `D` is the number of parts. Each slice contains one orthonormal ilr basis.
 #'
 #' @examples
@@ -285,82 +445,18 @@ cdp_partition <- function(ncomp) {
 #'
 #' conditional_obasis(C)
 #'
-#' Cdf <- data.frame(
-#'   a = c(0, 0),
-#'   b = c(0, 1),
-#'   c = c(1, 0),
-#'   d = c(1, 1),
-#'   e = c(0, 0)
-#' )
-#'
-#' conditional_obasis(Cdf)
-#'
-#' @export
-conditional_obasis <- function(C) {
-  if (is.data.frame(C)) {
-    C <- as.matrix(C)
-  }
-
-  if (!is.matrix(C)) {
-    stop("'C' must be a matrix or data.frame.", call. = FALSE)
-  }
-
-  if (!is.numeric(C)) {
-    stop("'C' must be numeric.", call. = FALSE)
-  }
-
-  c_conditional_obasis(t(C))
-}
-
-#' Conditional orthonormal basis for zeros and missing values
-#'
-#' Compute orthonormal ilr bases adapted to patterns of missing values and
-#' structural zeros.
-#'
-#' Each row of `X` is treated as one observation. For each observation, parts are
-#' split into three ordered blocks:
-#' \itemize{
-#'   \item missing values (`NA`),
-#'   \item zeros,
-#'   \item strictly positive values.
-#' }
-#'
-#' The resulting basis is constructed so that:
-#' \itemize{
-#'   \item the first coordinates describe the internal structure of the `NA` block,
-#'   \item the next coordinate contrasts the `NA` block with the positive block,
-#'   \item the following coordinates describe the internal structure of the zero block,
-#'   \item the next coordinate contrasts the zero block with the positive block,
-#'   \item the remaining coordinates describe the internal structure of the
-#'   positive block.
-#' }
-#'
-#' @param X A numeric matrix or data frame with observations in rows and parts in
-#'   columns.
-#'
-#' @return A three-dimensional array of dimension `(D - 1, D, nrow(X))`, where
-#'   `D` is the number of parts. Each slice contains one orthonormal ilr basis.
-#'
-#' @examples
 #' X <- rbind(
 #'   c(1, NA, 0, 2),
 #'   c(NA, 3, 0, 4),
 #'   c(1, 2, 3, 4)
 #' )
 #'
-#' zero_na_conditional_obasis(X)
-#'
-#' Xdf <- data.frame(
-#'   a = c(1, NA, 1),
-#'   b = c(NA, 3, 2),
-#'   c = c(0, 0, 3),
-#'   d = c(2, 4, 4)
-#' )
-#'
-#' zero_na_conditional_obasis(Xdf)
+#' conditional_obasis(X, scheme = "zero_na")
 #'
 #' @export
-zero_na_conditional_obasis <- function(X) {
+conditional_obasis <- function(X, scheme = c("zero", "zero_na")) {
+  scheme <- match.arg(scheme)
+
   if (is.data.frame(X)) {
     X <- as.matrix(X)
   }
@@ -373,7 +469,19 @@ zero_na_conditional_obasis <- function(X) {
     stop("'X' must be numeric.", call. = FALSE)
   }
 
-  c_zero_na_conditional_obasis(t(X))
+  if (ncol(X) < 2) {
+    stop("'X' must contain at least two parts.", call. = FALSE)
+  }
+
+  out <- switch(
+    scheme,
+    zero = c_conditional_obasis(t(X)),
+    zero_na = c_zero_na_conditional_obasis(t(X))
+  )
+
+  dn <- dimnames(X)
+  dimnames(out) <- list(NULL, dn[[2]], dn[[1]])
+  out
 }
 
 #' Generate compositional data with zeros and missing values

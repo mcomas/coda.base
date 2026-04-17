@@ -77,3 +77,7 @@ get_balance_using_pc <- function(X, angle = FALSE) {
     .Call(`_coda_base_get_balance_using_pc`, X, angle)
 }
 
+partial_pb_tabu_search_cpp <- function(M, lI, bal0, iter, tabu_size, debug = FALSE) {
+    .Call(`_coda_base_partial_pb_tabu_search_cpp`, M, lI, bal0, iter, tabu_size, debug)
+}
+

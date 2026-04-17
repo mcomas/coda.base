@@ -4,38 +4,60 @@
 \alias{conditional_obasis}
 \title{Conditional orthonormal basis}
 \usage{
-conditional_obasis(C)
+conditional_obasis(X, scheme = c("zero", "zero_na"))
 }
 \arguments{
-\item{C}{A numeric matrix or data frame with one conditioning pattern per
-row. Columns correspond to parts. For each row, entries equal to `0`
-define one block and positive entries define the complementary block.}
+\item{X}{A numeric matrix or data frame with one observation or conditioning
+pattern per row and one part per column.}
+
+\item{scheme}{Character string indicating the conditioning scheme. Possible
+values are `"zero"` and `"zero_na"`. Default is `"zero"`.}
 }
 \value{
-A three-dimensional array of dimension `(D - 1, D, nrow(C))`, where
+A three-dimensional array of dimension `(D - 1, D, nrow(X))`, where
   `D` is the number of parts. Each slice contains one orthonormal ilr basis.
 }
 \description{
-Compute orthonormal ilr bases associated with conditioning patterns on the
-parts of a composition.
+Compute orthonormal ilr bases adapted to row-wise conditioning patterns.
 }
 \details{
-Each row of `C` defines one conditioning pattern. For a given row, the ilr
-basis is constructed by separating the parts marked with `0` from the parts
-marked with a positive value.
+Each row of `X` defines one conditioning pattern on the parts of a
+composition. According to `scheme`, the parts are split into ordered blocks:
 
-If a conditioning row contains `nz` zeros, then:
 \itemize{
-  \item the first `nz - 1` coordinates describe the internal log-ratio
-  structure of the parts marked with `0`,
-  \item the coordinate `nz` describes the balance between the block of parts
-  marked with `0` and the block of parts marked with positive values,
-  \item the remaining coordinates describe the internal log-ratio structure
-  of the parts marked with positive values.
+  \item `"zero"`: parts equal to `0` and parts with strictly positive values,
+  \item `"zero_na"`: missing values (`NA`), zeros, and strictly positive values.
 }
 
-Thus, each basis preserves the split defined by the conditioning pattern and
-completes it to an orthonormal basis of the clr-plane.
+For each row, the function constructs an orthonormal basis of the clr-plane
+preserving the block structure induced by the selected scheme.
+
+Under `scheme = "zero"`, if a row contains `nz` zeros, then:
+\itemize{
+  \item the first `nz - 1` coordinates describe the internal log-ratio
+  structure of the zero block,
+  \item the coordinate `nz` describes the balance between the zero block and
+  the positive block,
+  \item the remaining coordinates describe the internal log-ratio structure
+  of the positive block.
+}
+
+Under `scheme = "zero_na"`, the blocks are ordered as:
+\itemize{
+  \item missing values (`NA`),
+  \item zeros,
+  \item strictly positive values.
+}
+
+In this case:
+\itemize{
+  \item the first coordinates describe the internal structure of the `NA` block,
+  \item the next coordinate contrasts the `NA` block with the positive block,
+  \item the following coordinates describe the internal structure of the zero block,
+  \item the next coordinate contrasts the zero block with the positive block,
+  \item the remaining coordinates describe the internal structure of the
+  positive block.
+}
 }
 \examples{
 C <- rbind(
@@ -45,14 +67,12 @@ C <- rbind(
 
 conditional_obasis(C)
 
-Cdf <- data.frame(
-  a = c(0, 0),
-  b = c(0, 1),
-  c = c(1, 0),
-  d = c(1, 1),
-  e = c(0, 0)
+X <- rbind(
+  c(1, NA, 0, 2),
+  c(NA, 3, 0, 4),
+  c(1, 2, 3, 4)
 )
 
-conditional_obasis(Cdf)
+conditional_obasis(X, scheme = "zero_na")
 
 }

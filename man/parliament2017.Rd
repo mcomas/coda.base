@@ -19,7 +19,7 @@ A data frame with 42 rows and 9 variables:
 }
 }
 \source{
-\url{https://www.idescat.cat/tema/elecc}
+Idescat, statistics on Catalan Parliament elections.
 }
 \usage{
 parliament2017

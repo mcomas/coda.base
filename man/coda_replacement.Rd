@@ -33,7 +33,8 @@ the EM algorithm.}
 \item{maxit}{Maximum number of iterations}
 }
 \value{
-If `parameters = FALSE`, a numeric matrix with imputed values.
+If `parameters = FALSE`, the imputed object with the same format as `X`
+(`matrix`, `data.frame` or `tibble`) and preserving original names.
 If `parameters = TRUE`, a list with the estimated clr mean, clr covariance,
 and imputed clr coordinates.
 }
