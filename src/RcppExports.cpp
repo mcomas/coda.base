@@ -232,6 +232,22 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// partial_pb_tabu_search_cpp
+Rcpp::List partial_pb_tabu_search_cpp(const arma::mat& M, const Rcpp::List& lI, const arma::ivec& bal0, const int iter, const int tabu_size, const bool debug);
+RcppExport SEXP _coda_base_partial_pb_tabu_search_cpp(SEXP MSEXP, SEXP lISEXP, SEXP bal0SEXP, SEXP iterSEXP, SEXP tabu_sizeSEXP, SEXP debugSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type M(MSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List& >::type lI(lISEXP);
+    Rcpp::traits::input_parameter< const arma::ivec& >::type bal0(bal0SEXP);
+    Rcpp::traits::input_parameter< const int >::type iter(iterSEXP);
+    Rcpp::traits::input_parameter< const int >::type tabu_size(tabu_sizeSEXP);
+    Rcpp::traits::input_parameter< const bool >::type debug(debugSEXP);
+    rcpp_result_gen = Rcpp::wrap(partial_pb_tabu_search_cpp(M, lI, bal0, iter, tabu_size, debug));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_coda_base_pinv", (DL_FUNC) &_coda_base_pinv, 1},
@@ -253,6 +269,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_coda_base_c_zero_na_conditional_obasis", (DL_FUNC) &_coda_base_c_zero_na_conditional_obasis, 1},
     {"_coda_base_find_PB", (DL_FUNC) &_coda_base_find_PB, 1},
     {"_coda_base_get_balance_using_pc", (DL_FUNC) &_coda_base_get_balance_using_pc, 2},
+    {"_coda_base_partial_pb_tabu_search_cpp", (DL_FUNC) &_coda_base_partial_pb_tabu_search_cpp, 6},
     {NULL, NULL, 0}
 };
 

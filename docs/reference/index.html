@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">coda.base</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.6</span>
       </span>
     </div>
 
@@ -86,7 +86,11 @@
       </tr><tr><td>
           <p><code><a href="cc_basis.html">cc_basis()</a></code> </p>
         </td>
-        <td><p>Isometric Log-Ratio Basis Based on Canonical Correlations</p></td>
+        <td><p>Canonical-correlation log-ratio basis</p></td>
+      </tr><tr><td>
+          <p><code><a href="cdp_basis.html">cdp_basis()</a></code> </p>
+        </td>
+        <td><p>CoDaPack default ilr basis</p></td>
       </tr><tr><td>
           <p><code><a href="cdp_partition.html">cdp_partition()</a></code> </p>
         </td>
@@ -95,6 +99,10 @@
           <p><code><a href="center.html">center()</a></code> </p>
         </td>
         <td><p>Dataset center</p></td>
+      </tr><tr><td>
+          <p><code><a href="closure.html">closure()</a></code> </p>
+        </td>
+        <td><p>Closure operation for compositional data</p></td>
       </tr><tr><td>
           <p><code><a href="clr_basis.html">clr_basis()</a></code> </p>
         </td>
@@ -106,15 +114,19 @@
       </tr><tr><td>
           <p><code><a href="coda_replacement.html">coda_replacement()</a></code> </p>
         </td>
-        <td><p>Replacement of Missing Values and Below-Detection Zeros in Compositional Data</p></td>
+        <td><p>Replacement of missing values and below-detection zeros in compositional data</p></td>
       </tr><tr><td>
           <p><code><a href="composition.html">composition()</a></code> <code><a href="composition.html">comp()</a></code> </p>
         </td>
-        <td><p>Get composition from coordinates w.r.t. an specific basis</p></td>
+        <td><p>Compositions from coordinates with respect to a basis</p></td>
+      </tr><tr><td>
+          <p><code><a href="conditional_obasis.html">conditional_obasis()</a></code> </p>
+        </td>
+        <td><p>Conditional orthonormal basis</p></td>
       </tr><tr><td>
           <p><code><a href="coordinates.html">coordinates()</a></code> <code><a href="coordinates.html">coord()</a></code> <code><a href="coordinates.html">alr_c()</a></code> <code><a href="coordinates.html">clr_c()</a></code> <code><a href="coordinates.html">ilr_c()</a></code> <code><a href="coordinates.html">olr_c()</a></code> </p>
         </td>
-        <td><p>Get coordinates from compositions w.r.t. an specific basis</p></td>
+        <td><p>Coordinates of compositions with respect to a basis</p></td>
       </tr><tr><td>
           <p><code><a href="dist.html">dist()</a></code> </p>
         </td>
@@ -127,6 +139,10 @@
           <p><code><a href="foraminiferals.html">foraminiferals</a></code> </p>
         </td>
         <td><p>Paleocological compositions</p></td>
+      </tr><tr><td>
+          <p><code><a href="gen_coda_with_zeros_and_missings.html">gen_coda_with_zeros_and_missings()</a></code> </p>
+        </td>
+        <td><p>Generate compositional data with zeros and missing values</p></td>
       </tr><tr><td>
           <p><code><a href="gmean.html">gmean()</a></code> </p>
         </td>
@@ -142,15 +158,15 @@
       </tr><tr><td>
           <p><code><a href="ilr_basis.html">ilr_basis()</a></code> <code><a href="ilr_basis.html">olr_basis()</a></code> </p>
         </td>
-        <td><p>Isometric/Orthonormal Log-Ratio Basis for Log-Transformed Compositions</p></td>
+        <td><p>Isometric and orthonormal log-ratio bases</p></td>
       </tr><tr><td>
           <p><code><a href="kilauea_iki.html">kilauea_iki</a></code> </p>
         </td>
-        <td><p>Chemical Composition of Volcanic Rocks from Kilauea Iki</p></td>
+        <td><p>Chemical composition of volcanic rocks from Kilauea Iki</p></td>
       </tr><tr><td>
           <p><code><a href="mammals_milk.html">mammals_milk</a></code> </p>
         </td>
-        <td><p>Mammal’s milk</p></td>
+        <td><p>Mammals' milk</p></td>
       </tr><tr><td>
           <p><code><a href="milk_cows.html">milk_cows</a></code> </p>
         </td>
@@ -158,23 +174,31 @@
       </tr><tr><td>
           <p><code><a href="montana.html">montana</a></code> </p>
         </td>
-        <td><p>Concentration of minor elements in carbon ashes</p></td>
+        <td><p>Concentration of minor elements in coal ashes</p></td>
       </tr><tr><td>
           <p><code><a href="pairwise_basis.html">pairwise_basis()</a></code> </p>
         </td>
-        <td><p>Pairwise log-ratio generator system</p></td>
+        <td><p>Pairwise log-ratio generating system</p></td>
       </tr><tr><td>
           <p><code><a href="parliament2017.html">parliament2017</a></code> </p>
         </td>
-        <td><p>Results of catalan parliament elections in 2017 by regions.</p></td>
+        <td><p>Catalan Parliament election results in 2017 by region</p></td>
+      </tr><tr><td>
+          <p><code><a href="partial_pb_tabu_search.html">partial_pb_tabu_search()</a></code> </p>
+        </td>
+        <td><p>Tabu search for a partial principal balance on grouped parts</p></td>
       </tr><tr><td>
           <p><code><a href="pb_basis.html">pb_basis()</a></code> </p>
         </td>
-        <td><p>Isometric log-ratio basis based on Principal Balances.</p></td>
+        <td><p>Principal balance basis</p></td>
+      </tr><tr><td>
+          <p><code><a href="pb_tabu_search.html">pb_tabu_search()</a></code> </p>
+        </td>
+        <td><p>Tabu search approximation to a sequential binary partition</p></td>
       </tr><tr><td>
           <p><code><a href="pc_basis.html">pc_basis()</a></code> </p>
         </td>
-        <td><p>Isometric log-ratio basis based on Principal Components.</p></td>
+        <td><p>Principal component log-ratio basis</p></td>
       </tr><tr><td>
           <p><code><a href="petrafm.html">petrafm</a></code> </p>
         </td>
@@ -182,7 +206,7 @@
       </tr><tr><td>
           <p><code><a href="plot_balance.html">plot_balance()</a></code> </p>
         </td>
-        <td><p>Plot a balance</p></td>
+        <td><p>Plot a balance with node labels under horizontal branches</p></td>
       </tr><tr><td>
           <p><code><a href="pollen.html">pollen</a></code> </p>
         </td>
@@ -192,13 +216,17 @@
         </td>
         <td><p>Chemical compositions of Romano-British pottery</p></td>
       </tr><tr><td>
+          <p><code><a href="random_composition_with_fixed_pb.html">random_composition_with_fixed_pb()</a></code> </p>
+        </td>
+        <td><p>Generate a random composition with a prescribed first principal balance</p></td>
+      </tr><tr><td>
           <p><code><a href="read_cdp.html">read_cdp()</a></code> </p>
         </td>
         <td><p>Import data from a codapack workspace</p></td>
       </tr><tr><td>
           <p><code><a href="sbp_basis.html">sbp_basis()</a></code> </p>
         </td>
-        <td><p>Isometric log-ratio basis based on Balances</p></td>
+        <td><p>Basis from a sequential binary partition</p></td>
       </tr><tr><td>
           <p><code><a href="serprot.html">serprot</a></code> </p>
         </td>
@@ -206,7 +234,7 @@
       </tr><tr><td>
           <p><code><a href="statistitian_time.html">statistitian_time</a></code> </p>
         </td>
-        <td><p>A statistician’s time budget</p></td>
+        <td><p>A statistician's time budget</p></td>
       </tr><tr><td>
           <p><code><a href="variation_array.html">variation_array()</a></code> </p>
         </td>
@@ -214,7 +242,7 @@
       </tr><tr><td>
           <p><code><a href="waste.html">waste</a></code> </p>
         </td>
-        <td><p>The waste composition in Catalonia</p></td>
+        <td><p>Urban waste composition in Catalonia</p></td>
       </tr><tr><td>
           <p><code><a href="weibo_hotels.html">weibo_hotels</a></code> </p>
         </td>

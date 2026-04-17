@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">coda.base</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.6</span>
       </span>
     </div>
 
@@ -66,7 +66,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">variation_array</span><span class="op">(</span><span class="va">X</span>, include_means <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">variation_array</span><span class="op">(</span><span class="va">X</span>, include_means <span class="op">=</span> <span class="cn">FALSE</span>, ml_covariance <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -79,6 +79,10 @@
 
 <dt id="arg-include-means">include_means<a class="anchor" aria-label="anchor" href="#arg-include-means"></a></dt>
 <dd><p>if TRUE logratio means are included in the lower-left triangle</p></dd>
+
+
+<dt id="arg-ml-covariance">ml_covariance<a class="anchor" aria-label="anchor" href="#arg-ml-covariance"></a></dt>
+<dd><p>if TRUE Maximum-likelihood estimation of the covariance for the multivariate normal distribution is used (dividing the scatter matrix by n instead of n-1)</p></dd>
 
 </dl></div>
     <div id="value">
@@ -98,12 +102,12 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 1.880032 2.011943 1.825880 0.000000 2.295994</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [5,] 1.865787 1.982605 2.365846 2.295994 0.000000</span>
 <span class="r-in"><span><span class="fu">variation_array</span><span class="op">(</span><span class="va">X</span>, include_means <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>            [,1]         [,2]        [,3]      [,4]     [,5]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.00000000  1.726005360  1.84231397 1.8800325 1.865787</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.14669544  0.000000000  2.08538862 2.0119435 1.982605</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.07921383 -0.067481612  0.00000000 1.8258798 2.365846</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 0.05728551 -0.089409935 -0.02192832 0.0000000 2.295994</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] 0.14802161  0.001326164  0.06880778 0.0907361 0.000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             [,1]         [,2]        [,3]       [,4]     [,5]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]  0.00000000  1.726005360  1.84231397  1.8800325 1.865787</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] -0.14669544  0.000000000  2.08538862  2.0119435 1.982605</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] -0.07921383  0.067481612  0.00000000  1.8258798 2.365846</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] -0.05728551  0.089409935  0.02192832  0.0000000 2.295994</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] -0.14802161 -0.001326164 -0.06880778 -0.0907361 0.000000</span>
 </code></pre></div>
     </div>
   </div>

@@ -17,7 +17,7 @@
 #'   \item{other}{Votes for other parties}
 #' }
 #'
-#' @source \url{https://www.idescat.cat/tema/elecc}
+#' @source Idescat, statistics on Catalan Parliament elections.
 #' @name parliament2017
 "parliament2017"
 
