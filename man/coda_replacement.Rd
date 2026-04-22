@@ -34,11 +34,35 @@ the EM algorithm.}
 }
 \value{
 If `parameters = FALSE`, the imputed object with the same format as `X`
-(`matrix`, `data.frame` or `tibble`) and preserving original names.
+(`matrix` or `data.frame`, preserving data-frame subclasses when possible)
+and preserving original names.
 If `parameters = TRUE`, a list with the estimated clr mean, clr covariance,
 and imputed clr coordinates.
 }
 \description{
 Performs imputation of missing values and/or values below the detection limit
 in compositional data using an EM algorithm assuming normality on the simplex.
+}
+\examples{
+X <- matrix(c(
+  0.00, 0.30, 0.70,
+  0.20,   NA, 0.80,
+  0.40, 0.60, 0.00,
+  0.25, 0.25, 0.50,
+  0.10, 0.30, 0.60
+), ncol = 3, byrow = TRUE)
+colnames(X) <- c("sand", "silt", "clay")
+
+DL <- c(0.05, 0.05, 0.05)
+
+X_imp <- coda_replacement(X, DL = DL, maxit = 20)
+X_imp
+
+set.seed(1)
+X <- composition(matrix(rnorm(5*50), ncol = 5))
+X[sample(c(T,F), 6*50, replace = TRUE, c(0.3, 0.7))] <- NA
+params <- coda_replacement(X, parameters = TRUE, debug = TRUE)
+names(params)
+params$clr_mu
+composition(params$clr_h)
 }

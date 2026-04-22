@@ -375,15 +375,6 @@ pb_tabu_search <- function(X, iter = 100, debug = FALSE) {
 #'
 #' @seealso \code{\link[coda.base]{sbp_basis}},
 #'   \code{\link[coda.base]{composition}}
-#'
-#' @examples
-#' pb <- c(-1, -1, 1, 1, 0)
-#' X <- random_composition_with_fixed_pb(pb, n = 50)
-#'
-#' dim(X)
-#' head(X)
-#' pb_basis(X)
-#'
 #' @export
 random_composition_with_fixed_pb <- function(principal_balance, n = 100, sd1 = 5) {
   if (!is.numeric(principal_balance)) {

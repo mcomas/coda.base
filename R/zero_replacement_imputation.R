@@ -17,33 +17,91 @@
 #'
 #' @return
 #' If `parameters = FALSE`, the imputed object with the same format as `X`
-#' (`matrix`, `data.frame` or `tibble`) and preserving original names.
+#' (`matrix` or `data.frame`, preserving data-frame subclasses when possible)
+#' and preserving original names.
 #' If `parameters = TRUE`, a list with the estimated clr mean, clr covariance,
 #' and imputed clr coordinates.
 #'
+#' @examples
+#' X <- matrix(c(
+#'   0.00, 0.30, 0.70,
+#'   0.20,   NA, 0.80,
+#'   0.40, 0.60, 0.00,
+#'   0.25, 0.25, 0.50,
+#'   0.10, 0.30, 0.60
+#' ), ncol = 3, byrow = TRUE)
+#' colnames(X) <- c("sand", "silt", "clay")
+#'
+#' DL <- c(0.05, 0.05, 0.05)
+#'
+#' X_imp <- coda_replacement(X, DL = DL, maxit = 20)
+#' X_imp
+#'
+#' set.seed(1)
+#' X <- composition(matrix(rnorm(5*50), ncol = 5))
+#' X[sample(c(T,F), 6*50, replace = TRUE, c(0.3, 0.7))] <- NA
+#' params <- coda_replacement(X, parameters = TRUE, debug = TRUE)
+#' names(params)
+#' params$clr_mu
+#' composition(params$clr_h)
 #' @export
 coda_replacement <- function(X, DL = NULL, dl_prop = 0.65,
                              eps = 1e-4, parameters = FALSE,
                              debug = FALSE, maxit = 500) {
 
   X_orig <- X
-  x_is_tibble <- inherits(X_orig, "tbl_df")
-  x_is_df <- is.data.frame(X_orig)
-  x_is_matrix <- is.matrix(X_orig)
 
-  X_mat <- as.matrix(X_orig)
+  if (is.matrix(X_orig)) {
+    if (!is.numeric(X_orig)) {
+      stop("Composition must be numeric.", call. = FALSE)
+    }
+    X_mat <- X_orig
+  } else if (inherits(X_orig, "data.frame")) {
+    if (!all(sapply(X_orig, is.numeric))) {
+      stop("All parts must be numeric.", call. = FALSE)
+    }
+    class_type <- class(X_orig)
+    X_mat <- as.matrix(X_orig)
+  } else {
+    stop("'X' must be a numeric matrix or data.frame.", call. = FALSE)
+  }
+
   tX <- t(unname(X_mat))
 
   if (is.null(DL)) {
-    DL <- apply(tX, 1, function(x) min(x[!is.na(x) & x > 0]))
+    DL <- apply(tX, 1, function(x) {
+      positive <- x[!is.na(x) & x > 0]
+      if (length(positive) == 0L) NA_real_ else min(positive)
+    })
+
+    if (anyNA(DL) || any(!is.finite(DL))) {
+      stop(
+        "Could not estimate detection limits: each part must contain at least ",
+        "one positive observed value, or 'DL' must be supplied.",
+        call. = FALSE
+      )
+    }
   }
 
   if (is.vector(DL)) {
+    if (length(DL) != nrow(tX)) {
+      stop("'DL' must have length ncol(X) or the same dimensions as 'X'.", call. = FALSE)
+    }
     tDL <- matrix(DL, nrow = nrow(tX), ncol = ncol(tX))
   } else if (is.data.frame(DL) || is.matrix(DL)) {
     tDL <- t(as.matrix(DL))
   } else {
     stop("Detection limit parameter (DL) must be a vector, a matrix or NULL.")
+  }
+
+  if (!is.numeric(tDL)) {
+    stop("Detection limits must be numeric.", call. = FALSE)
+  }
+  if (!all(dim(tDL) == dim(tX))) {
+    stop("'DL' must have length ncol(X) or the same dimensions as 'X'.", call. = FALSE)
+  }
+  if (any(!is.finite(tDL)) || any(tDL <= 0)) {
+    stop("Detection limits must be strictly positive finite values.", call. = FALSE)
   }
 
   res <- c_coda_replacement(
@@ -65,13 +123,9 @@ coda_replacement <- function(X, DL = NULL, dl_prop = 0.65,
 
     dimnames(res_mat) <- dimnames(X_mat)
 
-    if (x_is_tibble) {
-      res <- tibble::as_tibble(res_mat, .name_repair = "minimal")
-    } else if (x_is_df) {
+    if (inherits(X_orig, "data.frame")) {
       res <- as.data.frame(res_mat, stringsAsFactors = FALSE, check.names = FALSE)
-      rownames(res) <- rownames(X_orig)
-    } else if (x_is_matrix) {
-      res <- res_mat
+      class(res) <- class_type
     } else {
       res <- res_mat
     }

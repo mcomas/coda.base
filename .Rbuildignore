@@ -3,9 +3,9 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 scripts_and_docs/
-tests/
 .APtable
 out
 docs
 testing/
 src_old
+.codex
