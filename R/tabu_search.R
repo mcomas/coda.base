@@ -359,6 +359,8 @@ pb_tabu_search <- function(X, iter = 100, debug = FALSE) {
 #' @param principal_balance An integer or numeric vector in
 #'   \eqn{\{-1,0,1\}} defining the first balance of the SBP.
 #' @param n Integer. Number of observations to generate.
+#' @param sd1 Numeric value used to scale the first latent coordinate before
+#'   rotating the simulated coordinates.
 #'
 #' @return A composition matrix with \code{n} rows and
 #'   \code{length(principal_balance)} columns.
@@ -404,4 +406,3 @@ random_composition_with_fixed_pb <- function(principal_balance, n = 100, sd1 = 5
 
   X
 }
-

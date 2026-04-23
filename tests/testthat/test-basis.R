@@ -166,5 +166,6 @@ test_that("invalid inputs raise errors", {
 
   X <- matrix(exp(rnorm(20)), ncol = 5)
   expect_error(composition(coordinates(X, "ilr"), "pb"),
-               "'arg' should be one of “ilr”, “olr”, “alr”, “clr”")
+               "arg.*ilr.*olr.*alr.*clr")
+
 })

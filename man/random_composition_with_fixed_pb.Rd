@@ -11,6 +11,9 @@ random_composition_with_fixed_pb(principal_balance, n = 100, sd1 = 5)
 \eqn{\{-1,0,1\}} defining the first balance of the SBP.}
 
 \item{n}{Integer. Number of observations to generate.}
+
+\item{sd1}{Numeric value used to scale the first latent coordinate before
+rotating the simulated coordinates.}
 }
 \value{
 A composition matrix with \code{n} rows and

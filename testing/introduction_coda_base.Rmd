@@ -1,0 +1,274 @@
+---
+title: "Introduction to compositional data analysis with `coda.base`"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+  pdf_document:
+    toc: true
+lang: en
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  collapse = TRUE
+)
+```
+
+
+Compositional data describe the relative distribution of several parts or components. These parts are typically expressed as percentages, proportions, or abundances. In this setting, the relevant information is carried by the relationships between parts rather than by their absolute values. Compositional Data Analysis (CoDA) therefore focuses on the relative information contained in a composition. The `coda.base` package provides basic tools for working with compositional data in R.
+
+`coda.base` can be installed directly from CRAN:
+
+```{r, eval=FALSE}
+install.packages("coda.base")
+library(coda.base)
+```
+
+```{r, include=FALSE}
+library(coda.base)
+```
+
+# Compositional data
+
+A composition is a vector of positive parts carrying relative information. For example, consider the following two compositions:
+
+```{r}
+x <- c(A = 20, B = 30, C = 50)
+y <- c(A = 2, B = 3, C = 5)
+```
+
+Although they are expressed on different scales, the ratios between their components are the same. In other words, after rescaling them to sum to the same constant, for example 1, they convey the same relative information:
+
+```{r}
+closure(x)
+closure(y)
+```
+
+An important tool for studying relationships between parts is the log-contrast. For a composition with parts \(x_1, \dots, x_D\), a log-contrast is a linear combination of the form
+
+$$
+a_1 \log(x_1) + \dots + a_D \log(x_D),
+$$
+
+where the coefficients satisfy
+
+$$
+\sum_{i=1}^D a_i = 0.
+$$
+
+For example, the log-contrast
+
+$$
+\log(A) - \log(B)
+$$
+
+captures the relative relationship between parts \(A\) and \(B\). Equivalently,
+
+$$
+\log(A) - \log(B) = \log\left(\frac{A}{B}\right),
+$$
+
+so only the ratio between the two parts matters. In particular, this log-contrast takes
+the same value for the compositions `x` and `y`, since they differ only by a common
+scaling factor.
+
+```{r}
+with( as.list(x), 
+      log(A) - log(B) )
+with( as.list(y), 
+      log(A) - log(B) )
+```
+
+A collection of log-contrasts allows us to study different relative relationships within
+a composition or across a compositional data set. For example, consider the set of
+log-contrasts
+
+$$
+\{\log(A) - \log(B), \log(B) - \log(C), \log(C) - \log(A)\}.
+$$
+
+Evaluating these log-contrasts for `x` gives
+
+```{r}
+with( as.list(x), 
+      c(log(A) - log(B), log(B) - log(C), log(C) - log(A)) )
+```
+
+Different choices of log-contrasts emphasize different relative aspects of the composition,
+depending on the purpose of the analysis.
+
+`coda.base` provides a flexible way to express a composition in terms of a collection of
+log-contrasts. For example, the previous collection can be represented as
+
+```{r}
+B <- cbind(
+  lc1 = c(1, -1,  0),
+  lc2 = c(0,  1, -1),
+  lc3 = c(-1, 0,  1)
+)
+```
+
+and the corresponding values are obtained with
+
+```{r}
+coordinates(x, B)
+```
+
+# A first data set
+
+Let us build a simple example with four observations and three parts:
+
+```{r}
+X <- rbind(
+  c(0.20, 0.30, 0.50),
+  c(0.10, 0.40, 0.50),
+  c(0.25, 0.25, 0.50),
+  c(0.40, 0.20, 0.40)
+)
+
+colnames(X) <- c("A", "B", "C")
+X
+```
+
+Each row is a composition.
+
+# Coordinate systems in `coda.base`
+
+So far, we have described compositions through arbitrary collections of log-contrasts.
+In practice, it is often convenient to work with predefined coordinate systems.
+
+## ALR coordinates
+
+A simple choice is the additive log-ratio (alr) representation, which expresses each
+part relative to a chosen reference part. In `coda.base`, the corresponding basis can be
+constructed with `alr_basis()`:
+
+```{r}
+B_alr <- alr_basis(dim = ncol(X))
+B_alr
+```
+
+The corresponding coordinates are obtained with
+
+```{r}
+Z_alr <- coordinates(X, basis = B_alr)
+Z_alr
+```
+
+ALR coordinates are easy to interpret because each coordinate is a log-ratio with respect
+to the reference part.
+
+## CLR coordinates
+
+Another common representation is the centered log-ratio (clr), which compares each part with the geometric mean of the composition. In `coda.base`, the corresponding generator set can be constructed with `clr_basis()`:
+
+```{r}
+B_clr <- clr_basis(dim = ncol(X))
+B_clr
+```
+
+The corresponding coordinates are
+
+```{r}
+Z_clr <- coordinates(X, basis = B_clr)
+Z_clr
+```
+
+CLR coordinates are symmetric in the parts, although they live in a space of dimension
+\(D\) subject to a zero-sum constraint.
+
+# Returning from coordinates to compositions
+
+Once we have worked in coordinate space, we can reconstruct the compositions. For example,
+starting from the alr coordinates:
+
+```{r}
+X_rec <- composition(Z_alr, basis = B_alr)
+X_rec
+```
+
+Apart from numerical error, `X_rec` matches `X`.
+
+# Orthonormal coordinates
+
+The alr and clr representations are often useful for interpretation, but for many
+statistical purposes it is advantageous to work with orthonormal coordinates. This leads
+to the isometric log-ratio (ilr) representation.
+
+## Building an orthonormal basis
+
+In `coda.base`, an ilr basis can be constructed as follows:
+
+```{r}
+B_ilr <- ilr_basis(dim = ncol(X))
+B_ilr
+```
+
+## Obtaining ilr coordinates
+
+We now transform the compositions into orthonormal coordinates:
+
+```{r}
+Z_ilr <- coordinates(X, basis = B_ilr)
+Z_ilr
+```
+
+Since there are three parts, we obtain two coordinates for each observation.
+
+# Distances between compositions
+
+The Euclidean distance between ilr coordinates corresponds to the Aitchison distance
+between compositions. This allows us to compute distances in a way that is coherent with
+the relative nature of the data:
+
+```{r}
+dist(Z_ilr)
+```
+
+Which is in fact the same distance to the obtained with the clr-coordinates:
+
+```{r}
+dist(Z_clr)
+```
+
+`coda.base` overwrites the `dist()` function to include the Aitchison distance:
+
+```{r}
+dist(X, method = 'aitchison')
+```
+
+# Compositional center
+
+A natural way to summarize several compositions is through their compositional center.
+Using ilr coordinates, this can be computed by taking the mean of the coordinates and then
+applying the inverse transformation:
+
+```{r}
+zbar <- colMeans(Z_ilr)
+xbar <- composition(matrix(zbar, nrow = 1), basis = B_ilr)
+xbar
+```
+
+This vector represents a central composition of the data set. Working directly with the compositional dataset with the `center()` function:
+
+```{r}
+center(X)
+```
+
+
+# Final remarks
+
+The `coda.base` package is a useful tool for getting started with compositional data analysis from the log-ratio perspective. It allows us to define collections of log-contrasts, build alr, clr, and ilr coordinate systems, compute coherent distances, and return to the simplex after working in coordinate space.
+
+The key idea is simple but important: in compositional data, we should not analyze the parts directly, but rather their relationships.
+
+# References
+
+- Aitchison, J. (1986). *The Statistical Analysis of Compositional Data*. Chapman & Hall.
+- Pawlowsky-Glahn, V., Egozcue, J. J., & Tolosana-Delgado, R. (2015).
+  *Modeling and Analysis of Compositional Data*. Wiley.

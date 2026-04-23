@@ -7,3 +7,7 @@ inst/doc
 *.DS_Store
 .Rhistory
 .RData
+.codex
+src_old
+..Rcheck
+coda.base.Rcheck

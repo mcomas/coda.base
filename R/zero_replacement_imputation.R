@@ -37,9 +37,9 @@
 #' X_imp <- coda_replacement(X, DL = DL, maxit = 20)
 #' X_imp
 #'
-#' set.seed(1)
-#' X <- composition(matrix(rnorm(5*50), ncol = 5))
-#' X[sample(c(T,F), 6*50, replace = TRUE, c(0.3, 0.7))] <- NA
+#' set.seed(10)
+#' X <- composition(matrix(rnorm(3*10), ncol = 3))
+#' X[sample(c(TRUE, FALSE), 4*10, replace = TRUE, c(1, 3))] <- NA
 #' params <- coda_replacement(X, parameters = TRUE, debug = TRUE)
 #' names(params)
 #' params$clr_mu
