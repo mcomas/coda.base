@@ -358,7 +358,7 @@ SEXP c_coda_replacement(const arma::mat& tX,
     //   CONT = false;
     // }
   }
-  if (it == maxit) {
+  if (debug && it == maxit) {
     Rcpp::Rcout << "Maximum number of iterations reached (" << maxit << ").\n";
   }
   if (parameters) {

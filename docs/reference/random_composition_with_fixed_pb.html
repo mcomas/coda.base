@@ -87,6 +87,11 @@ balance is completed to a full orthonormal basis using
 <dt id="arg-n">n<a class="anchor" aria-label="anchor" href="#arg-n"></a></dt>
 <dd><p>Integer. Number of observations to generate.</p></dd>
 
+
+<dt id="arg-sd-">sd1<a class="anchor" aria-label="anchor" href="#arg-sd-"></a></dt>
+<dd><p>Numeric value used to scale the first latent coordinate before
+rotating the simulated coordinates.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -109,26 +114,6 @@ experiments where a specific first balance structure is desired.</p>
   <code><a href="composition.html">composition</a></code></p></div>
     </div>
 
-    <div id="ref-examples">
-    <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">pb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="op">-</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu">random_composition_with_fixed_pb</span><span class="op">(</span><span class="va">pb</span>, n <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 50  5</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                c1           c2           c3           c4           c5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.0002978683 8.032779e-05 3.409540e-01 6.579717e-01 0.0006961803</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.6546903508 3.364639e-01 2.070863e-04 8.397418e-05 0.0085546866</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.2714170024 6.538679e-01 4.016551e-02 1.797452e-03 0.0327521398</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 0.1691478970 2.535500e-01 5.042308e-03 1.505803e-02 0.5572017787</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] 0.3303396795 4.703965e-01 7.038712e-03 2.458000e-02 0.1676451474</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [6,] 0.7635973425 2.324303e-01 5.098317e-06 5.186243e-05 0.0039153707</span>
-<span class="r-in"><span><span class="fu"><a href="pb_basis.html">pb_basis</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in pb_basis(X):</span> argument "method" is missing, with no default</span>
-<span class="r-in"><span></span></span>
-</code></pre></div>
-    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>

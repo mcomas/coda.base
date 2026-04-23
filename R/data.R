@@ -287,7 +287,7 @@
 #' A statistician's time budget
 #'
 #' @description
-#' The `statistitian_time` data set records the daily time budget of an academic
+#' The `statistician_time` data set records the daily time budget of an academic
 #' statistician across 20 working days. The six activities are teaching (`T`),
 #' consultation (`C`), administration (`A`), research (`R`), other wakeful
 #' activities (`O`), and sleep (`S`).
@@ -297,8 +297,8 @@
 #' detailed time-allocation patterns and the broader division between work and
 #' leisure.
 #'
-#' @name statistitian_time
-"statistitian_time"
+#' @name statistician_time
+"statistician_time"
 
 #' Urban waste composition in Catalonia
 #'

@@ -66,6 +66,34 @@ coda_replacement <- function(X, DL = NULL, dl_prop = 0.65,
     stop("'X' must be a numeric matrix or data.frame.", call. = FALSE)
   }
 
+  if (ncol(X_mat) < 2) {
+    stop("'X' must contain at least two parts.", call. = FALSE)
+  }
+  if (any(!is.na(X_mat) & !is.finite(X_mat))) {
+    stop("'X' must contain only finite values and missing values.", call. = FALSE)
+  }
+  if (any(X_mat < 0, na.rm = TRUE)) {
+    stop("'X' must contain non-negative values.", call. = FALSE)
+  }
+
+  if (length(dl_prop) != 1 || !is.numeric(dl_prop) ||
+      !is.finite(dl_prop) || dl_prop <= 0 || dl_prop >= 1) {
+    stop("'dl_prop' must be a number between 0 and 1.", call. = FALSE)
+  }
+  if (length(eps) != 1 || !is.numeric(eps) || !is.finite(eps) || eps <= 0) {
+    stop("'eps' must be a positive number.", call. = FALSE)
+  }
+  if (length(maxit) != 1 || !is.numeric(maxit) || !is.finite(maxit) || maxit < 1) {
+    stop("'maxit' must be a positive integer.", call. = FALSE)
+  }
+  if (length(parameters) != 1 || !is.logical(parameters) || is.na(parameters)) {
+    stop("'parameters' must be TRUE or FALSE.", call. = FALSE)
+  }
+  if (length(debug) != 1 || !is.logical(debug) || is.na(debug)) {
+    stop("'debug' must be TRUE or FALSE.", call. = FALSE)
+  }
+
+  maxit <- as.integer(maxit)
   tX <- t(unname(X_mat))
 
   if (is.null(DL)) {

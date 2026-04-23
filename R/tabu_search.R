@@ -391,6 +391,9 @@ random_composition_with_fixed_pb <- function(principal_balance, n = 100, sd1 = 5
   if (length(n) != 1 || !is.numeric(n) || !is.finite(n) || n < 1) {
     stop("n must be a positive integer.")
   }
+  if (length(sd1) != 1 || !is.numeric(sd1) || !is.finite(sd1) || sd1 <= 0) {
+    stop("sd1 must be a positive number.")
+  }
 
   n <- as.integer(n)
   D <- length(principal_balance)
