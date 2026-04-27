@@ -74,6 +74,23 @@ test_that("matrix bases reconstruct the closed composition", {
   }
 })
 
+test_that("exact2 principal balances agree with exact principal balances", {
+  for (D in 3:7) {
+    set.seed(100 + D)
+    X <- matrix(exp(rnorm(30 * D)), ncol = D)
+
+    B1 <- pb_basis(X, method = "exact", ordering = FALSE)
+    B2 <- pb_basis(X, method = "exact2", ordering = FALSE)
+
+    expect_equal(unname(abs(crossprod(B1, B2))), diag(D - 1), tolerance = 1e-8)
+
+    v1 <- apply(coordinates(X, B1), 2, stats::var)
+    v2 <- apply(coordinates(X, B2), 2, stats::var)
+    expect_equal(unname(v2), unname(v1), tolerance = 1e-8)
+  }
+})
+
+
 test_that("character bases agree with their matrix counterparts when applicable", {
   D <- 5
   N <- 30

@@ -480,13 +480,14 @@ sbp_basis <- function(sbp, data = NULL, fill = FALSE, silent = FALSE) {
 #' Several methods are available:
 #' \itemize{
 #' \item `"exact"`: exact computation of principal balances,
+#' \item `"exact2"`: exact computation using incremental Gray-code updates,
 #' \item `"constrained"`: constrained approximation based on a target criterion,
 #' \item `"cluster"`: approximation based on hierarchical clustering.
 #' }
 #'
 #' @param X Compositional data set.
 #' @param method Method used to construct the principal balances. One of
-#'   `"exact"`, `"constrained"`, or `"cluster"`.
+#'   `"exact"`, `"exact2"`, `"constrained"`, or `"cluster"`.
 #' @param constrained.criterion Criterion used by the constrained method.
 #'   Either `"variance"` (default) or `"angle"`.
 #' @param cluster.method Linkage criterion passed to
@@ -537,9 +538,12 @@ pb_basis <- function(X, method,
     stop("All components must be strictly positive.", call. = FALSE)
   }
 
-  if (method %in% c("constrained", "exact")) {
+  if (method %in% c("constrained", "exact", "exact2")) {
     if (method == "exact") {
       B <- find_PB(X)
+    }
+    if (method == "exact2") {
+      B <- find_PB2(X)
     }
 
     if (method == "constrained") {

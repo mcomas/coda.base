@@ -272,13 +272,12 @@ double guide_score_cpp(const arma::ivec& bal, const arma::vec& guide) {
 //   - variance
 //   - balance_raw
 // ---------------------------------------------------------------
-// [[Rcpp::export]]
-Rcpp::List partial_pb_tabu_search_cpp(const arma::mat& M,
-                                      const Rcpp::List& lI,
-                                      const arma::ivec& bal0,
-                                      const int iter,
-                                      const int tabu_size,
-                                      const bool debug = false) {
+Rcpp::List partial_pb_tabu_search_legacy_cpp(const arma::mat& M,
+                                             const Rcpp::List& lI,
+                                             const arma::ivec& bal0,
+                                             const int iter,
+                                             const int tabu_size,
+                                             const bool debug = false) {
 
   if (M.n_rows != M.n_cols) {
     Rcpp::stop("M must be a square matrix.");
@@ -393,4 +392,3 @@ Rcpp::List partial_pb_tabu_search_cpp(const arma::mat& M,
     Rcpp::Named("balance_raw") = BEST
   );
 }
-

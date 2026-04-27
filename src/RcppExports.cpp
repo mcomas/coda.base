@@ -209,6 +209,20 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// partial_pb_exact_cpp
+Rcpp::List partial_pb_exact_cpp(const arma::mat& M, const Rcpp::List& lI, const int min_parts, const int max_parts);
+RcppExport SEXP _coda_base_partial_pb_exact_cpp(SEXP MSEXP, SEXP lISEXP, SEXP min_partsSEXP, SEXP max_partsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type M(MSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List& >::type lI(lISEXP);
+    Rcpp::traits::input_parameter< const int >::type min_parts(min_partsSEXP);
+    Rcpp::traits::input_parameter< const int >::type max_parts(max_partsSEXP);
+    rcpp_result_gen = Rcpp::wrap(partial_pb_exact_cpp(M, lI, min_parts, max_parts));
+    return rcpp_result_gen;
+END_RCPP
+}
 // find_PB
 arma::mat find_PB(const arma::mat& X);
 RcppExport SEXP _coda_base_find_PB(SEXP XSEXP) {
@@ -232,9 +246,20 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// find_PB2
+arma::mat find_PB2(const arma::mat& X);
+RcppExport SEXP _coda_base_find_PB2(SEXP XSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
+    rcpp_result_gen = Rcpp::wrap(find_PB2(X));
+    return rcpp_result_gen;
+END_RCPP
+}
 // partial_pb_tabu_search_cpp
-Rcpp::List partial_pb_tabu_search_cpp(const arma::mat& M, const Rcpp::List& lI, const arma::ivec& bal0, const int iter, const int tabu_size, const bool debug);
-RcppExport SEXP _coda_base_partial_pb_tabu_search_cpp(SEXP MSEXP, SEXP lISEXP, SEXP bal0SEXP, SEXP iterSEXP, SEXP tabu_sizeSEXP, SEXP debugSEXP) {
+Rcpp::List partial_pb_tabu_search_cpp(const arma::mat& M, const Rcpp::List& lI, const arma::ivec& bal0, const int iter, const int tabu_size, const bool remove_active, const bool add_left, const bool add_right, const bool flip_side, const bool swap_zero, const bool swap_sides, const int min_parts, const int max_parts, const bool debug);
+RcppExport SEXP _coda_base_partial_pb_tabu_search_cpp(SEXP MSEXP, SEXP lISEXP, SEXP bal0SEXP, SEXP iterSEXP, SEXP tabu_sizeSEXP, SEXP remove_activeSEXP, SEXP add_leftSEXP, SEXP add_rightSEXP, SEXP flip_sideSEXP, SEXP swap_zeroSEXP, SEXP swap_sidesSEXP, SEXP min_partsSEXP, SEXP max_partsSEXP, SEXP debugSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -243,8 +268,16 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const arma::ivec& >::type bal0(bal0SEXP);
     Rcpp::traits::input_parameter< const int >::type iter(iterSEXP);
     Rcpp::traits::input_parameter< const int >::type tabu_size(tabu_sizeSEXP);
+    Rcpp::traits::input_parameter< const bool >::type remove_active(remove_activeSEXP);
+    Rcpp::traits::input_parameter< const bool >::type add_left(add_leftSEXP);
+    Rcpp::traits::input_parameter< const bool >::type add_right(add_rightSEXP);
+    Rcpp::traits::input_parameter< const bool >::type flip_side(flip_sideSEXP);
+    Rcpp::traits::input_parameter< const bool >::type swap_zero(swap_zeroSEXP);
+    Rcpp::traits::input_parameter< const bool >::type swap_sides(swap_sidesSEXP);
+    Rcpp::traits::input_parameter< const int >::type min_parts(min_partsSEXP);
+    Rcpp::traits::input_parameter< const int >::type max_parts(max_partsSEXP);
     Rcpp::traits::input_parameter< const bool >::type debug(debugSEXP);
-    rcpp_result_gen = Rcpp::wrap(partial_pb_tabu_search_cpp(M, lI, bal0, iter, tabu_size, debug));
+    rcpp_result_gen = Rcpp::wrap(partial_pb_tabu_search_cpp(M, lI, bal0, iter, tabu_size, remove_active, add_left, add_right, flip_side, swap_zero, swap_sides, min_parts, max_parts, debug));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -267,9 +300,11 @@ static const R_CallMethodDef CallEntries[] = {
     {"_coda_base_c_coda_replacement", (DL_FUNC) &_coda_base_c_coda_replacement, 7},
     {"_coda_base_c_conditional_obasis", (DL_FUNC) &_coda_base_c_conditional_obasis, 1},
     {"_coda_base_c_zero_na_conditional_obasis", (DL_FUNC) &_coda_base_c_zero_na_conditional_obasis, 1},
+    {"_coda_base_partial_pb_exact_cpp", (DL_FUNC) &_coda_base_partial_pb_exact_cpp, 4},
     {"_coda_base_find_PB", (DL_FUNC) &_coda_base_find_PB, 1},
     {"_coda_base_get_balance_using_pc", (DL_FUNC) &_coda_base_get_balance_using_pc, 2},
-    {"_coda_base_partial_pb_tabu_search_cpp", (DL_FUNC) &_coda_base_partial_pb_tabu_search_cpp, 6},
+    {"_coda_base_find_PB2", (DL_FUNC) &_coda_base_find_PB2, 1},
+    {"_coda_base_partial_pb_tabu_search_cpp", (DL_FUNC) &_coda_base_partial_pb_tabu_search_cpp, 14},
     {NULL, NULL, 0}
 };
 

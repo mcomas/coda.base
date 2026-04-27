@@ -1,99 +1,182 @@
-#' Tabu search for a partial principal balance on grouped parts
+#' Exact search for a partial principal balance on grouped parts
 #'
-#' Finds a single grouped balance by tabu search over a partition of selected
-#' parts. The search is carried out on groups of parts defined by \code{lI},
-#' using the variance criterion induced by the covariance matrix of the
-#' log-transformed composition.
-#'
-#' The initial grouped split is obtained either from the constrained principal
-#' balance of the grouped subcomposition, or from a user-supplied grouped
-#' balance.
+#' Finds the grouped balance with maximum variance among all assignments whose
+#' number of active groups is between \code{min_parts} and \code{max_parts}.
 #'
 #' @param X A numeric matrix with strictly positive finite entries. Rows are
 #'   observations and columns are compositional parts.
 #' @param lI A list defining a partition of a subset of the columns of
-#'   \code{X}. Each element of \code{lI} is an integer vector giving the
-#'   indices of the parts belonging to the same group. Indices must be valid
-#'   column positions of \code{X}, and no column may appear in more than one
+#'   \code{X}. If \code{NULL}, each column of \code{X} is used as a singleton
 #'   group.
-#' @param iter Integer. Maximum number of tabu search iterations.
-#' @param tabu_size Integer. Maximum size of the tabu list.
-#' @param ini Initial grouped split. If \code{NULL} (default), the initial
-#'   solution is obtained from the constrained principal balance of the grouped
-#'   subcomposition. Otherwise, \code{ini} must be an integer/numeric vector in
-#'   \eqn{\{-1,0,1\}} of length \code{length(lI)} defining the initial grouped
-#'   split. Negative entries indicate groups on the left side, positive entries
-#'   indicate groups on the right side, and zeros indicate inactive groups.
-#' @param debug Logical. If \code{TRUE}, progress information is printed during
-#'   the search.
+#' @param min_parts Integer. Minimum number of active groups.
+#' @param max_parts Integer or \code{NULL}. Maximum number of active groups.
+#'   If \code{NULL}, all groups may be active.
+#' @param method Exhaustive search method. Currently only \code{"restricted"}
+#'   is implemented; it enumerates only supports whose sizes are inside the
+#'   requested range and assigns signs in binary Gray-code order.
 #'
 #' @return A list with the following elements:
 #' \describe{
-#'   \item{\code{iter_best}}{Iteration at which the best solution was found.}
-#'   \item{\code{tabu_size}}{Effective tabu list size when the best solution
-#'   was found.}
-#'   \item{\code{steps}}{Objective values along the visited search path.}
 #'   \item{\code{dim}}{Dimension of the grouped problem, equal to
 #'   \code{length(lI) - 1}.}
 #'   \item{\code{lI}}{The input grouping structure.}
-#'   \item{\code{variance}}{Variance criterion of the best grouped balance
-#'   found.}
+#'   \item{\code{variance}}{Variance criterion of the best grouped balance.}
 #'   \item{\code{balance_raw}}{Integer vector in \eqn{\{-1,0,1\}} describing
-#'   the best grouped split found. Negative entries indicate groups on the left
-#'   side of the balance, positive entries indicate groups on the right side,
-#'   and zeros indicate inactive groups.}
-#'   \item{\code{balance}}{The corresponding one-column balance basis obtained
-#'   from \code{balance_raw} using \code{\link[coda.base]{sbp_basis}}.}
+#'   the best grouped split.}
+#'   \item{\code{balance}}{The corresponding one-column balance basis.}
+#'   \item{\code{min_parts}}{Minimum number of active groups.}
+#'   \item{\code{max_parts}}{Maximum number of active groups.}
 #' }
 #'
 #' @details
-#' The objective function is the variance of the balance associated with a split
-#' between a left and a right set of active groups. At each tabu iteration,
-#' candidate neighbors are obtained by:
-#' \itemize{
-#'   \item removing one active group from the current split,
-#'   \item adding one inactive group to the left side,
-#'   \item adding one inactive group to the right side.
-#' }
-#'
-#' When \code{ini = NULL}, the grouped composition used for initialization is
-#' obtained by replacing each group with the product of its parts, and the
-#' constrained principal balance of this grouped composition is used as the
-#' initial grouped split. When \code{ini} is a vector, it is used directly as
-#' the initial grouped split.
-#'
-#' @seealso \code{\link{pb_tabu_search}},
-#'   \code{\link[coda.base]{pb_basis}},
-#'   \code{\link[coda.base]{sbp_basis}}
-#'
-#' @examples
-#' set.seed(1)
-#' X <- matrix(rexp(200), ncol = 4)
-#' lI <- list(1, 2, c(3, 4))
-#'
-#' res1 <- partial_pb_tabu_search(
-#'   X = X,
-#'   lI = lI,
-#'   iter = 20,
-#'   tabu_size = 3
-#' )
-#'
-#' res2 <- partial_pb_tabu_search(
-#'   X = X,
-#'   lI = lI,
-#'   iter = 20,
-#'   tabu_size = 3,
-#'   ini = c(-1, 1, 0)
-#' )
-#'
-#' res1$variance
-#' res1$balance_raw
-#' res1$balance
+#' The search enumerates only supports whose size is between
+#' \code{min_parts} and \code{max_parts}. For each support, signs are generated
+#' in binary Gray-code order, fixing the first active group on the left side to
+#' avoid evaluating both a balance and its sign reversal.
 #'
 #' @export
-partial_pb_tabu_search <- function(X, lI, iter, tabu_size,
-                                   ini = NULL,
-                                   debug = FALSE) {
+partial_pb_exact <- function(X, lI = NULL,
+                             min_parts = 2,
+                             max_parts = NULL,
+                             method = "restricted") {
+  if (!is.matrix(X) || !is.numeric(X)) {
+    stop("X must be a numeric matrix.")
+  }
+  if (ncol(X) < 2) {
+    stop("X must have at least two columns.")
+  }
+  if (any(!is.finite(X)) || any(X <= 0)) {
+    stop("X must contain strictly positive finite values.")
+  }
+
+  if (is.null(lI)) {
+    lI <- lapply(seq_len(ncol(X)), identity)
+  }
+  if (!is.list(lI) || length(lI) < 2) {
+    stop("lI must be NULL or a list with at least two groups.")
+  }
+  if (!all(vapply(lI, function(x) is.numeric(x) && length(x) >= 1, logical(1)))) {
+    stop("Each element of lI must be a non-empty numeric vector of column indices.")
+  }
+
+  idx <- unlist(lI, use.names = FALSE)
+
+  if (length(idx) < 2) {
+    stop("lI must contain at least two column indices in total.")
+  }
+  if (any(!is.finite(idx)) || any(idx != as.integer(idx))) {
+    stop("All indices in lI must be finite integers.")
+  }
+  idx <- as.integer(idx)
+
+  if (any(idx < 1L | idx > ncol(X))) {
+    stop("All indices in lI must be valid column indices of X.")
+  }
+  if (anyDuplicated(idx)) {
+    stop("lI must define a partition of a subset of the columns of X, without duplicates.")
+  }
+
+  G <- length(lI)
+  if (is.null(max_parts)) {
+    max_parts <- G
+  }
+  if (length(min_parts) != 1 || !is.numeric(min_parts) ||
+      !is.finite(min_parts) || min_parts != as.integer(min_parts) ||
+      min_parts < 2) {
+    stop("min_parts must be a positive integer greater than or equal to 2.")
+  }
+  if (length(max_parts) != 1 || !is.numeric(max_parts) ||
+      !is.finite(max_parts) || max_parts != as.integer(max_parts) ||
+      max_parts < min_parts || max_parts > G) {
+    stop("max_parts must be NULL or an integer between min_parts and length(lI).")
+  }
+  method <- match.arg(method, c("restricted"))
+
+  min_parts <- as.integer(min_parts)
+  max_parts <- as.integer(max_parts)
+
+  X_sub <- X[, idx, drop = FALSE]
+  M <- cov(log(X_sub))
+
+  lI_sub <- vector("list", G)
+  offset <- 0L
+  for (g in seq_len(G)) {
+    ng <- length(lI[[g]])
+    lI_sub[[g]] <- seq.int(offset + 1L, offset + ng)
+    offset <- offset + ng
+  }
+
+  res <- partial_pb_exact_cpp(
+    M = M,
+    lI = lI_sub,
+    min_parts = min_parts,
+    max_parts = max_parts
+  )
+
+  res$lI <- lI
+  res$balance_raw <- as.integer(res$balance_raw)
+  res$balance <- sbp_basis(cbind(res$balance_raw), silent = TRUE)
+  res$min_parts <- min_parts
+  res$max_parts <- max_parts
+  res$method <- method
+
+  res
+}
+
+#' Tabu search for a partial principal balance on grouped parts
+#'
+#' Finds a single grouped balance by tabu search over a partition of selected
+#' parts. The search is carried out on groups of parts defined by \code{lI},
+#' using configurable neighbourhood moves.
+#'
+#' @param X A numeric matrix with strictly positive finite entries. Rows are
+#'   observations and columns are compositional parts.
+#' @param lI A list defining a partition of a subset of the columns of
+#'   \code{X}.
+#' @param min_parts Integer. Minimum number of active groups.
+#' @param max_parts Integer or \code{NULL}. Maximum number of groups from
+#'   \code{lI} allowed to be active in the balance. If \code{NULL}, all groups
+#'   may be active.
+#' @param iter Integer. Maximum number of tabu search iterations.
+#' @param tabu_size Integer. Maximum size of the tabu list.
+#' @param ini Initial grouped split. If \code{NULL}, the constrained principal
+#'   balance of the grouped subcomposition is used.
+#' @param remove_active Logical. Allow moves from \code{-1} or \code{+1} to
+#'   \code{0}.
+#' @param add_left Logical. Allow moves from \code{0} to \code{-1}.
+#' @param add_right Logical. Allow moves from \code{0} to \code{+1}.
+#' @param flip_side Logical. Allow direct moves from \code{-1} to \code{+1}
+#'   and from \code{+1} to \code{-1}.
+#' @param swap_zero Logical. Allow swaps between one active group and one
+#'   inactive group, preserving the active side.
+#' @param swap_sides Logical. Allow swaps between one left group and one right
+#'   group.
+#' @param debug Logical. If \code{TRUE}, progress information is printed during
+#'   the search.
+#'
+#' @return A list with the selected balance, its variance criterion, the search
+#'   path, and a \code{neighbourhoods} element recording the active
+#'   neighbourhood types.
+#'
+#' @details
+#' When \code{ini = NULL}, the constrained grouped balance is adjusted greedily
+#' so that the initial solution has exactly \code{max_parts} active groups.
+#'
+#' @export
+partial_pb_tabu_search <- function(
+    X, lI,
+    min_parts = 2,
+    max_parts = NULL,
+    iter = 100,
+    tabu_size = length(lI),
+    ini = NULL,
+    remove_active = TRUE,
+    add_left = TRUE,
+    add_right = TRUE,
+    flip_side = FALSE,
+    swap_zero = FALSE,
+    swap_sides = FALSE,
+    debug = FALSE) {
   if (!is.matrix(X) || !is.numeric(X)) {
     stop("X must be a numeric matrix.")
   }
@@ -136,12 +219,44 @@ partial_pb_tabu_search <- function(X, lI, iter, tabu_size,
     stop("tabu_size must be a positive integer.")
   }
 
+  neighbourhoods <- c(
+    remove_active = remove_active,
+    add_left = add_left,
+    add_right = add_right,
+    flip_side = flip_side,
+    swap_zero = swap_zero,
+    swap_sides = swap_sides
+  )
+
+  if (!all(vapply(neighbourhoods, function(x) is.logical(x) && length(x) == 1L && !is.na(x), logical(1)))) {
+    stop("All neighbourhood flags must be single TRUE/FALSE values.")
+  }
+  if (!any(neighbourhoods)) {
+    stop("At least one neighbourhood type must be active.")
+  }
+
+  G <- length(lI)
+  if (is.null(max_parts)) {
+    max_parts <- G
+  }
+  if (length(min_parts) != 1 || !is.numeric(min_parts) ||
+      !is.finite(min_parts) || min_parts != as.integer(min_parts) ||
+      min_parts < 2) {
+    stop("min_parts must be a positive integer greater than or equal to 2.")
+  }
+  if (length(max_parts) != 1 || !is.numeric(max_parts) ||
+      !is.finite(max_parts) || max_parts != as.integer(max_parts) ||
+      max_parts < min_parts || max_parts > G) {
+    stop("max_parts must be NULL or an integer between min_parts and length(lI).")
+  }
+  min_parts <- as.integer(min_parts)
+  max_parts <- as.integer(max_parts)
+
   iter <- as.integer(iter)
   tabu_size <- as.integer(tabu_size)
 
   X_sub <- X[, idx, drop = FALSE]
   M <- cov(log(X_sub))
-  G <- length(lI)
 
   lI_sub <- vector("list", G)
   offset <- 0L
@@ -151,12 +266,81 @@ partial_pb_tabu_search <- function(X, lI, iter, tabu_size,
     offset <- offset + ng
   }
 
+  active_parts <- function(bal) {
+    sum(bal != 0L)
+  }
+
+  eval_grouped_balance <- function(bal) {
+    iL <- unlist(lI_sub[bal < 0L], use.names = FALSE)
+    iR <- unlist(lI_sub[bal > 0L], use.names = FALSE)
+    nL <- length(iL)
+    nR <- length(iR)
+
+    if (nL == 0L || nR == 0L) {
+      return(-Inf)
+    }
+
+    ((nR / nL) * sum(M[iL, iL, drop = FALSE]) +
+       (nL / nR) * sum(M[iR, iR, drop = FALSE]) -
+       2 * sum(M[iR, iL, drop = FALSE])) / (nL + nR)
+  }
+
+  adjust_initial_balance <- function(bal) {
+    target_active <- max_parts
+
+    while (active_parts(bal) > target_active) {
+      candidates <- lapply(which(bal != 0L), function(i) {
+        cand <- bal
+        cand[i] <- 0L
+        cand
+      })
+      valid <- vapply(candidates, function(cand) {
+        any(cand < 0L) && any(cand > 0L)
+      }, logical(1))
+      candidates <- candidates[valid]
+
+      if (length(candidates) == 0L) {
+        stop("Could not build an initial balance satisfying min_parts/max_parts while keeping both sides non-empty.")
+      }
+
+      scores <- vapply(candidates, eval_grouped_balance, numeric(1))
+      bal <- candidates[[which.max(scores)]]
+    }
+
+    while (active_parts(bal) < target_active) {
+      candidates <- unlist(
+        lapply(which(bal == 0L), function(i) {
+          cand_left <- bal
+          cand_left[i] <- -1L
+          cand_right <- bal
+          cand_right[i] <- 1L
+          list(cand_left, cand_right)
+        }),
+        recursive = FALSE
+      )
+      valid <- vapply(candidates, function(cand) {
+        any(cand < 0L) && any(cand > 0L)
+      }, logical(1))
+      candidates <- candidates[valid]
+
+      if (length(candidates) == 0L) {
+        stop("Could not build an initial balance satisfying min_parts/max_parts while keeping both sides non-empty.")
+      }
+
+      scores <- vapply(candidates, eval_grouped_balance, numeric(1))
+      bal <- candidates[[which.max(scores)]]
+    }
+
+    bal
+  }
+
   if (is.null(ini)) {
     Xb <- do.call(cbind, lapply(lI_sub, function(I) {
       Reduce(`*`, lapply(I, function(i) X_sub[, i]))
     }))
     B0 <- pb_basis(Xb, method = "constrained")
     BAL0 <- as.integer(sign(B0[, 1]))
+    BAL0 <- adjust_initial_balance(BAL0)
   } else {
     if (!is.numeric(ini)) {
       stop("If 'ini' is not NULL, it must be a numeric vector in {-1,0,1}.")
@@ -173,6 +357,12 @@ partial_pb_tabu_search <- function(X, lI, iter, tabu_size,
     if (!any(BAL0 < 0L) || !any(BAL0 > 0L)) {
       stop("User-supplied 'ini' must contain at least one -1 and one 1.")
     }
+    if (active_parts(BAL0) > max_parts) {
+      stop("User-supplied 'ini' has more active groups than max_parts.")
+    }
+    if (active_parts(BAL0) < min_parts) {
+      stop("User-supplied 'ini' has fewer active groups than min_parts.")
+    }
   }
 
   res <- partial_pb_tabu_search_cpp(
@@ -181,12 +371,23 @@ partial_pb_tabu_search <- function(X, lI, iter, tabu_size,
     bal0 = BAL0,
     iter = iter,
     tabu_size = tabu_size,
+    remove_active = remove_active,
+    add_left = add_left,
+    add_right = add_right,
+    flip_side = flip_side,
+    swap_zero = swap_zero,
+    swap_sides = swap_sides,
+    min_parts = min_parts,
+    max_parts = max_parts,
     debug = debug
   )
 
   res$lI <- lI
   res$balance_raw <- as.integer(res$balance_raw)
   res$balance <- sbp_basis(cbind(res$balance_raw), silent = TRUE)
+  res$neighbourhoods <- neighbourhoods
+  res$min_parts <- min_parts
+  res$max_parts <- max_parts
 
   res
 }

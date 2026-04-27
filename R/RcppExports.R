@@ -69,6 +69,10 @@ c_zero_na_conditional_obasis <- function(tX) {
     .Call(`_coda_base_c_zero_na_conditional_obasis`, tX)
 }
 
+partial_pb_exact_cpp <- function(M, lI, min_parts, max_parts) {
+    .Call(`_coda_base_partial_pb_exact_cpp`, M, lI, min_parts, max_parts)
+}
+
 find_PB <- function(X) {
     .Call(`_coda_base_find_PB`, X)
 }
@@ -77,7 +81,11 @@ get_balance_using_pc <- function(X, angle = FALSE) {
     .Call(`_coda_base_get_balance_using_pc`, X, angle)
 }
 
-partial_pb_tabu_search_cpp <- function(M, lI, bal0, iter, tabu_size, debug = FALSE) {
-    .Call(`_coda_base_partial_pb_tabu_search_cpp`, M, lI, bal0, iter, tabu_size, debug)
+find_PB2 <- function(X) {
+    .Call(`_coda_base_find_PB2`, X)
+}
+
+partial_pb_tabu_search_cpp <- function(M, lI, bal0, iter, tabu_size, remove_active = TRUE, add_left = TRUE, add_right = TRUE, flip_side = FALSE, swap_zero = FALSE, swap_sides = FALSE, min_parts = 2L, max_parts = -1L, debug = FALSE) {
+    .Call(`_coda_base_partial_pb_tabu_search_cpp`, M, lI, bal0, iter, tabu_size, remove_active, add_left, add_right, flip_side, swap_zero, swap_sides, min_parts, max_parts, debug)
 }
 

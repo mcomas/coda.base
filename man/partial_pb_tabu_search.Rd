@@ -4,7 +4,22 @@
 \alias{partial_pb_tabu_search}
 \title{Tabu search for a partial principal balance on grouped parts}
 \usage{
-partial_pb_tabu_search(X, lI, iter, tabu_size, ini = NULL, debug = FALSE)
+partial_pb_tabu_search(
+  X,
+  lI,
+  min_parts = 2,
+  max_parts = NULL,
+  iter = 100,
+  tabu_size = length(lI),
+  ini = NULL,
+  remove_active = TRUE,
+  add_left = TRUE,
+  add_right = TRUE,
+  flip_side = FALSE,
+  swap_zero = FALSE,
+  swap_sides = FALSE,
+  debug = FALSE
+)
 }
 \arguments{
 \item{X}{A numeric matrix with strictly positive finite entries. Rows are
@@ -16,6 +31,12 @@ indices of the parts belonging to the same group. Indices must be valid
 column positions of \code{X}, and no column may appear in more than one
 group.}
 
+\item{min_parts}{Integer. Minimum number of active groups.}
+
+\item{max_parts}{Integer or \code{NULL}. Maximum number of groups from
+\code{lI} allowed to be active in the balance. If \code{NULL}, all groups
+may be active.}
+
 \item{iter}{Integer. Maximum number of tabu search iterations.}
 
 \item{tabu_size}{Integer. Maximum size of the tabu list.}
@@ -26,6 +47,22 @@ subcomposition. Otherwise, \code{ini} must be an integer/numeric vector in
 \eqn{\{-1,0,1\}} of length \code{length(lI)} defining the initial grouped
 split. Negative entries indicate groups on the left side, positive entries
 indicate groups on the right side, and zeros indicate inactive groups.}
+
+\item{remove_active}{Logical. Allow moves from \code{-1} or \code{+1} to
+\code{0}.}
+
+\item{add_left}{Logical. Allow moves from \code{0} to \code{-1}.}
+
+\item{add_right}{Logical. Allow moves from \code{0} to \code{+1}.}
+
+\item{flip_side}{Logical. Allow direct moves from \code{-1} to \code{+1}
+and from \code{+1} to \code{-1}.}
+
+\item{swap_zero}{Logical. Allow swaps between one active group and one
+inactive group, preserving the active side.}
+
+\item{swap_sides}{Logical. Allow swaps between one left group and one right
+group.}
 
 \item{debug}{Logical. If \code{TRUE}, progress information is printed during
 the search.}
@@ -48,34 +85,40 @@ A list with the following elements:
   and zeros indicate inactive groups.}
   \item{\code{balance}}{The corresponding one-column balance basis obtained
   from \code{balance_raw} using \code{\link[coda.base]{sbp_basis}}.}
+  \item{\code{neighbourhoods}}{Logical vector recording the active
+  neighbourhood types.}
+  \item{\code{min_parts}}{Minimum allowed number of active groups.}
+  \item{\code{max_parts}}{Maximum allowed number of active groups.}
 }
 }
 \description{
 Finds a single grouped balance by tabu search over a partition of selected
 parts. The search is carried out on groups of parts defined by \code{lI},
-using the variance criterion induced by the covariance matrix of the
-log-transformed composition.
+using configurable neighbourhood moves.
 }
 \details{
-The initial grouped split is obtained either from the constrained principal
-balance of the grouped subcomposition, or from a user-supplied grouped
-balance.
-
-
 The objective function is the variance of the balance associated with a split
-between a left and a right set of active groups. At each tabu iteration,
-candidate neighbors are obtained by:
+between a left and a right set of active groups. Candidate neighbors are
+obtained from the selected move types:
 \itemize{
   \item removing one active group from the current split,
   \item adding one inactive group to the left side,
-  \item adding one inactive group to the right side.
+  \item adding one inactive group to the right side,
+  \item flipping an active group from one side to the other,
+  \item swapping one active group with one inactive group,
+  \item swapping one left group with one right group.
 }
+
+Only balances with a number of active groups between \code{min_parts} and
+\code{max_parts} are accepted as search states.
 
 When \code{ini = NULL}, the grouped composition used for initialization is
 obtained by replacing each group with the product of its parts, and the
-constrained principal balance of this grouped composition is used as the
-initial grouped split. When \code{ini} is a vector, it is used directly as
-the initial grouped split.
+constrained principal balance of this grouped composition is used as a starting
+point. If \code{max_parts} is smaller than \code{length(lI)}, this initial
+balance is adjusted greedily to have exactly \code{max_parts} active groups.
+When \code{ini} is a vector, it is used directly and must satisfy
+\code{min_parts} and \code{max_parts}.
 }
 \examples{
 set.seed(1)

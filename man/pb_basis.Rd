@@ -17,7 +17,7 @@ pb_basis(
 \item{X}{Compositional data set.}
 
 \item{method}{Method used to construct the principal balances. One of
-`"exact"`, `"constrained"`, or `"cluster"`.}
+`"exact"`, `"exact2"`, `"constrained"`, or `"cluster"`.}
 
 \item{constrained.criterion}{Criterion used by the constrained method.
 Either `"variance"` (default) or `"angle"`.}
@@ -40,6 +40,7 @@ Construct a basis of principal balances for a compositional data set.
 Several methods are available:
 \itemize{
 \item `"exact"`: exact computation of principal balances,
+\item `"exact2"`: exact computation using incremental Gray-code updates,
 \item `"constrained"`: constrained approximation based on a target criterion,
 \item `"cluster"`: approximation based on hierarchical clustering.
 }
