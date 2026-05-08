@@ -123,6 +123,119 @@ partial_pb_exact <- function(X, lI = NULL,
   res
 }
 
+#' Constrained search for a partial principal balance on grouped parts
+#'
+#' Builds a single grouped constrained principal balance from the first
+#' principal component of the grouped composition.
+#'
+#' @param X A numeric matrix with strictly positive finite entries. Rows are
+#'   observations and columns are compositional parts.
+#' @param lI A list defining a partition of a subset of the columns of
+#'   \code{X}. If \code{NULL}, each column of \code{X} is used as a singleton
+#'   group.
+#' @param constrained.criterion Criterion used to choose the constrained
+#'   balance. Either \code{"variance"} (default) or \code{"angle"}.
+#'
+#' @return A list with the following elements:
+#' \describe{
+#'   \item{\code{dim}}{Dimension of the grouped problem, equal to
+#'   \code{length(lI) - 1}.}
+#'   \item{\code{lI}}{The input grouping structure.}
+#'   \item{\code{variance}}{Variance criterion of the selected grouped
+#'   balance.}
+#'   \item{\code{balance_raw}}{Integer vector in \eqn{\{-1,0,1\}} describing
+#'   the selected grouped split.}
+#'   \item{\code{balance}}{The corresponding one-column balance basis.}
+#'   \item{\code{constrained.criterion}}{Criterion used to construct the
+#'   balance.}
+#' }
+#'
+#' @export
+partial_pb_constrained <- function(X, lI = NULL,
+                                   constrained.criterion = "variance") {
+  if (!is.matrix(X) || !is.numeric(X)) {
+    stop("X must be a numeric matrix.")
+  }
+  if (ncol(X) < 2) {
+    stop("X must have at least two columns.")
+  }
+  if (any(!is.finite(X)) || any(X <= 0)) {
+    stop("X must contain strictly positive finite values.")
+  }
+
+  if (is.null(lI)) {
+    lI <- lapply(seq_len(ncol(X)), identity)
+  }
+  if (!is.list(lI) || length(lI) < 2) {
+    stop("lI must be NULL or a list with at least two groups.")
+  }
+  if (!all(vapply(lI, function(x) is.numeric(x) && length(x) >= 1, logical(1)))) {
+    stop("Each element of lI must be a non-empty numeric vector of column indices.")
+  }
+
+  idx <- unlist(lI, use.names = FALSE)
+
+  if (length(idx) < 2) {
+    stop("lI must contain at least two column indices in total.")
+  }
+  if (any(!is.finite(idx)) || any(idx != as.integer(idx))) {
+    stop("All indices in lI must be finite integers.")
+  }
+  idx <- as.integer(idx)
+
+  if (any(idx < 1L | idx > ncol(X))) {
+    stop("All indices in lI must be valid column indices of X.")
+  }
+  if (anyDuplicated(idx)) {
+    stop("lI must define a partition of a subset of the columns of X, without duplicates.")
+  }
+
+  constrained.criterion <- match.arg(constrained.criterion, c("variance", "angle"))
+
+  G <- length(lI)
+  X_sub <- X[, idx, drop = FALSE]
+  M <- cov(log(X_sub))
+
+  lI_sub <- vector("list", G)
+  offset <- 0L
+  for (g in seq_len(G)) {
+    ng <- length(lI[[g]])
+    lI_sub[[g]] <- seq.int(offset + 1L, offset + ng)
+    offset <- offset + ng
+  }
+
+  Xb <- do.call(cbind, lapply(lI_sub, function(I) {
+    Reduce(`*`, lapply(I, function(i) X_sub[, i]))
+  }))
+
+  BAL <- as.integer(sign(get_balance_using_pc(
+    Xb,
+    angle = constrained.criterion == "angle"
+  )))
+
+  iL <- unlist(lI_sub[BAL < 0L], use.names = FALSE)
+  iR <- unlist(lI_sub[BAL > 0L], use.names = FALSE)
+  nL <- length(iL)
+  nR <- length(iR)
+
+  if (nL == 0L || nR == 0L) {
+    stop("Could not build a constrained balance with both sides non-empty.")
+  }
+
+  variance <- ((nR / nL) * sum(M[iL, iL, drop = FALSE]) +
+    (nL / nR) * sum(M[iR, iR, drop = FALSE]) -
+    2 * sum(M[iR, iL, drop = FALSE])) / (nL + nR)
+
+  list(
+    dim = G - 1L,
+    lI = lI,
+    variance = variance,
+    balance_raw = BAL,
+    balance = sbp_basis(cbind(BAL), silent = TRUE),
+    constrained.criterion = constrained.criterion
+  )
+}
+
 #' Tabu search for a partial principal balance on grouped parts
 #'
 #' Finds a single grouped balance by tabu search over a partition of selected
@@ -132,7 +245,8 @@ partial_pb_exact <- function(X, lI = NULL,
 #' @param X A numeric matrix with strictly positive finite entries. Rows are
 #'   observations and columns are compositional parts.
 #' @param lI A list defining a partition of a subset of the columns of
-#'   \code{X}.
+#'   \code{X}. If \code{NULL}, each column of \code{X} is used as a singleton
+#'   group.
 #' @param min_parts Integer. Minimum number of active groups.
 #' @param max_parts Integer or \code{NULL}. Maximum number of groups from
 #'   \code{lI} allowed to be active in the balance. If \code{NULL}, all groups
@@ -153,6 +267,9 @@ partial_pb_exact <- function(X, lI = NULL,
 #'   group.
 #' @param debug Logical. If \code{TRUE}, progress information is printed during
 #'   the search.
+#' @param constrained.criterion Criterion used to initialise the constrained
+#'   balance when \code{ini = NULL}. Either \code{"variance"} (default) or
+#'   \code{"angle"}.
 #'
 #' @return A list with the selected balance, its variance criterion, the search
 #'   path, and a \code{neighbourhoods} element recording the active
@@ -164,7 +281,7 @@ partial_pb_exact <- function(X, lI = NULL,
 #'
 #' @export
 partial_pb_tabu_search <- function(
-    X, lI,
+    X, lI = NULL,
     min_parts = 2,
     max_parts = NULL,
     iter = 100,
@@ -176,7 +293,8 @@ partial_pb_tabu_search <- function(
     flip_side = FALSE,
     swap_zero = FALSE,
     swap_sides = FALSE,
-    debug = FALSE) {
+    debug = FALSE,
+    constrained.criterion = "variance") {
   if (!is.matrix(X) || !is.numeric(X)) {
     stop("X must be a numeric matrix.")
   }
@@ -187,8 +305,11 @@ partial_pb_tabu_search <- function(
     stop("X must contain strictly positive finite values.")
   }
 
+  if (is.null(lI)) {
+    lI <- lapply(seq_len(ncol(X)), identity)
+  }
   if (!is.list(lI) || length(lI) < 2) {
-    stop("lI must be a list with at least two groups.")
+    stop("lI must be NULL or a list with at least two groups.")
   }
   if (!all(vapply(lI, function(x) is.numeric(x) && length(x) >= 1, logical(1)))) {
     stop("Each element of lI must be a non-empty numeric vector of column indices.")
@@ -254,6 +375,7 @@ partial_pb_tabu_search <- function(
 
   iter <- as.integer(iter)
   tabu_size <- as.integer(tabu_size)
+  constrained.criterion <- match.arg(constrained.criterion, c("variance", "angle"))
 
   X_sub <- X[, idx, drop = FALSE]
   M <- cov(log(X_sub))
@@ -335,11 +457,12 @@ partial_pb_tabu_search <- function(
   }
 
   if (is.null(ini)) {
-    Xb <- do.call(cbind, lapply(lI_sub, function(I) {
-      Reduce(`*`, lapply(I, function(i) X_sub[, i]))
-    }))
-    B0 <- pb_basis(Xb, method = "constrained")
-    BAL0 <- as.integer(sign(B0[, 1]))
+    ini_constrained <- partial_pb_constrained(
+      X = X,
+      lI = lI,
+      constrained.criterion = constrained.criterion
+    )
+    BAL0 <- ini_constrained$balance_raw
     BAL0 <- adjust_initial_balance(BAL0)
   } else {
     if (!is.numeric(ini)) {
@@ -388,6 +511,7 @@ partial_pb_tabu_search <- function(
   res$neighbourhoods <- neighbourhoods
   res$min_parts <- min_parts
   res$max_parts <- max_parts
+  res$constrained.criterion <- constrained.criterion
 
   res
 }

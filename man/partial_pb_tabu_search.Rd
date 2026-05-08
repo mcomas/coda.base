@@ -6,7 +6,7 @@
 \usage{
 partial_pb_tabu_search(
   X,
-  lI,
+  lI = NULL,
   min_parts = 2,
   max_parts = NULL,
   iter = 100,
@@ -18,7 +18,8 @@ partial_pb_tabu_search(
   flip_side = FALSE,
   swap_zero = FALSE,
   swap_sides = FALSE,
-  debug = FALSE
+  debug = FALSE,
+  constrained.criterion = "variance"
 )
 }
 \arguments{
@@ -26,9 +27,7 @@ partial_pb_tabu_search(
 observations and columns are compositional parts.}
 
 \item{lI}{A list defining a partition of a subset of the columns of
-\code{X}. Each element of \code{lI} is an integer vector giving the
-indices of the parts belonging to the same group. Indices must be valid
-column positions of \code{X}, and no column may appear in more than one
+\code{X}. If \code{NULL}, each column of \code{X} is used as a singleton
 group.}
 
 \item{min_parts}{Integer. Minimum number of active groups.}
@@ -41,12 +40,8 @@ may be active.}
 
 \item{tabu_size}{Integer. Maximum size of the tabu list.}
 
-\item{ini}{Initial grouped split. If \code{NULL} (default), the initial
-solution is obtained from the constrained principal balance of the grouped
-subcomposition. Otherwise, \code{ini} must be an integer/numeric vector in
-\eqn{\{-1,0,1\}} of length \code{length(lI)} defining the initial grouped
-split. Negative entries indicate groups on the left side, positive entries
-indicate groups on the right side, and zeros indicate inactive groups.}
+\item{ini}{Initial grouped split. If \code{NULL}, the constrained principal
+balance of the grouped subcomposition is used.}
 
 \item{remove_active}{Logical. Allow moves from \code{-1} or \code{+1} to
 \code{0}.}
@@ -66,30 +61,15 @@ group.}
 
 \item{debug}{Logical. If \code{TRUE}, progress information is printed during
 the search.}
+
+\item{constrained.criterion}{Criterion used to initialise the constrained
+balance when \code{ini = NULL}. Either \code{"variance"} (default) or
+\code{"angle"}.}
 }
 \value{
-A list with the following elements:
-\describe{
-  \item{\code{iter_best}}{Iteration at which the best solution was found.}
-  \item{\code{tabu_size}}{Effective tabu list size when the best solution
-  was found.}
-  \item{\code{steps}}{Objective values along the visited search path.}
-  \item{\code{dim}}{Dimension of the grouped problem, equal to
-  \code{length(lI) - 1}.}
-  \item{\code{lI}}{The input grouping structure.}
-  \item{\code{variance}}{Variance criterion of the best grouped balance
-  found.}
-  \item{\code{balance_raw}}{Integer vector in \eqn{\{-1,0,1\}} describing
-  the best grouped split found. Negative entries indicate groups on the left
-  side of the balance, positive entries indicate groups on the right side,
-  and zeros indicate inactive groups.}
-  \item{\code{balance}}{The corresponding one-column balance basis obtained
-  from \code{balance_raw} using \code{\link[coda.base]{sbp_basis}}.}
-  \item{\code{neighbourhoods}}{Logical vector recording the active
-  neighbourhood types.}
-  \item{\code{min_parts}}{Minimum allowed number of active groups.}
-  \item{\code{max_parts}}{Maximum allowed number of active groups.}
-}
+A list with the selected balance, its variance criterion, the search
+  path, and a \code{neighbourhoods} element recording the active
+  neighbourhood types.
 }
 \description{
 Finds a single grouped balance by tabu search over a partition of selected
@@ -97,56 +77,6 @@ parts. The search is carried out on groups of parts defined by \code{lI},
 using configurable neighbourhood moves.
 }
 \details{
-The objective function is the variance of the balance associated with a split
-between a left and a right set of active groups. Candidate neighbors are
-obtained from the selected move types:
-\itemize{
-  \item removing one active group from the current split,
-  \item adding one inactive group to the left side,
-  \item adding one inactive group to the right side,
-  \item flipping an active group from one side to the other,
-  \item swapping one active group with one inactive group,
-  \item swapping one left group with one right group.
-}
-
-Only balances with a number of active groups between \code{min_parts} and
-\code{max_parts} are accepted as search states.
-
-When \code{ini = NULL}, the grouped composition used for initialization is
-obtained by replacing each group with the product of its parts, and the
-constrained principal balance of this grouped composition is used as a starting
-point. If \code{max_parts} is smaller than \code{length(lI)}, this initial
-balance is adjusted greedily to have exactly \code{max_parts} active groups.
-When \code{ini} is a vector, it is used directly and must satisfy
-\code{min_parts} and \code{max_parts}.
-}
-\examples{
-set.seed(1)
-X <- matrix(rexp(200), ncol = 4)
-lI <- list(1, 2, c(3, 4))
-
-res1 <- partial_pb_tabu_search(
-  X = X,
-  lI = lI,
-  iter = 20,
-  tabu_size = 3
-)
-
-res2 <- partial_pb_tabu_search(
-  X = X,
-  lI = lI,
-  iter = 20,
-  tabu_size = 3,
-  ini = c(-1, 1, 0)
-)
-
-res1$variance
-res1$balance_raw
-res1$balance
-
-}
-\seealso{
-\code{\link{pb_tabu_search}},
-  \code{\link[coda.base]{pb_basis}},
-  \code{\link[coda.base]{sbp_basis}}
+When \code{ini = NULL}, the constrained grouped balance is adjusted greedily
+so that the initial solution has exactly \code{max_parts} active groups.
 }

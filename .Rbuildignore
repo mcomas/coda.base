@@ -9,3 +9,5 @@ docs
 testing/
 src_old
 .codex
+^\.positai$
+^\.claude$

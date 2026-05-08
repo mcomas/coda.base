@@ -230,6 +230,112 @@ dist = function(x, method = "euclidean", ...) {
   d
 }
 
+#' Distance Matrix Computation for CoDa distances
+#'
+#' Compute a distance matrix for compositional data using selected CoDa
+#' distances.
+#'
+#' @param x A data matrix whose rows are compositions.
+#' @param method The distance measure to be used. This must be one of
+#'   \code{"aitchison"}, \code{"L1"}, \code{"L1-pw"}, or \code{"L1-clr"}.
+#'   Any unambiguous abbreviation can be given.
+#' @param ... Additional arguments. \code{diag} and \code{upper} are passed to
+#'   \code{\link[stats]{as.dist}} for L1 distances and all arguments are passed
+#'   to \code{\link[stats]{dist}} for the Aitchison distance.
+#'
+#' @return An object of class \code{"dist"}.
+#'
+#' @seealso \code{\link{dist}}, \code{\link[stats]{dist}}
+#'
+#' @examples
+#' set.seed(1)
+#' X <- exp(matrix(rnorm(10 * 5), ncol = 5, nrow = 10))
+#'
+#' dist_coda(X, method = "aitchison")
+#' dist_coda(X, method = "L1")
+#' dist_coda(X, method = "L1-pw")
+#' dist_coda(X, method = "L1-clr")
+#'
+#' @export
+dist_coda <- function(x, method = "aitchison", ...) {
+  methods_available <- c("aitchison", "L1", "L1-pw", "L1-clr")
+  imethod <- pmatch(method, methods_available)
+
+  if (is.na(imethod)) {
+    stop(
+      "'method' must be one of: ",
+      paste(methods_available, collapse = ", ")
+    )
+  }
+
+  method <- methods_available[imethod]
+
+  if (method == "aitchison") {
+    d <- stats::dist(coordinates(x), method = "euclidean", ...)
+    attr(d, "method") <- "aitchison"
+    return(d)
+  }
+
+  if (is.atomic(x) && is.null(dim(x))) {
+    x <- matrix(x, nrow = 1)
+  } else {
+    x <- as.matrix(x)
+  }
+  if (!is.numeric(x)) {
+    stop("'x' must be numeric.")
+  }
+  if (any(!is.finite(x))) {
+    stop("'x' must contain only finite values.")
+  }
+  if (any(x <= 0)) {
+    stop("'x' must contain strictly positive values.")
+  }
+
+  lx <- log(x)
+
+  coords <- switch(
+    method,
+    "L1" = lx,
+    "L1-pw" = coordinates(x, "pw"),
+    "L1-clr" = coordinates(x, "clr")
+  )
+
+  dmat <- switch(
+    method,
+    "L1" = l1_coda_dist_matrix(lx),
+    "L1-pw" = as.matrix(stats::dist(coords, method = "manhattan")) / (ncol(x)-1),
+    "L1-clr" = as.matrix(stats::dist(coords, method = "manhattan"))
+  )
+
+  dots <- list(...)
+  as_dist_args <- c(list(m = dmat), dots[names(dots) %in% c("diag", "upper")])
+  d <- do.call(stats::as.dist, as_dist_args)
+  attr(d, "method") <- method
+  d
+}
+
+l1_coda_dist_matrix <- function(lx) {
+  n <- nrow(lx)
+  dmat <- matrix(0, nrow = n, ncol = n)
+
+  if (n < 2) {
+    return(dmat)
+  }
+
+  for (i in seq_len(n - 1L)) {
+    for (j in seq.int(i + 1L, n)) {
+      log_ratio <- lx[i, ] - lx[j, ]
+      value <- sum(abs(log_ratio - stats::median(log_ratio)))
+      dmat[i, j] <- value
+      dmat[j, i] <- value
+    }
+  }
+
+  rownames(dmat) <- rownames(lx)
+  colnames(dmat) <- rownames(lx)
+  dmat
+}
+
 #' Geometric Mean
 #'
 #' Generic function for the (trimmed) geometric mean.

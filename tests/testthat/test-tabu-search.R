@@ -19,6 +19,49 @@ test_that("partial tabu search records default neighbourhood", {
   )
 })
 
+test_that("partial constrained search matches first constrained balance", {
+  set.seed(9)
+  X <- matrix(rexp(120), ncol = 6)
+
+  partial <- partial_pb_constrained(X, constrained.criterion = "variance")
+  constrained <- pb_basis(
+    X,
+    method = "constrained",
+    constrained.criterion = "variance",
+    ordering = FALSE
+  )[, 1, drop = FALSE]
+
+  expect_equal(
+    abs(as.numeric(crossprod(partial$balance, constrained))),
+    1,
+    tolerance = 1e-8
+  )
+  expect_equal(
+    partial$variance,
+    as.numeric(var(coordinates(X, constrained))),
+    tolerance = 1e-8
+  )
+  expect_equal(partial$constrained.criterion, "variance")
+})
+
+test_that("partial constrained search supports the angle criterion", {
+  set.seed(14)
+  X <- matrix(rexp(160), ncol = 8)
+  lI <- list(c(1, 2), c(3, 4), 5, 6, c(7, 8))
+
+  partial <- partial_pb_constrained(
+    X,
+    lI = lI,
+    constrained.criterion = "angle"
+  )
+
+  expect_length(partial$balance_raw, length(lI))
+  expect_true(any(partial$balance_raw < 0L))
+  expect_true(any(partial$balance_raw > 0L))
+  expect_true(is.finite(partial$variance))
+  expect_equal(partial$constrained.criterion, "angle")
+})
+
 test_that("partial exact search agrees with exact principal balance without restriction", {
   set.seed(10)
   X <- matrix(rexp(120), ncol = 6)
@@ -92,6 +135,36 @@ test_that("partial tabu search neighbourhood accepts extra neighbourhoods", {
   expect_true(any(res$balance_raw < 0L))
   expect_true(any(res$balance_raw > 0L))
   expect_true(all(res$neighbourhoods))
+})
+
+test_that("partial tabu search records constrained initialisation criterion", {
+  set.seed(15)
+  X <- matrix(rexp(120), ncol = 6)
+  lI <- lapply(seq_len(ncol(X)), identity)
+
+  res <- partial_pb_tabu_search(
+    X,
+    lI,
+    iter = 10,
+    tabu_size = length(lI),
+    constrained.criterion = "angle"
+  )
+
+  expect_equal(res$constrained.criterion, "angle")
+})
+
+test_that("partial tabu search accepts NULL grouping", {
+  set.seed(16)
+  X <- matrix(rexp(120), ncol = 6)
+
+  res <- partial_pb_tabu_search(
+    X,
+    iter = 10
+  )
+
+  expect_length(res$lI, ncol(X))
+  expect_equal(res$lI, lapply(seq_len(ncol(X)), identity))
+  expect_length(res$balance_raw, ncol(X))
 })
 
 test_that("partial tabu search neighbourhood requires an active neighbourhood", {
