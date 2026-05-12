@@ -4,20 +4,30 @@ library(coda.base)
 test_that("dist_coda computes Aitchison distance like dist", {
   X <- exp(matrix(seq_len(20), nrow = 5))
 
-  d <- dist_coda(X, method = "aitchison")
+  d1 <- dist_coda(X, method = "aitchison")
+  d2 <- dist_coda(X, method = "L2")
 
-  expect_equal(as.vector(d), as.vector(suppressWarnings(dist(X, method = "aitchison"))))
-  expect_equal(attr(d, "method"), "aitchison")
+  expect_equal(as.vector(d1), as.vector(suppressWarnings(dist(X, method = "aitchison"))))
+  expect_equal(attr(d1, "method"), "aitchison")
+  expect_equal(as.vector(d2), as.vector(suppressWarnings(dist(X, method = "L2"))))
+  expect_equal(attr(d2, "method"), "L2")
+  expect_equal(as.vector(d1), as.vector(d2))
 })
 
 test_that("dist warns when using the legacy Aitchison extension", {
   X <- exp(matrix(seq_len(20), nrow = 5))
 
   expect_warning(
-    d <- dist(X, method = "aitchison"),
+    d1 <- dist(X, method = "aitchison"),
     "Use dist_coda"
   )
-  expect_equal(attr(d, "method"), "aitchison")
+  expect_equal(attr(d1, "method"), "aitchison")
+
+  expect_warning(
+    d2 <- dist(X, method = "L2"),
+    "Use dist_coda"
+  )
+  expect_equal(attr(d2, "method"), "L2")
 })
 
 test_that("dist_coda computes L1 distances on expected log-ratio coordinates", {

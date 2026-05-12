@@ -175,7 +175,7 @@ variation_array <- function(X, include_means = FALSE, ml_covariance = FALSE) {
 #'
 #' @param x A data matrix whose rows are compositions.
 #' @param method The distance measure to be used. This must be one of
-#'   \code{"aitchison"}, \code{"euclidean"}, \code{"maximum"},
+#'   \code{"aitchison"} (or \code{"L2"}), \code{"euclidean"}, \code{"maximum"},
 #'   \code{"manhattan"}, \code{"canberra"}, \code{"binary"}, or
 #'   \code{"minkowski"}. Any unambiguous abbreviation can be given.
 #' @param ... Additional arguments passed to \code{\link[stats]{dist}}.
@@ -199,7 +199,7 @@ variation_array <- function(X, include_means = FALSE, ml_covariance = FALSE) {
 #' @export
 dist = function(x, method = "euclidean", ...) {
   methods_available <- c(
-    "aitchison", "euclidean", "maximum",
+    "aitchison", "L2", "euclidean", "maximum",
     "manhattan", "canberra", "binary", "minkowski"
   )
 
@@ -212,11 +212,12 @@ dist = function(x, method = "euclidean", ...) {
     )
   }
 
-  is_aitchison <- (imethod == 1)
+  is_aitchison <- (imethod %in% 1:2)
 
   if (is_aitchison) {
+    method_name <- methods_available[imethod]
     warning(
-      "Use dist_coda(x, method = \"aitchison\") instead. ",
+      sprintf("Use dist_coda(x, method = \"%s\") instead. ", method_name),
       "The Aitchison extension in coda.base::dist() will be removed in a future version.",
       call. = FALSE
     )
@@ -229,7 +230,7 @@ dist = function(x, method = "euclidean", ...) {
   d <- stats::dist(x, method = method, ...)
 
   if (is_aitchison) {
-    attr(d, "method") <- "aitchison"
+    attr(d, "method") <- method_name
   }
 
   d
@@ -242,7 +243,7 @@ dist = function(x, method = "euclidean", ...) {
 #'
 #' @param x A data matrix whose rows are compositions.
 #' @param method The distance measure to be used. This must be one of
-#'   \code{"aitchison"}, \code{"L1"}, \code{"L1-pw"}, or \code{"L1-clr"}.
+#'   \code{"aitchison"} (or \code{"L2"}), \code{"L1"}, \code{"L1-pw"}, or \code{"L1-clr"}.
 #'   Any unambiguous abbreviation can be given.
 #' @param ... Additional arguments. \code{diag} and \code{upper} are passed to
 #'   \code{\link[stats]{as.dist}} for L1 distances and all arguments are passed
@@ -263,13 +264,14 @@ dist = function(x, method = "euclidean", ...) {
 #' X <- exp(matrix(rnorm(10 * 5), ncol = 5, nrow = 10))
 #'
 #' dist_coda(X, method = "aitchison")
+#' dist_coda(X, method = "L2")
 #' dist_coda(X, method = "L1")
 #' dist_coda(X, method = "L1-pw")
 #' dist_coda(X, method = "L1-clr")
 #'
 #' @export
 dist_coda <- function(x, method = "aitchison", ...) {
-  methods_available <- c("aitchison", "L1", "L1-pw", "L1-clr")
+  methods_available <- c("aitchison", "L2", "L1", "L1-pw", "L1-clr")
   imethod <- pmatch(method, methods_available)
 
   if (is.na(imethod)) {
@@ -281,9 +283,9 @@ dist_coda <- function(x, method = "aitchison", ...) {
 
   method <- methods_available[imethod]
 
-  if (method == "aitchison") {
+  if (method == "aitchison" || method == "L2") {
     d <- stats::dist(coordinates(x), method = "euclidean", ...)
-    attr(d, "method") <- "aitchison"
+    attr(d, "method") <- method
     return(d)
   }
 

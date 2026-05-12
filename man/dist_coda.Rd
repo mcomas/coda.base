@@ -10,7 +10,7 @@ dist_coda(x, method = "aitchison", ...)
 \item{x}{A data matrix whose rows are compositions.}
 
 \item{method}{The distance measure to be used. This must be one of
-\code{"aitchison"}, \code{"L1"}, \code{"L1-pw"}, or \code{"L1-clr"}.
+\code{"aitchison"} (or \code{"L2"}), \code{"L1"}, \code{"L1-pw"}, or \code{"L1-clr"}.
 Any unambiguous abbreviation can be given.}
 
 \item{...}{Additional arguments. \code{diag} and \code{upper} are passed to
@@ -29,17 +29,18 @@ set.seed(1)
 X <- exp(matrix(rnorm(10 * 5), ncol = 5, nrow = 10))
 
 dist_coda(X, method = "aitchison")
+dist_coda(X, method = "L2")
 dist_coda(X, method = "L1")
 dist_coda(X, method = "L1-pw")
 dist_coda(X, method = "L1-clr")
 
-}
-\seealso{
-\code{\link{dist}}, \code{\link[stats]{dist}}
 }
 \references{
 Saperas-Riera, J.; Mateu-Figueras, G.; Martín-Fernández, J.A. (2024).
 \emph{Lp-Norm for Compositional Data: Exploring the CoDa L1-Norm in
 Penalised Regression}.
 Mathematics, 12(9), 1388. \doi{10.3390/math12091388}.
+}
+\seealso{
+\code{\link{dist}}, \code{\link[stats]{dist}}
 }

@@ -10,7 +10,7 @@ dist(x, method = "euclidean", ...)
 \item{x}{A data matrix whose rows are compositions.}
 
 \item{method}{The distance measure to be used. This must be one of
-\code{"aitchison"}, \code{"euclidean"}, \code{"maximum"},
+\code{"aitchison"} (or \code{"L2"}), \code{"euclidean"}, \code{"maximum"},
 \code{"manhattan"}, \code{"canberra"}, \code{"binary"}, or
 \code{"minkowski"}. Any unambiguous abbreviation can be given.}
 
