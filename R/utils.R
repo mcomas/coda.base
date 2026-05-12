@@ -182,19 +182,19 @@ variation_array <- function(X, include_means = FALSE, ml_covariance = FALSE) {
 #'
 #' @return An object of class \code{"dist"}.
 #'
-#' @seealso \code{\link[stats]{dist}}
+#' @seealso \code{\link{dist_coda}}, \code{\link[stats]{dist}}
 #'
 #' @examples
 #' X <- exp(matrix(rnorm(10 * 50), ncol = 50, nrow = 10))
 #'
-#' (d <- dist(X, method = "aitchison"))
+#' (d <- dist_coda(X, method = "aitchison"))
 #' plot(hclust(d))
 #'
 #' # In contrast to Euclidean distance
 #' dist(rbind(c(1, 1, 1), c(100, 100, 100)), method = "euc")
 #'
 #' # Using Aitchison distance, only relative information is of importance
-#' dist(rbind(c(1, 1, 1), c(100, 100, 100)), method = "ait")
+#' dist_coda(rbind(c(1, 1, 1), c(100, 100, 100)), method = "ait")
 #'
 #' @export
 dist = function(x, method = "euclidean", ...) {
@@ -215,6 +215,11 @@ dist = function(x, method = "euclidean", ...) {
   is_aitchison <- (imethod == 1)
 
   if (is_aitchison) {
+    warning(
+      "Use dist_coda(x, method = \"aitchison\") instead. ",
+      "The Aitchison extension in coda.base::dist() will be removed in a future version.",
+      call. = FALSE
+    )
     x <- coordinates(x)
     method <- "euclidean"
   } else {
@@ -246,6 +251,12 @@ dist = function(x, method = "euclidean", ...) {
 #' @return An object of class \code{"dist"}.
 #'
 #' @seealso \code{\link{dist}}, \code{\link[stats]{dist}}
+#'
+#' @references
+#' Saperas-Riera, J.; Mateu-Figueras, G.; Martín-Fernández, J.A. (2024).
+#' \emph{Lp-Norm for Compositional Data: Exploring the CoDa L1-Norm in
+#' Penalised Regression}.
+#' Mathematics, 12(9), 1388. \doi{10.3390/math12091388}.
 #'
 #' @examples
 #' set.seed(1)

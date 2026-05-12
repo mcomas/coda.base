@@ -6,7 +6,17 @@ test_that("dist_coda computes Aitchison distance like dist", {
 
   d <- dist_coda(X, method = "aitchison")
 
-  expect_equal(as.vector(d), as.vector(dist(X, method = "aitchison")))
+  expect_equal(as.vector(d), as.vector(suppressWarnings(dist(X, method = "aitchison"))))
+  expect_equal(attr(d, "method"), "aitchison")
+})
+
+test_that("dist warns when using the legacy Aitchison extension", {
+  X <- exp(matrix(seq_len(20), nrow = 5))
+
+  expect_warning(
+    d <- dist(X, method = "aitchison"),
+    "Use dist_coda"
+  )
   expect_equal(attr(d, "method"), "aitchison")
 })
 

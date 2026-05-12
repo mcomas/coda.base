@@ -10,7 +10,8 @@ sbp_basis(sbp, data = NULL, fill = FALSE, silent = FALSE)
 \item{sbp}{A list of formulas or a matrix describing balances.}
 
 \item{data}{Optional compositional data set used to extract part names when
-`sbp` is given as a list of formulas.}
+`sbp` is given as a list of formulas. If `data = NULL`, part names are
+inferred from the formulas themselves.}
 
 \item{fill}{Logical; if `TRUE`, complete the supplied balances to obtain a
 full basis.}
@@ -60,6 +61,12 @@ sbp_basis(list(
   b5 = b4 ~ f,
   b6 = b5 ~ g
 ), data = X)
+
+# Formula parts can be inferred when data is not supplied
+sbp_basis(list(
+  b1 = a ~ b,
+  b2 = b1 ~ c
+))
 
 # Non-orthogonal system of balances
 sbp_basis(list(

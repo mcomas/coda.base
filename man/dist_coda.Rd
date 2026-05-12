@@ -37,3 +37,9 @@ dist_coda(X, method = "L1-clr")
 \seealso{
 \code{\link{dist}}, \code{\link[stats]{dist}}
 }
+\references{
+Saperas-Riera, J.; Mateu-Figueras, G.; Martín-Fernández, J.A. (2024).
+\emph{Lp-Norm for Compositional Data: Exploring the CoDa L1-Norm in
+Penalised Regression}.
+Mathematics, 12(9), 1388. \doi{10.3390/math12091388}.
+}

@@ -81,7 +81,8 @@ more general collection of balances.</p>
 
 <dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
 <dd><p>Optional compositional data set used to extract part names when
-`sbp` is given as a list of formulas.</p></dd>
+`sbp` is given as a list of formulas. If `data = NULL`, part names are
+inferred from the formulas themselves.</p></dd>
 
 
 <dt id="arg-fill">fill<a class="anchor" aria-label="anchor" href="#arg-fill"></a></dt>
@@ -149,6 +150,16 @@ a basis, and whether they are orthogonal or orthonormal.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> e  0.0000000  0.0000000  0.0000000 -0.8944272  0.1825742  0.1543033</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> f  0.0000000  0.0000000  0.0000000  0.0000000 -0.9128709  0.1543033</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> g  0.0000000  0.0000000  0.0000000  0.0000000  0.0000000 -0.9258201</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Formula parts can be inferred when data is not supplied</span></span></span>
+<span class="r-in"><span><span class="fu">sbp_basis</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  b1 <span class="op">=</span> <span class="va">a</span> <span class="op">~</span> <span class="va">b</span>,</span></span>
+<span class="r-in"><span>  b2 <span class="op">=</span> <span class="va">b1</span> <span class="op">~</span> <span class="va">c</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           b1         b2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> a  0.7071068  0.4082483</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> b -0.7071068  0.4082483</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> c  0.0000000 -0.8164966</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Non-orthogonal system of balances</span></span></span>
 <span class="r-in"><span><span class="fu">sbp_basis</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>

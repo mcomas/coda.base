@@ -86,7 +86,7 @@
 
 <dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
 <dd><p>Method used to construct the principal balances. One of
-`"exact"`, `"constrained"`, or `"cluster"`.</p></dd>
+`"exact"`, `"exact2"`, `"constrained"`, or `"cluster"`.</p></dd>
 
 
 <dt id="arg-constrained-criterion">constrained.criterion<a class="anchor" aria-label="anchor" href="#arg-constrained-criterion"></a></dt>
@@ -115,6 +115,7 @@ variance.</p></dd>
     <div id="details">
     <h2>Details</h2>
     <p>Several methods are available:</p><ul><li><p>`"exact"`: exact computation of principal balances,</p></li>
+<li><p>`"exact2"`: exact computation using incremental Gray-code updates,</p></li>
 <li><p>`"constrained"`: constrained approximation based on a target criterion,</p></li>
 <li><p>`"cluster"`: approximation based on hierarchical clustering.</p></li>
 </ul></div>

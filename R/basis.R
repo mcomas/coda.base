@@ -280,7 +280,8 @@ cc_basis <- function(Y, X) {
 #'
 #' @param sbp A list of formulas or a matrix describing balances.
 #' @param data Optional compositional data set used to extract part names when
-#'   `sbp` is given as a list of formulas.
+#'   `sbp` is given as a list of formulas. If `data = NULL`, part names are
+#'   inferred from the formulas themselves.
 #' @param fill Logical; if `TRUE`, complete the supplied balances to obtain a
 #'   full basis.
 #' @param silent Logical; if `FALSE`, report whether the resulting balances form
@@ -313,6 +314,12 @@ cc_basis <- function(Y, X) {
 #'   b5 = b4 ~ f,
 #'   b6 = b5 ~ g
 #' ), data = X)
+#'
+#' # Formula parts can be inferred when data is not supplied
+#' sbp_basis(list(
+#'   b1 = a ~ b,
+#'   b2 = b1 ~ c
+#' ))
 #'
 #' # Non-orthogonal system of balances
 #' sbp_basis(list(
@@ -366,8 +373,12 @@ sbp_basis <- function(sbp, data = NULL, fill = FALSE, silent = FALSE) {
     }
 
   } else {
+    nms <- setdiff(names(sbp), "")
+
     if (is.character(data)) {
       part_names <- data
+    } else if (is.null(data)) {
+      part_names <- setdiff(unique(unlist(lapply(sbp, all.vars))), nms)
     } else {
       if (!is.data.frame(data) &&
           !is.environment(data) &&
@@ -383,8 +394,6 @@ sbp_basis <- function(sbp, data = NULL, fill = FALSE, silent = FALSE) {
     if (!all(unlist(lapply(sbp, all.vars)) %in% c(part_names, names(sbp)))) {
       stop("Balances should be columns of 'data'")
     }
-
-    nms <- setdiff(names(sbp), "")
 
     if (length(nms) > 0) {
       substitutions <- lapply(sbp, all.vars)

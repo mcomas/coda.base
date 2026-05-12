@@ -84,7 +84,7 @@
                         <h4 data-toc-skip class="author">Marc
 Comas-Cufí</h4>
             
-            <h4 data-toc-skip class="date">2026-04-23</h4>
+            <h4 data-toc-skip class="date">2026-05-12</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/mcomas/coda.base/blob/HEAD/vignettes/principal_balances.Rmd" class="external-link"><code>vignettes/principal_balances.Rmd</code></a></small>
       <div class="hidden name"><code>principal_balances.Rmd</code></div>
@@ -93,8 +93,7 @@ Comas-Cufí</h4>
 
     
     
-<p><em>Principal balances</em> are defined as follows <span class="citation">(Pawlowsky-Glahn, Egozcue, and Tolosan-Delgado
-2011)</span>:</p>
+<p><em>Principal balances</em> are defined as follows <span class="citation">(Pawlowsky-Glahn et al. 2011)</span>:</p>
 <blockquote>
 <p>Given an
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>-sample
@@ -111,7 +110,7 @@ on a unitary composition or balancing element associated to the PB.</li>
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>-th
 PB has maximum variance conditional to its balancing element being
 orthogonal to the previous 1st, 2nd, …,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mi>i</mi><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(i-1)</annotation></semantics></math>-th
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo>−</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(i-1)</annotation></semantics></math>-th
 balancing elements.</li>
 </ul>
 </blockquote>
@@ -161,10 +160,10 @@ reasonable amount of time (5 minutes approximately).</p>
 <p><img src="principal_balances_files/figure-html/unnamed-chunk-5-1.png" width="720"></p>
 <p>When the number of part is higher, the exact method should be
 discarded in favor of other alternatives. Different alternatives are
-available in <span class="citation">Pawlowsky-Glahn, Egozcue, and
-Tolosan-Delgado (2011)</span> and <span class="citation">Martín-Fernández et al. (2017)</span>. Between these
-alternatives, the once that can be implemented are agglomerate partition
-approach based on the Ward method <span class="citation">Martín-Fernández et al. (2017)</span> and the
+available in <span class="citation">Pawlowsky-Glahn et al. (2011)</span>
+and <span class="citation">Martín-Fernández et al. (2017)</span>.
+Between these alternatives, the once that can be implemented are
+agglomerate partition approach based on the Ward method <span class="citation">Martín-Fernández et al. (2017)</span> and the
 approximation based on a reduced approximation to the principal
 components <span class="citation">(Martín-Fernández et al.
 2017)</span>.</p>
@@ -174,10 +173,9 @@ components <span class="citation">(Martín-Fernández et al.
 </h3>
 <p>For a composition
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>,
-<span class="citation">Pawlowsky-Glahn, Egozcue, and Tolosan-Delgado
-(2011)</span> proposed to build the variation array and use it to
-produce a matrix distance. The variation array calculates the variance
-between a pair of logratios.</p>
+<span class="citation">Pawlowsky-Glahn et al. (2011)</span> proposed to
+build the variation array and use it to produce a matrix distance. The
+variation array calculates the variance between a pair of logratios.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">D</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/dist.html" class="external-link">as.dist</a></span><span class="op">(</span><span class="fu"><a href="../reference/variation_array.html">variation_array</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">D</span></span>
@@ -215,7 +213,7 @@ merging with high variability.</p>
 <div class="section level2">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-fernandez2017" class="csl-entry">
 Martín-Fernández, Josep A., Vera Pawlowsky-Glahn, Juan J. Egozcue, and
 Raimon Tolosan-Delgado. 2017. <span>“Advances in Principal Balances for

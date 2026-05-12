@@ -44,6 +44,36 @@ test_that("basis constructors return matrices with expected dimensions", {
   expect_equal(ncol(PW), choose(D, 2))
 })
 
+test_that("sbp_basis infers formula parts when data is not supplied", {
+  B <- sbp_basis(list(
+    b1 = a ~ b
+  ), silent = TRUE)
+
+  expect_equal(rownames(B), c("a", "b"))
+  expect_equal(dim(B), c(2, 1))
+  expect_true(all(B[, "b1"] != 0))
+
+  B_data <- sbp_basis(list(
+    b1 = a ~ b
+  ), data = data.frame(a = 1, b = 2, c = 3), silent = TRUE)
+
+  expect_equal(rownames(B_data), c("a", "b", "c"))
+  expect_equal(unname(B_data["c", "b1"]), 0)
+})
+
+test_that("sbp_basis expands named balances when inferring parts without data", {
+  B <- sbp_basis(list(
+    b1 = a ~ b,
+    b2 = b1 ~ c
+  ), silent = TRUE)
+
+  expect_equal(rownames(B), c("a", "b", "c"))
+  expect_equal(dim(B), c(3, 2))
+  expect_equal(unname(B["c", "b1"]), 0)
+  expect_true(all(B[c("a", "b"), "b2"] > 0))
+  expect_true(B["c", "b2"] < 0)
+})
+
 test_that("matrix bases reconstruct the closed composition", {
   D <- 5
   N <- 40

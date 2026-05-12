@@ -26,16 +26,16 @@ distance as an extension of \code{\link[stats]{dist}}.
 \examples{
 X <- exp(matrix(rnorm(10 * 50), ncol = 50, nrow = 10))
 
-(d <- dist(X, method = "aitchison"))
+(d <- dist_coda(X, method = "aitchison"))
 plot(hclust(d))
 
 # In contrast to Euclidean distance
 dist(rbind(c(1, 1, 1), c(100, 100, 100)), method = "euc")
 
 # Using Aitchison distance, only relative information is of importance
-dist(rbind(c(1, 1, 1), c(100, 100, 100)), method = "ait")
+dist_coda(rbind(c(1, 1, 1), c(100, 100, 100)), method = "ait")
 
 }
 \seealso{
-\code{\link[stats]{dist}}
+\code{\link{dist_coda}}, \code{\link[stats]{dist}}
 }

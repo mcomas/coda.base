@@ -26,6 +26,7 @@
 <url><loc>/reference/constrained_pb.html</loc></url>
 <url><loc>/reference/coordinates.html</loc></url>
 <url><loc>/reference/dist.html</loc></url>
+<url><loc>/reference/dist_coda.html</loc></url>
 <url><loc>/reference/eurostat_employment.html</loc></url>
 <url><loc>/reference/foraminiferals.html</loc></url>
 <url><loc>/reference/gen_coda_with_zeros_and_missings.html</loc></url>
@@ -40,15 +41,19 @@
 <url><loc>/reference/montana.html</loc></url>
 <url><loc>/reference/pairwise_basis.html</loc></url>
 <url><loc>/reference/parliament2017.html</loc></url>
+<url><loc>/reference/partial_pb_constrained.html</loc></url>
+<url><loc>/reference/partial_pb_exact.html</loc></url>
 <url><loc>/reference/partial_pb_tabu_search.html</loc></url>
 <url><loc>/reference/pb_basis.html</loc></url>
 <url><loc>/reference/pb_subcomposition.html</loc></url>
 <url><loc>/reference/pb_tabu_search.html</loc></url>
 <url><loc>/reference/pc_basis.html</loc></url>
+<url><loc>/reference/perturbation.html</loc></url>
 <url><loc>/reference/petrafm.html</loc></url>
 <url><loc>/reference/plot_balance.html</loc></url>
 <url><loc>/reference/pollen.html</loc></url>
 <url><loc>/reference/pottery.html</loc></url>
+<url><loc>/reference/powering.html</loc></url>
 <url><loc>/reference/print.coda.html</loc></url>
 <url><loc>/reference/random_composition_with_fixed_pb.html</loc></url>
 <url><loc>/reference/read_cdp.html</loc></url>
