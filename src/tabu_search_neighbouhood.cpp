@@ -246,8 +246,8 @@ Rcpp::List partial_pb_tabu_search_cpp(
   if (iter < 1) {
     Rcpp::stop("iter must be >= 1.");
   }
-  if (tabu_size < 1) {
-    Rcpp::stop("tabu_size must be >= 1.");
+  if (tabu_size < 0) {
+    Rcpp::stop("tabu_size must be >= 0.");
   }
   if (min_parts < 2) {
     Rcpp::stop("min_parts must be >= 2.");
@@ -309,6 +309,71 @@ Rcpp::List partial_pb_tabu_search_cpp(
   if (debug) {
     Rcpp::Rcout << "Current variance: " << BEST_EV << "\n";
     Rcpp::Rcout << "Balance: " << format_balance_neighbourhood_cpp(BEST) << "\n\n";
+  }
+
+  if (tabu_size == 0) {
+    std::vector<double> local_steps;
+    int local_iter = 0;
+
+    while (true) {
+      double current_ev = evaluate_balance_grouped_neighbourhood_cpp(BAL, M, groups);
+      local_steps.push_back(current_ev);
+
+      std::vector<arma::ivec> BAL_N = neighbours_neighbourhood_cpp(
+        BAL,
+        remove_active,
+        add_left,
+        add_right,
+        flip_side,
+        swap_zero,
+        swap_sides,
+        groups,
+        min_parts,
+        effective_max_parts
+      );
+
+      if (BAL_N.empty()) {
+        break;
+      }
+
+      double best_neigh_ev = -std::numeric_limits<double>::infinity();
+      int best_neigh_idx = -1;
+
+      for (std::size_t k = 0; k < BAL_N.size(); ++k) {
+        double ev_k = evaluate_balance_grouped_neighbourhood_cpp(BAL_N[k], M, groups);
+
+        if (ev_k > best_neigh_ev) {
+          best_neigh_ev = ev_k;
+          best_neigh_idx = static_cast<int>(k);
+        }
+      }
+
+      if (best_neigh_idx < 0 || best_neigh_ev <= current_ev) {
+        break;
+      }
+
+      BAL = BAL_N[best_neigh_idx];
+      ++local_iter;
+
+      if (debug) {
+        Rcpp::Rcout << "Iteration " << local_iter
+                    << " - current variance: " << best_neigh_ev << "\n";
+        Rcpp::Rcout << "Balance: " << format_balance_neighbourhood_cpp(BAL) << "\n\n";
+      }
+
+      BEST_ITER = local_iter;
+      BEST = BAL;
+      BEST_EV = best_neigh_ev;
+    }
+
+    return Rcpp::List::create(
+      Rcpp::Named("iter_best") = BEST_ITER,
+      Rcpp::Named("tabu_size") = 0,
+      Rcpp::Named("steps") = local_steps,
+      Rcpp::Named("dim") = static_cast<int>(lI.size()) - 1,
+      Rcpp::Named("variance") = BEST_EV,
+      Rcpp::Named("balance_raw") = BEST
+    );
   }
 
   for (int i = 0; i < iter; ++i) {

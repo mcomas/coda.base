@@ -252,7 +252,9 @@ partial_pb_constrained <- function(X, lI = NULL,
 #'   \code{lI} allowed to be active in the balance. If \code{NULL}, all groups
 #'   may be active.
 #' @param iter Integer. Maximum number of tabu search iterations.
-#' @param tabu_size Integer. Maximum size of the tabu list.
+#' @param tabu_size Integer. Maximum size of the tabu list. If \code{0}, no
+#'   tabu memory is used and the algorithm performs a greedy local search until
+#'   no neighbouring balance improves the criterion.
 #' @param ini Initial grouped split. If \code{NULL}, the constrained principal
 #'   balance of the grouped subcomposition is used.
 #' @param remove_active Logical. Allow moves from \code{-1} or \code{+1} to
@@ -336,8 +338,8 @@ partial_pb_tabu_search <- function(
     stop("iter must be a positive integer.")
   }
   if (length(tabu_size) != 1 || !is.numeric(tabu_size) ||
-      !is.finite(tabu_size) || tabu_size < 1) {
-    stop("tabu_size must be a positive integer.")
+      !is.finite(tabu_size) || tabu_size < 0) {
+    stop("tabu_size must be a non-negative integer.")
   }
 
   neighbourhoods <- c(

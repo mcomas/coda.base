@@ -167,6 +167,55 @@ test_that("partial tabu search accepts NULL grouping", {
   expect_length(res$balance_raw, ncol(X))
 })
 
+test_that("partial tabu search with zero tabu size performs local search", {
+  set.seed(17)
+  X <- matrix(rexp(160), ncol = 8)
+  lI <- lapply(seq_len(ncol(X)), identity)
+
+  res <- partial_pb_tabu_search(
+    X,
+    lI,
+    iter = 1,
+    tabu_size = 0
+  )
+
+  eval_balance <- function(bal) {
+    M <- cov(log(X))
+    iL <- which(bal < 0L)
+    iR <- which(bal > 0L)
+    nL <- length(iL)
+    nR <- length(iR)
+
+    ((nR / nL) * sum(M[iL, iL, drop = FALSE]) +
+       (nL / nR) * sum(M[iR, iR, drop = FALSE]) -
+       2 * sum(M[iR, iL, drop = FALSE])) / (nL + nR)
+  }
+
+  neighbours <- lapply(seq_along(res$balance_raw), function(i) {
+    bal <- res$balance_raw
+
+    if (bal[i] == 0L) {
+      cand_left <- bal
+      cand_left[i] <- -1L
+      cand_right <- bal
+      cand_right[i] <- 1L
+      list(cand_left, cand_right)
+    } else {
+      bal[i] <- 0L
+      list(bal)
+    }
+  })
+  neighbours <- unlist(neighbours, recursive = FALSE)
+  valid <- vapply(neighbours, function(bal) {
+    sum(bal != 0L) >= 2L && any(bal < 0L) && any(bal > 0L)
+  }, logical(1))
+  neighbours <- neighbours[valid]
+  neighbour_scores <- vapply(neighbours, eval_balance, numeric(1))
+
+  expect_equal(res$tabu_size, 0)
+  expect_true(all(neighbour_scores <= res$variance + 1e-10))
+})
+
 test_that("partial tabu search neighbourhood requires an active neighbourhood", {
   set.seed(3)
   X <- matrix(rexp(80), ncol = 4)

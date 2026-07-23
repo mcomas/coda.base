@@ -38,7 +38,9 @@ may be active.}
 
 \item{iter}{Integer. Maximum number of tabu search iterations.}
 
-\item{tabu_size}{Integer. Maximum size of the tabu list.}
+\item{tabu_size}{Integer. Maximum size of the tabu list. If \code{0}, no
+tabu memory is used and the algorithm performs a greedy local search until
+no neighbouring balance improves the criterion.}
 
 \item{ini}{Initial grouped split. If \code{NULL}, the constrained principal
 balance of the grouped subcomposition is used.}
