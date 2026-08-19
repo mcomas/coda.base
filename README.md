@@ -1,4 +1,4 @@
-# coda.base
+# coda.base <img src="man/figures/logo.png" align="right" height="139" alt="coda.base logo" />
 
 # Log-Ratio Coordinates for Compositional Data
 
