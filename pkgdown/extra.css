@@ -1,0 +1,5 @@
+/* Keep the current logo assets for future redesign work, but do not display
+   the detailed mark in the pkgdown page header at small sizes. */
+.template-home .page-header .logo {
+  display: none;
+}
