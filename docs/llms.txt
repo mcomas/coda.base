@@ -1,0 +1,202 @@
+# coda.base
+
+# Log-Ratio Coordinates for Compositional Data
+
+This R package provides tools for analyzing compositional data using
+log-ratio coordinates. It enables users to define coordinate systems
+tailored to compositional datasets and to generate coordinates based on
+these systems.
+
+The package focuses on the construction and application of orthonormal
+and non-orthonormal coordinate systems for representing compositions in
+real space, facilitating advanced statistical modeling and
+interpretation.
+
+## Key Functions
+
+- [`ilr_basis()`](https://mcomas.net/coda.base/reference/ilr_basis.md),
+  [`alr_basis()`](https://mcomas.net/coda.base/reference/alr_basis.md),
+  [`clr_basis()`](https://mcomas.net/coda.base/reference/clr_basis.md) –
+  classical log-ratio bases:
+
+  - **ILR/OLR (Isometric/Orthonormal Log-Ratio)**: orthonormal basis.
+  - **ALR (Additive Log-Ratio)**: basis with respect to a reference
+    part.
+  - **CLR (Centered Log-Ratio)**: non-orthonormal, but symmetrically
+    treats all parts.
+
+- [`pc_basis()`](https://mcomas.net/coda.base/reference/pc_basis.md),
+  [`pb_basis()`](https://mcomas.net/coda.base/reference/pb_basis.md),
+  `pw_basis()` – domain-specific and data-driven bases:
+
+  - **PC basis**: based on principal component analysis of log-ratio
+    coordinates.
+  - **PB basis (Principal balances)**: variability explain by balances.
+  - **PW (Pairwise Log-Ratios)**: pairwise comparisons.
+
+- `coordinates(x, basis)`: expresses a composition `x` in coordinates
+  with respect to a given `basis`.
+
+- `composition(z, basis)`: reconstructs a composition from coordinates
+  `z` and the associated `basis`.
+
+## Example
+
+``` r
+library(coda.base)
+
+# Define a simple 3-part composition
+x <- c('a' = 0.2, 'b' = 0.3, 'c' = 0.5)
+
+# Create an ILR basis and express x in ILR coordinates
+B <- ilr_basis(x)
+h <- coordinates(x, B)  
+h
+
+# Recover the original composition
+composition(h, B)
+```
+
+## Installation
+
+You can install the development version from GitHub:
+
+``` r
+# Install development version from GitHub
+remotes::install_github("mcomas/coda.base")
+```
+
+and the cran version with:
+
+``` r
+# Install release version from CRAN
+install.packages("coda.base")
+```
+
+# Package index
+
+## All functions
+
+- [`alimentation`](https://mcomas.net/coda.base/reference/alimentation.md)
+  : Food consumption in European countries
+- [`alr_basis()`](https://mcomas.net/coda.base/reference/alr_basis.md) :
+  Additive log-ratio basis
+- [`arctic_lake`](https://mcomas.net/coda.base/reference/arctic_lake.md)
+  : Arctic lake sediments at different depths
+- [`blood_mn`](https://mcomas.net/coda.base/reference/blood_mn.md) : The
+  MN blood system
+- [`bmi_activity`](https://mcomas.net/coda.base/reference/bmi_activity.md)
+  : Physical activity and body mass index
+- [`cc_basis()`](https://mcomas.net/coda.base/reference/cc_basis.md) :
+  Canonical-correlation log-ratio basis
+- [`cdp_basis()`](https://mcomas.net/coda.base/reference/cdp_basis.md) :
+  CoDaPack default ilr basis
+- [`cdp_partition()`](https://mcomas.net/coda.base/reference/cdp_partition.md)
+  : CoDaPack's default binary partition
+- [`center()`](https://mcomas.net/coda.base/reference/center.md) :
+  Dataset center
+- [`closure()`](https://mcomas.net/coda.base/reference/closure.md) :
+  Closure operation for compositional data
+- [`clr_basis()`](https://mcomas.net/coda.base/reference/clr_basis.md) :
+  Centered log-ratio basis
+- [`coda.base-package`](https://mcomas.net/coda.base/reference/coda.base.md)
+  [`coda.base`](https://mcomas.net/coda.base/reference/coda.base.md) :
+  coda.base
+- [`coda_replacement()`](https://mcomas.net/coda.base/reference/coda_replacement.md)
+  : Replacement of missing values and below-detection zeros in
+  compositional data
+- [`composition()`](https://mcomas.net/coda.base/reference/composition.md)
+  [`comp()`](https://mcomas.net/coda.base/reference/composition.md) :
+  Compositions from coordinates with respect to a basis
+- [`conditional_obasis()`](https://mcomas.net/coda.base/reference/conditional_obasis.md)
+  : Conditional orthonormal basis
+- [`coordinates()`](https://mcomas.net/coda.base/reference/coordinates.md)
+  [`coord()`](https://mcomas.net/coda.base/reference/coordinates.md)
+  [`alr_c()`](https://mcomas.net/coda.base/reference/coordinates.md)
+  [`clr_c()`](https://mcomas.net/coda.base/reference/coordinates.md)
+  [`ilr_c()`](https://mcomas.net/coda.base/reference/coordinates.md)
+  [`olr_c()`](https://mcomas.net/coda.base/reference/coordinates.md) :
+  Coordinates of compositions with respect to a basis
+- [`dist()`](https://mcomas.net/coda.base/reference/dist.md) : Distance
+  Matrix Computation (including Aitchison distance)
+- [`dist_coda()`](https://mcomas.net/coda.base/reference/dist_coda.md) :
+  Distance Matrix Computation for CoDa distances
+- [`eurostat_employment`](https://mcomas.net/coda.base/reference/eurostat_employment.md)
+  : Employment distribution in EUROSTAT countries
+- [`foraminiferals`](https://mcomas.net/coda.base/reference/foraminiferals.md)
+  : Paleocological compositions
+- [`gen_coda_with_zeros_and_missings()`](https://mcomas.net/coda.base/reference/gen_coda_with_zeros_and_missings.md)
+  : Generate compositional data with zeros and missing values
+- [`gmean()`](https://mcomas.net/coda.base/reference/gmean.md) :
+  Geometric Mean
+- [`house_expend`](https://mcomas.net/coda.base/reference/house_expend.md)
+  : Household expenditures
+- [`household_budget`](https://mcomas.net/coda.base/reference/household_budget.md)
+  : Household budget patterns
+- [`ilr_basis()`](https://mcomas.net/coda.base/reference/ilr_basis.md)
+  [`olr_basis()`](https://mcomas.net/coda.base/reference/ilr_basis.md) :
+  Isometric and orthonormal log-ratio bases
+- [`kilauea_iki`](https://mcomas.net/coda.base/reference/kilauea_iki.md)
+  : Chemical composition of volcanic rocks from Kilauea Iki
+- [`mammals_milk`](https://mcomas.net/coda.base/reference/mammals_milk.md)
+  : Mammals' milk
+- [`milk_cows`](https://mcomas.net/coda.base/reference/milk_cows.md) :
+  Milk composition study
+- [`montana`](https://mcomas.net/coda.base/reference/montana.md) :
+  Concentration of minor elements in coal ashes
+- [`pairwise_basis()`](https://mcomas.net/coda.base/reference/pairwise_basis.md)
+  : Pairwise log-ratio generating system
+- [`parliament2017`](https://mcomas.net/coda.base/reference/parliament2017.md)
+  : Catalan Parliament election results in 2017 by region
+- [`partial_pb_constrained()`](https://mcomas.net/coda.base/reference/partial_pb_constrained.md)
+  : Constrained search for a partial principal balance on grouped parts
+- [`partial_pb_exact()`](https://mcomas.net/coda.base/reference/partial_pb_exact.md)
+  : Exact search for a partial principal balance on grouped parts
+- [`partial_pb_tabu_search()`](https://mcomas.net/coda.base/reference/partial_pb_tabu_search.md)
+  : Tabu search for a partial principal balance on grouped parts
+- [`pb_basis()`](https://mcomas.net/coda.base/reference/pb_basis.md) :
+  Principal balance basis
+- [`pb_tabu_search()`](https://mcomas.net/coda.base/reference/pb_tabu_search.md)
+  : Tabu search approximation to a sequential binary partition
+- [`pc_basis()`](https://mcomas.net/coda.base/reference/pc_basis.md) :
+  Principal component log-ratio basis
+- [`perturbation()`](https://mcomas.net/coda.base/reference/perturbation.md)
+  : Perturbation of compositional data
+- [`petrafm`](https://mcomas.net/coda.base/reference/petrafm.md) :
+  Calc-alkaline and tholeiitic volcanic rocks
+- [`plot_balance()`](https://mcomas.net/coda.base/reference/plot_balance.md)
+  : Plot a balance with node labels under horizontal branches
+- [`pollen`](https://mcomas.net/coda.base/reference/pollen.md) : Pollen
+  composition in fossils
+- [`pottery`](https://mcomas.net/coda.base/reference/pottery.md) :
+  Chemical compositions of Romano-British pottery
+- [`powering()`](https://mcomas.net/coda.base/reference/powering.md) :
+  Powering of compositional data
+- [`random_composition_with_fixed_pb()`](https://mcomas.net/coda.base/reference/random_composition_with_fixed_pb.md)
+  : Generate a random composition with a prescribed first principal
+  balance
+- [`read_cdp()`](https://mcomas.net/coda.base/reference/read_cdp.md) :
+  Import data from a codapack workspace
+- [`sbp_basis()`](https://mcomas.net/coda.base/reference/sbp_basis.md) :
+  Basis from a sequential binary partition
+- [`serprot`](https://mcomas.net/coda.base/reference/serprot.md) : Serum
+  proteins
+- [`statistician_time`](https://mcomas.net/coda.base/reference/statistician_time.md)
+  : A statistician's time budget
+- [`variation_array()`](https://mcomas.net/coda.base/reference/variation_array.md)
+  : Variation array is returned.
+- [`waste`](https://mcomas.net/coda.base/reference/waste.md) : Urban
+  waste composition in Catalonia
+- [`weibo_hotels`](https://mcomas.net/coda.base/reference/weibo_hotels.md)
+  : Hotel posts in social media
+
+# Articles
+
+### All vignettes
+
+- [Working with log-ratio coordinates in
+  \`coda.base\`](https://mcomas.net/coda.base/articles/coordinates.md):
+- [\`coda.base\` features'
+  enumeration](https://mcomas.net/coda.base/articles/features.md):
+- [Principal
+  Balances](https://mcomas.net/coda.base/articles/principal_balances.md):

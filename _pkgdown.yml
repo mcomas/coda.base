@@ -1,0 +1,6 @@
+url: https://mcomas.net/coda.base/
+destination: docs
+
+template:
+  package: tidytemplate
+  bootstrap: 5

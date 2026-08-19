@@ -19,3 +19,4 @@ NeedsCompilation: yes
 RoxygenNote: 7.3.2
 Suggests: knitr, rmarkdown, testthat (>= 2.1.0), ggplot2, jsonlite
 VignetteBuilder: knitr
+Config/Needs/website: tidyverse/tidytemplate
