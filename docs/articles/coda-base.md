@@ -146,7 +146,7 @@ head(H2.ilr)
 barplot(apply(H2.ilr, 2, var))
 ```
 
-![](coordinates_files/figure-html/unnamed-chunk-9-1.png)
+![](coda-base_files/figure-html/unnamed-chunk-9-1.png)
 
 Note that the PC coordinates are independent:
 
@@ -174,7 +174,7 @@ head(H3.ilr)
 barplot(apply(H3.ilr, 2, var))
 ```
 
-![](coordinates_files/figure-html/unnamed-chunk-11-1.png)
+![](coda-base_files/figure-html/unnamed-chunk-11-1.png)
 
 Moreover, they are not independent:
 
