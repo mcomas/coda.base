@@ -62,76 +62,102 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header">
-<img src="logo.svg" class="logo" alt=""><h1 id="codabase">coda.base<a class="anchor" aria-label="anchor" href="#codabase"></a>
+<img src="logo.svg" class="logo" alt=""><h1 id="codabase-">coda.base 
+<a class="anchor" aria-label="anchor" href="#codabase-"></a>
 </h1>
 </div>
-</div>
-<div class="section level1">
-<h1 id="log-ratio-coordinates-for-compositional-data">Log-Ratio Coordinates for Compositional Data<a class="anchor" aria-label="anchor" href="#log-ratio-coordinates-for-compositional-data"></a>
-</h1>
-<p>This R package provides tools for analyzing compositional data using log-ratio coordinates. It enables users to define coordinate systems tailored to compositional datasets and to generate coordinates based on these systems.</p>
-<p>The package focuses on the construction and application of orthonormal and non-orthonormal coordinate systems for representing compositions in real space, facilitating advanced statistical modeling and interpretation.</p>
+<!-- badges: start -->
+
 <div class="section level2">
-<h2 id="key-functions">Key Functions<a class="anchor" aria-label="anchor" href="#key-functions"></a>
+<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
+<p><code>coda.base</code> provides a compact and efficient toolkit for compositional data analysis using log-ratio coordinates. It supports the complete workflow from compositions to coordinates and back, including:</p>
 <ul>
-<li>
-<p><code><a href="reference/ilr_basis.html">ilr_basis()</a></code>, <code><a href="reference/alr_basis.html">alr_basis()</a></code>, <code><a href="reference/clr_basis.html">clr_basis()</a></code> – classical log-ratio bases:</p>
-<ul>
-<li>
-<strong>ILR/OLR (Isometric/Orthonormal Log-Ratio)</strong>: orthonormal basis.</li>
-<li>
-<strong>ALR (Additive Log-Ratio)</strong>: basis with respect to a reference part.</li>
-<li>
-<strong>CLR (Centered Log-Ratio)</strong>: non-orthonormal, but symmetrically treats all parts.</li>
+<li>transforming compositions with <code><a href="reference/coordinates.html">coordinates()</a></code> and <code><a href="reference/composition.html">composition()</a></code>;</li>
+<li>constructing ALR, CLR, ILR, principal-component and balance bases;</li>
+<li>applying closure, perturbation and powering;</li>
+<li>computing Aitchison and other compositional distances;</li>
+<li>replacing rounded zeros and missing values; and</li>
+<li>finding principal balances with exact, constrained or tabu-search methods.</li>
 </ul>
-</li>
-<li>
-<p><code><a href="reference/pc_basis.html">pc_basis()</a></code>, <code><a href="reference/pb_basis.html">pb_basis()</a></code>, <code>pw_basis()</code> – domain-specific and data-driven bases:</p>
-<ul>
-<li>
-<strong>PC basis</strong>: based on principal component analysis of log-ratio coordinates.</li>
-<li>
-<strong>PB basis (Principal balances)</strong>: variability explain by balances.</li>
-<li>
-<strong>PW (Pairwise Log-Ratios)</strong>: pairwise comparisons.</li>
-</ul>
-</li>
-<li><p><code>coordinates(x, basis)</code>: expresses a composition <code>x</code> in coordinates with respect to a given <code>basis</code>.</p></li>
-<li><p><code>composition(z, basis)</code>: reconstructs a composition from coordinates <code>z</code> and the associated <code>basis</code>.</p></li>
-</ul>
-</div>
-<div class="section level2">
-<h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
-</h2>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mcomas.net/coda.base/">coda.base</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Define a simple 3-part composition</span></span>
-<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'a'</span> <span class="op">=</span> <span class="fl">0.2</span>, <span class="st">'b'</span> <span class="op">=</span> <span class="fl">0.3</span>, <span class="st">'c'</span> <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Create an ILR basis and express x in ILR coordinates</span></span>
-<span><span class="va">B</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ilr_basis.html">ilr_basis</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span><span class="va">h</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/coordinates.html">coordinates</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">B</span><span class="op">)</span>  </span>
-<span><span class="va">h</span></span>
-<span></span>
-<span><span class="co"># Recover the original composition</span></span>
-<span><span class="fu"><a href="reference/composition.html">composition</a></span><span class="op">(</span><span class="va">h</span>, <span class="va">B</span><span class="op">)</span></span></code></pre></div>
+<p>Core numerical operations are implemented in C++ for performance.</p>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>You can install the development version from GitHub:</p>
+<p>Install the released version from CRAN:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"coda.base"</span><span class="op">)</span></span></code></pre></div>
+<p>Install the development version from GitHub:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Install development version from GitHub</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"mcomas/coda.base"</span><span class="op">)</span></span></code></pre></div>
-<p>and the cran version with:</p>
+<code class="sourceCode R"><span><span class="co"># install.packages("pak")</span></span>
+<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"mcomas/coda.base"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
+</h2>
+<p>Transform a composition into isometric log-ratio coordinates and reconstruct the original composition:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Install release version from CRAN</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"coda.base"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mcomas.net/coda.base/">coda.base</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">0.2</span>, b <span class="op">=</span> <span class="fl">0.3</span>, c <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">B</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ilr_basis.html">ilr_basis</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/coordinates.html">coordinates</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">B</span><span class="op">)</span></span>
+<span><span class="va">z</span></span>
+<span><span class="co">#&gt;       ilr1       ilr2</span></span>
+<span><span class="co">#&gt; -0.2867071 -0.5826178</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/composition.html">composition</a></span><span class="op">(</span><span class="va">z</span>, <span class="va">B</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   a   b   c</span></span>
+<span><span class="co">#&gt; 0.2 0.3 0.5</span></span></code></pre></div>
+<p>The package also provides the standard operations of the Aitchison geometry:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">2</span>, b <span class="op">=</span> <span class="fl">3</span>, c <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">1</span>, b <span class="op">=</span> <span class="fl">4</span>, c <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/closure.html">closure</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   a   b   c</span></span>
+<span><span class="co">#&gt; 0.2 0.3 0.5</span></span>
+<span><span class="fu"><a href="reference/perturbation.html">perturbation</a></span><span class="op">(</span><span class="fu"><a href="reference/closure.html">closure</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, <span class="fu"><a href="reference/closure.html">closure</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0.05128205 0.30769231 0.64102564</span></span>
+<span><span class="fu"><a href="reference/dist_coda.html">dist_coda</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;           x</span></span>
+<span><span class="co">#&gt; y 0.7130311</span></span></code></pre></div>
+<p>Principal balances provide interpretable coordinates that seek to capture the variation in a compositional data set:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">votes</span> <span class="op">&lt;-</span> <span class="va">parliament2017</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span><span class="op">]</span></span>
+<span><span class="va">B_pb</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/pb_basis.html">pb_basis</a></span><span class="op">(</span><span class="va">votes</span>, method <span class="op">=</span> <span class="st">"constrained"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="reference/coordinates.html">coordinates</a></span><span class="op">(</span><span class="va">votes</span>, <span class="va">B_pb</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span></span>
+<span><span class="co">#&gt;         pb1       pb2       pb3       pb4       pb5       pb6       pb7</span></span>
+<span><span class="co">#&gt; 1 -1.497066 0.8542554 -1.638509 0.1469780 -1.552474 -1.331674 0.5706805</span></span>
+<span><span class="co">#&gt; 2 -1.347042 0.7209798 -1.531162 0.2267969 -1.790182 -1.415831 0.5581286</span></span>
+<span><span class="co">#&gt; 3 -1.462949 1.0246594 -1.743697 0.1235819 -1.330296 -1.198655 0.4131829</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="learn-more">Learn more<a class="anchor" aria-label="anchor" href="#learn-more"></a>
+</h2>
+<ul>
+<li><a href="https://mcomas.net/coda.base/articles/coda-base.html">Get started</a></li>
+<li><a href="https://mcomas.net/coda.base/articles/features.html">Package features</a></li>
+<li><a href="https://mcomas.net/coda.base/articles/principal_balances.html">Principal balances</a></li>
+<li><a href="https://mcomas.net/coda.base/reference/">Function reference</a></li>
+<li><a href="https://github.com/mcomas/coda.base/blob/master/NEWS" class="external-link">Changelog</a></li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="getting-help">Getting help<a class="anchor" aria-label="anchor" href="#getting-help"></a>
+</h2>
+<p>If you find a bug, please <a href="https://github.com/mcomas/coda.base/issues" class="external-link">open an issue</a> with a minimal reproducible example.</p>
+</div>
+<div class="section level2">
+<h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
+</h2>
+<p>If you use <code>coda.base</code> in research, retrieve the recommended citation with:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"coda.base"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
-
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
@@ -162,7 +188,13 @@
 </ul>
 </div>
 
-
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://CRAN.R-project.org/package=coda.base" class="external-link"><img src="https://www.r-pkg.org/badges/version/coda.base" alt="CRAN status"></a></li>
+<li><a href="https://cran.r-project.org/package=coda.base" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/grand-total/coda.base" alt="CRAN downloads"></a></li>
+</ul>
+</div>
 
   </aside>
 </div>
