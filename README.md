@@ -101,7 +101,7 @@ head(coordinates(votes, B_pb), 3)
 - [Principal
   balances](https://mcomas.net/coda.base/articles/principal_balances.html)
 - [Function reference](https://mcomas.net/coda.base/reference/)
-- [Changelog](https://github.com/mcomas/coda.base/blob/master/NEWS)
+- [Changelog](https://mcomas.net/coda.base/news/)
 
 ## Getting help
 
