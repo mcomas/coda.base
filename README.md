@@ -1,58 +1,119 @@
-# coda.base
 
-# Log-Ratio Coordinates for Compositional Data
+<!-- README.md is generated from README.Rmd. Please edit that file -->
 
-This R package provides tools for analyzing compositional data using log-ratio coordinates. It enables users to define coordinate systems tailored to compositional datasets and to generate coordinates based on these systems.
+# coda.base <a href="https://mcomas.net/coda.base/"><img src="man/figures/logo.png" align="right" height="138" alt="coda.base website" /></a>
 
-The package focuses on the construction and application of orthonormal and non-orthonormal coordinate systems for representing compositions in real space, facilitating advanced statistical modeling and interpretation.
+<!-- badges: start -->
 
-## Key Functions
+[![CRAN
+status](https://www.r-pkg.org/badges/version/coda.base)](https://CRAN.R-project.org/package=coda.base)
+[![CRAN
+downloads](https://cranlogs.r-pkg.org/badges/grand-total/coda.base)](https://cran.r-project.org/package=coda.base)
+<!-- badges: end -->
 
-- `ilr_basis()`, `alr_basis()`, `clr_basis()` – classical log-ratio bases:
-  - **ILR/OLR (Isometric/Orthonormal Log-Ratio)**: orthonormal basis.
-  - **ALR (Additive Log-Ratio)**: basis with respect to a reference part.
-  - **CLR (Centered Log-Ratio)**: non-orthonormal, but symmetrically treats all parts.
+## Overview
 
-- `pc_basis()`, `pb_basis()`, `pw_basis()` – domain-specific and data-driven bases:
-  - **PC basis**: based on principal component analysis of log-ratio coordinates.
-  - **PB basis (Principal balances)**: variability explain by balances.
-  - **PW (Pairwise Log-Ratios)**: pairwise comparisons.
+`coda.base` provides a compact and efficient toolkit for compositional
+data analysis using log-ratio coordinates. It supports the complete
+workflow from compositions to coordinates and back, including:
 
-- `coordinates(x, basis)`: expresses a composition `x` in coordinates with respect to a given `basis`.
+- transforming compositions with `coordinates()` and `composition()`;
+- constructing ALR, CLR, ILR, principal-component and balance bases;
+- applying closure, perturbation and powering;
+- computing Aitchison and other compositional distances;
+- replacing rounded zeros and missing values; and
+- finding principal balances with exact, constrained or tabu-search
+  methods.
 
-- `composition(z, basis)`: reconstructs a composition from coordinates `z` and the associated `basis`.
-
-## Example
-
-```r
-library(coda.base)
-
-# Define a simple 3-part composition
-x <- c('a' = 0.2, 'b' = 0.3, 'c' = 0.5)
-
-# Create an ILR basis and express x in ILR coordinates
-B <- ilr_basis(x)
-h <- coordinates(x, B)  
-h
-
-# Recover the original composition
-composition(h, B)
-```
-
+Core numerical operations are implemented in C++ for performance.
 
 ## Installation
 
-You can install the development version from GitHub:
-
-```r
-# Install development version from GitHub
-remotes::install_github("mcomas/coda.base")
-```
-
-and the cran version with:
-
+Install the released version from CRAN:
 
 ``` r
-# Install release version from CRAN
 install.packages("coda.base")
+```
+
+Install the development version from GitHub:
+
+``` r
+# install.packages("pak")
+pak::pak("mcomas/coda.base")
+```
+
+## Usage
+
+Transform a composition into isometric log-ratio coordinates and
+reconstruct the original composition:
+
+``` r
+library(coda.base)
+
+x <- c(a = 0.2, b = 0.3, c = 0.5)
+
+B <- ilr_basis(x)
+z <- coordinates(x, B)
+z
+#>       ilr1       ilr2
+#> -0.2867071 -0.5826178
+
+composition(z, B)
+#>   a   b   c
+#> 0.2 0.3 0.5
+```
+
+The package also provides the standard operations of the Aitchison
+geometry:
+
+``` r
+x <- c(a = 2, b = 3, c = 5)
+y <- c(a = 1, b = 4, c = 5)
+
+closure(x)
+#>   a   b   c
+#> 0.2 0.3 0.5
+perturbation(closure(x), closure(y))
+#> [1] 0.05128205 0.30769231 0.64102564
+dist_coda(rbind(x, y))
+#>           x
+#> y 0.7130311
+```
+
+Principal balances provide interpretable coordinates that seek to
+capture the variation in a compositional data set:
+
+``` r
+votes <- parliament2017[-1]
+B_pb <- pb_basis(votes, method = "constrained")
+head(coordinates(votes, B_pb), 3)
+#>         pb1       pb2       pb3       pb4       pb5       pb6       pb7
+#> 1 -1.497066 0.8542554 -1.638509 0.1469780 -1.552474 -1.331674 0.5706805
+#> 2 -1.347042 0.7209798 -1.531162 0.2267969 -1.790182 -1.415831 0.5581286
+#> 3 -1.462949 1.0246594 -1.743697 0.1235819 -1.330296 -1.198655 0.4131829
+```
+
+## Learn more
+
+- [Get started](https://mcomas.net/coda.base/articles/coda-base.html)
+- [Package
+  features](https://mcomas.net/coda.base/articles/features.html)
+- [Principal
+  balances](https://mcomas.net/coda.base/articles/principal_balances.html)
+- [Function reference](https://mcomas.net/coda.base/reference/)
+- [Changelog](https://mcomas.net/coda.base/news/)
+
+## Getting help
+
+If you find a bug, please [open an
+issue](https://github.com/mcomas/coda.base/issues) with a minimal
+reproducible example.
+
+## Citation
+
+If you use `coda.base` in research, retrieve the recommended citation
+with:
+
+``` r
+citation("coda.base")
 ```

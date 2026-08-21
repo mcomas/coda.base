@@ -11,3 +11,5 @@ src_old
 .codex
 ^\.positai$
 ^\.claude$
+^README\.Rmd$
+^README_files$
