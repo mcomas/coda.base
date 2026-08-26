@@ -4,3 +4,8 @@ destination: docs
 template:
   package: tidytemplate
   bootstrap: 5
+  includes:
+    after_body: |
+      <!-- Cloudflare Web Analytics -->
+      <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"561eea6a6c384e6e9a29c7a56b6e0e75"}'></script>
+      <!-- End Cloudflare Web Analytics -->
