@@ -435,56 +435,56 @@ fill_partition <- function(D) {
 fill_sbp <- function(iRES) {
   D <- nrow(iRES)
   K <- ncol(iRES)
-  target_K <- D - 1
-
-  if (K == 0) {
-    return(sign(ilr_basis(D)))
+  incompatible <- function() {
+    stop("'fill = TRUE' requires balances compatible with a hierarchical SBP.")
   }
+  if (K > D - 1L) incompatible()
 
-  # Add one balance for completely free components
-  free_comp <- rowSums(iRES != 0) == 0
-  if (any(free_comp)) {
-    iRES <- cbind(iRES, 1 - 2 * free_comp)
-    K <- ncol(iRES)
-  }
-
-  # Choose root balance and, if needed, force a split of its free components
-  iROOT <- which.max(colSums(iRES != 0))
-  free_comp <- iRES[, iROOT] == 0
-  if (any(free_comp)) {
-    iRES <- cbind(iRES, 1 - 2 * free_comp)
-    iROOT <- ncol(iRES)
-    K <- ncol(iRES)
-  }
-
-  iBAL <- which(iRES[, iROOT] > 0)
-
-  BAL <- matrix(0, D, target_K)
+  BAL <- matrix(0, D, D - 1L)
   BAL[, seq_len(K)] <- iRES
+  next_column <- K
+  component <- seq_len(D)
+  members <- as.list(seq_len(D))
+  sizes <- rep.int(1L, D)
 
-  # Fill positive branch
-  pBAL <- iRES[iBAL, -iROOT, drop = FALSE]
-  pBAL <- pBAL[, colSums(pBAL != 0) > 0, drop = FALSE]
-  pDIM <- length(iBAL) - 1
-  pK <- ncol(pBAL)
-
-  if (pK < pDIM) {
-    pBAL_full <- Recall(pBAL)
-    BAL[iBAL, (K + 1):(K + pDIM - pK)] <- pBAL_full[, (pK + 1):pDIM, drop = FALSE]
+  # Each component is an already completed subtree. Merge smaller components
+  # into the largest one, adding only the balances missing between subtrees.
+  join <- function(roots, add_balance = TRUE) {
+    root <- roots[which.max(sizes[roots])]
+    for (other in roots[roots != root]) {
+      if (add_balance) {
+        next_column <<- next_column + 1L
+        if (next_column > D - 1L) incompatible()
+        BAL[members[[root]], next_column] <<- 1
+        BAL[members[[other]], next_column] <<- -1
+      }
+      component[members[[other]]] <<- root
+      members[[root]] <<- c(members[[root]], members[[other]])
+      members[[other]] <<- integer()
+      sizes[root] <<- sizes[root] + sizes[other]
+      sizes[other] <<- 0L
+    }
+    root
   }
 
-  # Fill negative branch
-  nBAL <- iRES[-iBAL, -iROOT, drop = FALSE]
-  nBAL <- nBAL[, colSums(nBAL != 0) > 0, drop = FALSE]
-  nDIM <- nrow(nBAL) - 1
-  nK <- ncol(nBAL)
-
-  if (nK < nDIM) {
-    nBAL_full <- Recall(nBAL)
-    BAL[-iBAL, (K + 1 + pDIM - pK):(K + pDIM + nDIM - pK)] <-
-      nBAL_full[, (nK + 1):nDIM, drop = FALSE]
+  # Process descendants before ancestors. A group may contain whole completed
+  # subtrees, but must never cut through one: that would be a crossing split.
+  for (j in order(colSums(iRES != 0))) {
+    positive <- which(iRES[, j] > 0)
+    negative <- which(iRES[, j] < 0)
+    positive_roots <- unique(component[positive])
+    negative_roots <- unique(component[negative])
+    if (sum(sizes[positive_roots]) != length(positive) ||
+        sum(sizes[negative_roots]) != length(negative)) {
+      incompatible()
+    }
+    left <- join(positive_roots)
+    right <- join(negative_roots)
+    # The supplied column already connects the two groups.
+    join(c(left, right), add_balance = FALSE)
   }
-
+  # Connect disjoint trees and any parts absent from the supplied balances.
+  join(which(sizes > 0L))
   BAL
 }
 

@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">coda.base</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.8</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,7 +67,7 @@
                         <h4 data-toc-skip class="author">Marc
 Comas-Cufí</h4>
             
-            <h4 data-toc-skip class="date">2026-08-26</h4>
+            <h4 data-toc-skip class="date">2026-10-21</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/mcomas/coda.base/blob/HEAD/vignettes/coda-base.Rmd" class="external-link"><code>vignettes/coda-base.Rmd</code></a></small>
       <div class="d-none name"><code>coda-base.Rmd</code></div>
@@ -329,22 +329,22 @@ nor a system generator</p>
 <span><span class="co">#&gt; 6 0.2956308</span></span></code></pre></div>
 <p>or</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">B</span> <span class="op">=</span> <span class="fu"><a href="../reference/sbp_basis.html">sbp_basis</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>b1 <span class="op">=</span> <span class="va">erc</span><span class="op">~</span><span class="va">jxcat</span><span class="op">+</span><span class="va">psc</span><span class="op">~</span><span class="va">cs</span>, </span>
+<code class="sourceCode R"><span><span class="va">B</span> <span class="op">=</span> <span class="fu"><a href="../reference/sbp_basis.html">sbp_basis</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>b1 <span class="op">=</span> <span class="va">erc</span><span class="op">~</span><span class="va">jxcat</span><span class="op">+</span><span class="va">psc</span><span class="op">+</span><span class="va">cs</span>,</span>
 <span>                   b2 <span class="op">=</span> <span class="va">jxcat</span><span class="op">~</span><span class="va">erc</span><span class="op">+</span><span class="va">psc</span><span class="op">+</span><span class="va">cs</span>,</span>
 <span>                   b3 <span class="op">=</span> <span class="va">psc</span><span class="op">~</span><span class="va">erc</span><span class="op">+</span><span class="va">jxcat</span><span class="op">+</span><span class="va">cs</span>,</span>
 <span>                   b4 <span class="op">=</span> <span class="va">cs</span><span class="op">~</span><span class="va">erc</span><span class="op">+</span><span class="va">jxcat</span><span class="op">+</span><span class="va">psc</span><span class="op">)</span>,</span>
 <span>              data<span class="op">=</span><span class="va">X</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in sbp_basis(list(b1 = erc ~ jxcat + psc ~ cs, b2 = jxcat ~</span></span>
-<span><span class="co">#&gt; erc + : Given basis is not orthogonal</span></span>
+<span><span class="co">#&gt; Warning in sbp_basis(list(b1 = erc ~ jxcat + psc + cs, b2 = jxcat ~</span></span>
+<span><span class="co">#&gt; erc + : Given partition is not a basis</span></span>
 <span><span class="va">H4.man</span> <span class="op">=</span> <span class="fu"><a href="../reference/coordinates.html">coordinates</a></span><span class="op">(</span><span class="va">X</span>, basis <span class="op">=</span> <span class="va">B</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">H4.man</span><span class="op">)</span></span>
-<span><span class="co">#&gt;            b1        b2         b3          b4</span></span>
-<span><span class="co">#&gt; 1 -0.01011597 0.5256940 -0.8214898  0.01011597</span></span>
-<span><span class="co">#&gt; 2 -0.26973693 0.5201431 -0.9396653  0.26973693</span></span>
-<span><span class="co">#&gt; 3  0.10888296 0.5169765 -0.7232616 -0.10888296</span></span>
-<span><span class="co">#&gt; 4  0.24556428 0.6764410 -0.7997213 -0.24556428</span></span>
-<span><span class="co">#&gt; 5  0.26662472 0.2845246 -0.3854211 -0.26662472</span></span>
-<span><span class="co">#&gt; 6 -0.22527958 0.2285779 -0.5666446  0.22527958</span></span></code></pre></div>
+<span><span class="co">#&gt;          b1        b2         b3          b4</span></span>
+<span><span class="co">#&gt; 1 0.2856799 0.5256940 -0.8214898  0.01011597</span></span>
+<span><span class="co">#&gt; 2 0.1497853 0.5201431 -0.9396653  0.26973693</span></span>
+<span><span class="co">#&gt; 3 0.3151681 0.5169765 -0.7232616 -0.10888296</span></span>
+<span><span class="co">#&gt; 4 0.3688446 0.6764410 -0.7997213 -0.24556428</span></span>
+<span><span class="co">#&gt; 5 0.3675212 0.2845246 -0.3854211 -0.26662472</span></span>
+<span><span class="co">#&gt; 6 0.1127871 0.2285779 -0.5666446  0.22527958</span></span></code></pre></div>
 <p>If interested, we can complete a sequential binary partition giving
 only some partitions</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
@@ -353,9 +353,9 @@ only some partitions</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/sign.html" class="external-link">sign</a></span><span class="op">(</span><span class="va">B</span><span class="op">)</span></span>
 <span><span class="co">#&gt;       b1 .b2 .b3</span></span>
 <span><span class="co">#&gt; erc    1   1   1</span></span>
-<span><span class="co">#&gt; jxcat  1   1  -1</span></span>
-<span><span class="co">#&gt; psc   -1   1   0</span></span>
-<span><span class="co">#&gt; cs     0  -1   0</span></span></code></pre></div>
+<span><span class="co">#&gt; jxcat  1  -1   1</span></span>
+<span><span class="co">#&gt; psc   -1   0   1</span></span>
+<span><span class="co">#&gt; cs     0   0  -1</span></span></code></pre></div>
 <p>We can also define sequential binary partition using a matrix. By
 using a matrix we don’t need to include a dataset. The number of
 components is obtained with the number of rows and component names from

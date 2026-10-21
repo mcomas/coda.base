@@ -11,13 +11,13 @@ Source:
 [`DESCRIPTION`](https://github.com/mcomas/coda.base/blob/HEAD/DESCRIPTION)
 
 Comas-Cufí M (2026). *coda.base: A Basic Set of Functions for
-Compositional Data Analysis*. R package version 1.0.7,
+Compositional Data Analysis*. R package version 1.0.8,
 <https://mcomas.net/coda.base/>.
 
     @Manual{,
       title = {coda.base: A Basic Set of Functions for Compositional Data Analysis},
       author = {Marc Comas-Cufí},
       year = {2026},
-      note = {R package version 1.0.7},
+      note = {R package version 1.0.8},
       url = {https://mcomas.net/coda.base/},
     }

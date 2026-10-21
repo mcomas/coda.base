@@ -297,22 +297,22 @@ head(H3.man)
 or
 
 ``` r
-B = sbp_basis(list(b1 = erc~jxcat+psc~cs, 
+B = sbp_basis(list(b1 = erc~jxcat+psc+cs,
                    b2 = jxcat~erc+psc+cs,
                    b3 = psc~erc+jxcat+cs,
                    b4 = cs~erc+jxcat+psc),
               data=X)
-#> Warning in sbp_basis(list(b1 = erc ~ jxcat + psc ~ cs, b2 = jxcat ~
-#> erc + : Given basis is not orthogonal
+#> Warning in sbp_basis(list(b1 = erc ~ jxcat + psc + cs, b2 = jxcat ~
+#> erc + : Given partition is not a basis
 H4.man = coordinates(X, basis = B)
 head(H4.man)
-#>            b1        b2         b3          b4
-#> 1 -0.01011597 0.5256940 -0.8214898  0.01011597
-#> 2 -0.26973693 0.5201431 -0.9396653  0.26973693
-#> 3  0.10888296 0.5169765 -0.7232616 -0.10888296
-#> 4  0.24556428 0.6764410 -0.7997213 -0.24556428
-#> 5  0.26662472 0.2845246 -0.3854211 -0.26662472
-#> 6 -0.22527958 0.2285779 -0.5666446  0.22527958
+#>          b1        b2         b3          b4
+#> 1 0.2856799 0.5256940 -0.8214898  0.01011597
+#> 2 0.1497853 0.5201431 -0.9396653  0.26973693
+#> 3 0.3151681 0.5169765 -0.7232616 -0.10888296
+#> 4 0.3688446 0.6764410 -0.7997213 -0.24556428
+#> 5 0.3675212 0.2845246 -0.3854211 -0.26662472
+#> 6 0.1127871 0.2285779 -0.5666446  0.22527958
 ```
 
 If interested, we can complete a sequential binary partition giving only
@@ -324,9 +324,9 @@ B = sbp_basis(list(b1 = erc+jxcat~psc),
 sign(B)
 #>       b1 .b2 .b3
 #> erc    1   1   1
-#> jxcat  1   1  -1
-#> psc   -1   1   0
-#> cs     0  -1   0
+#> jxcat  1  -1   1
+#> psc   -1   0   1
+#> cs     0   0  -1
 ```
 
 We can also define sequential binary partition using a matrix. By using

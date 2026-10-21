@@ -7,20 +7,26 @@
 sbp_basis(sbp, data = NULL, fill = FALSE, silent = FALSE)
 }
 \arguments{
-\item{sbp}{A list of formulas or a matrix describing balances.}
+\item{sbp}{A non-empty list of formulas or a numeric matrix with finite
+entries describing balances. At least two parts are required. A matrix
+with zero columns can be supplied to construct a full basis with
+`fill = TRUE`.}
 
-\item{data}{Optional compositional data set used to extract part names when
-`sbp` is given as a list of formulas. If `data = NULL`, part names are
-inferred from the formulas themselves.}
+\item{data}{Optional compositional data set with column names, or a character
+vector of part names, used when `sbp` is a list of formulas. If `data = NULL`,
+part names are inferred from the formulas themselves.}
 
 \item{fill}{Logical; if `TRUE`, complete the supplied balances to obtain a
-full basis.}
+full orthonormal basis. Only compatible hierarchical partitions can be
+completed.}
 
 \item{silent}{Logical; if `FALSE`, report whether the resulting balances form
 a basis, and whether they are orthogonal or orthonormal.}
 }
 \value{
-A matrix whose columns are balances.
+A numeric matrix whose columns are balances. Unnamed supplied balances
+  receive names `b1`, `b2`, etc.; appended balances receive names `.b1`, `.b2`,
+  etc. Names are made unique without changing supplied balance names.
 }
 \description{
 Construct a balance basis from a sequential binary partition (SBP) or from a
@@ -35,6 +41,19 @@ The argument `sbp` can be specified in two ways:
   entries indicate parts in the numerator, negative entries indicate parts in
   the denominator, and zeros indicate unused parts.
 }
+
+Formula groups contain part names joined by `+`, optionally enclosed in
+parentheses. Repeated parts within a group are counted once; numerator and
+denominator groups must be non-empty and disjoint. A named balance can be
+referenced in another formula to include all its parts, regardless of their
+signs. Forward references are allowed, but circular references and ambiguous
+names shared by balances and parts are rejected.
+
+With `fill = TRUE`, the balances must be compatible with a hierarchical SBP:
+each pair must involve disjoint sets of parts, or one balance must lie wholly
+within one group of the other. Completion preserves the supplied columns and
+appends balances to form a full orthonormal basis. General, non-hierarchical
+collections of balances remain supported with `fill = FALSE`.
 }
 \examples{
 X <- data.frame(

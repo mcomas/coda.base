@@ -9,7 +9,7 @@ more general collection of balances."><meta property="og:image" content="https:/
 
     <a class="navbar-brand me-2" href="../index.html">coda.base</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.8</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,18 +55,22 @@ more general collection of balances.</p>
 
 
 <dl><dt id="arg-sbp">sbp<a class="anchor" aria-label="anchor" href="#arg-sbp"></a></dt>
-<dd><p>A list of formulas or a matrix describing balances.</p></dd>
+<dd><p>A non-empty list of formulas or a numeric matrix with finite
+entries describing balances. At least two parts are required. A matrix
+with zero columns can be supplied to construct a full basis with
+`fill = TRUE`.</p></dd>
 
 
 <dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
-<dd><p>Optional compositional data set used to extract part names when
-`sbp` is given as a list of formulas. If `data = NULL`, part names are
-inferred from the formulas themselves.</p></dd>
+<dd><p>Optional compositional data set with column names, or a character
+vector of part names, used when `sbp` is a list of formulas. If `data = NULL`,
+part names are inferred from the formulas themselves.</p></dd>
 
 
 <dt id="arg-fill">fill<a class="anchor" aria-label="anchor" href="#arg-fill"></a></dt>
 <dd><p>Logical; if `TRUE`, complete the supplied balances to obtain a
-full basis.</p></dd>
+full orthonormal basis. Only compatible hierarchical partitions can be
+completed.</p></dd>
 
 
 <dt id="arg-silent">silent<a class="anchor" aria-label="anchor" href="#arg-silent"></a></dt>
@@ -76,7 +80,9 @@ a basis, and whether they are orthogonal or orthonormal.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A matrix whose columns are balances.</p>
+    <p>A numeric matrix whose columns are balances. Unnamed supplied balances
+  receive names `b1`, `b2`, etc.; appended balances receive names `.b1`, `.b2`,
+  etc. Names are made unique without changing supplied balance names.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -85,7 +91,18 @@ a basis, and whether they are orthogonal or orthonormal.</p></dd>
 <li><p>as a matrix with one column per balance and one row per part. Positive
   entries indicate parts in the numerator, negative entries indicate parts in
   the denominator, and zeros indicate unused parts.</p></li>
-</ul></div>
+</ul><p>Formula groups contain part names joined by `+`, optionally enclosed in
+parentheses. Repeated parts within a group are counted once; numerator and
+denominator groups must be non-empty and disjoint. A named balance can be
+referenced in another formula to include all its parts, regardless of their
+signs. Forward references are allowed, but circular references and ambiguous
+names shared by balances and parts are rejected.</p>
+<p>With `fill = TRUE`, the balances must be compatible with a hierarchical SBP:
+each pair must involve disjoint sets of parts, or one balance must lie wholly
+within one group of the other. Completion preserves the supplied columns and
+appends balances to form a full orthonormal basis. General, non-hierarchical
+collections of balances remain supported with `fill = FALSE`.</p>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>

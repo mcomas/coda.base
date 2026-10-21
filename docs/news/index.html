@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">coda.base</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.8</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,6 +37,13 @@
       <small>Source: <a href="https://github.com/mcomas/coda.base/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.0.8" id="codabase-108-release-date-2026-10-21">coda.base 1.0.8 (Release date: 2026-10-21)<a class="anchor" aria-label="anchor" href="#codabase-108-release-date-2026-10-21"></a></h2>
+<ul><li>
+<code><a href="../reference/sbp_basis.html">sbp_basis()</a></code> validates formula groups and names, resolves forward balance references efficiently, and reports circular references instead of hanging.</li>
+<li>Completion with <code>fill = TRUE</code> preserves supplied balances, handles missing partitions in both branches, and rejects incompatible hierarchical splits.</li>
+<li>Basis construction normalizes balances once and avoids unnecessary QR decompositions for orthonormal bases. Unnamed formula balances now receive generated names, and <code>silent = TRUE</code> is respected during completion.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.0.7" id="codabase-107-release-date-2026-05-12">coda.base 1.0.7 (Release date: 2026-05-12)<a class="anchor" aria-label="anchor" href="#codabase-107-release-date-2026-05-12"></a></h2>
 <ul><li>

@@ -13,18 +13,22 @@ sbp_basis(sbp, data = NULL, fill = FALSE, silent = FALSE)
 
 - sbp:
 
-  A list of formulas or a matrix describing balances.
+  A non-empty list of formulas or a numeric matrix with finite entries
+  describing balances. At least two parts are required. A matrix with
+  zero columns can be supplied to construct a full basis with \`fill =
+  TRUE\`.
 
 - data:
 
-  Optional compositional data set used to extract part names when
-  \`sbp\` is given as a list of formulas. If \`data = NULL\`, part names
-  are inferred from the formulas themselves.
+  Optional compositional data set with column names, or a character
+  vector of part names, used when \`sbp\` is a list of formulas. If
+  \`data = NULL\`, part names are inferred from the formulas themselves.
 
 - fill:
 
   Logical; if \`TRUE\`, complete the supplied balances to obtain a full
-  basis.
+  orthonormal basis. Only compatible hierarchical partitions can be
+  completed.
 
 - silent:
 
@@ -33,7 +37,10 @@ sbp_basis(sbp, data = NULL, fill = FALSE, silent = FALSE)
 
 ## Value
 
-A matrix whose columns are balances.
+A numeric matrix whose columns are balances. Unnamed supplied balances
+receive names \`b1\`, \`b2\`, etc.; appended balances receive names
+\`.b1\`, \`.b2\`, etc. Names are made unique without changing supplied
+balance names.
 
 ## Details
 
@@ -45,6 +52,21 @@ The argument \`sbp\` can be specified in two ways:
 - as a matrix with one column per balance and one row per part. Positive
   entries indicate parts in the numerator, negative entries indicate
   parts in the denominator, and zeros indicate unused parts.
+
+Formula groups contain part names joined by \`+\`, optionally enclosed
+in parentheses. Repeated parts within a group are counted once;
+numerator and denominator groups must be non-empty and disjoint. A named
+balance can be referenced in another formula to include all its parts,
+regardless of their signs. Forward references are allowed, but circular
+references and ambiguous names shared by balances and parts are
+rejected.
+
+With \`fill = TRUE\`, the balances must be compatible with a
+hierarchical SBP: each pair must involve disjoint sets of parts, or one
+balance must lie wholly within one group of the other. Completion
+preserves the supplied columns and appends balances to form a full
+orthonormal basis. General, non-hierarchical collections of balances
+remain supported with \`fill = FALSE\`.
 
 ## Examples
 

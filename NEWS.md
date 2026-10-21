@@ -1,3 +1,13 @@
+coda.base 1.0.8 (Release date: 2026-10-21)
+===============
+* `sbp_basis()` validates formula groups and names, resolves forward balance
+  references efficiently, and reports circular references instead of hanging.
+* Completion with `fill = TRUE` preserves supplied balances, handles missing
+  partitions in both branches, and rejects incompatible hierarchical splits.
+* Basis construction normalizes balances once and avoids unnecessary QR
+  decompositions for orthonormal bases. Unnamed formula balances now receive
+  generated names, and `silent = TRUE` is respected during completion.
+
 coda.base 1.0.7 (Release date: 2026-05-12)
 ===============
 * `dist_coda()` now accepts `method = "L2"` as an alias for the Euclidean

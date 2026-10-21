@@ -192,7 +192,7 @@ head(H3.man)
 or 
 
 ```{r}
-B = sbp_basis(list(b1 = erc~jxcat+psc~cs, 
+B = sbp_basis(list(b1 = erc~jxcat+psc+cs,
                    b2 = jxcat~erc+psc+cs,
                    b3 = psc~erc+jxcat+cs,
                    b4 = cs~erc+jxcat+psc),
