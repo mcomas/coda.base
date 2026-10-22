@@ -210,6 +210,26 @@ B = sbp_basis(list(b1 = erc+jxcat~psc),
 sign(B)
 ```
 
+For balances compatible with a hierarchy, completion adds further balances.
+For other collections, it adds an orthonormal basis of the orthogonal
+complement within the clr-plane. These additional columns have names starting
+with `.q` and may be general log-contrasts rather than balances:
+
+```{r}
+B.qr = sbp_basis(list(
+  ef = e ~ f,
+  cd = c ~ d,
+  aef = a + e + f ~ b + c + d,
+  ab = a + b ~ c + d + e + f
+), data = letters[1:6], fill = TRUE)
+round(B.qr, 3)
+round(crossprod(B.qr), 10)
+```
+
+All supplied balances retain their names, order and coefficients. If they are
+not orthogonal, the completed basis is also non-orthogonal and a warning is
+issued. Dependent balances are retained too, resulting in a redundant
+generating system and a warning. Set `silent = TRUE` to suppress these warnings.
 
 We can also define sequential binary partition using a matrix. By using a matrix we don't need to include a dataset. The number of components is obtained with the number of rows and component names from row names (if available).
 

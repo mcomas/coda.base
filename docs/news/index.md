@@ -7,8 +7,10 @@
   references efficiently, and reports circular references instead of
   hanging.
 - Completion with `fill = TRUE` preserves supplied balances, handles
-  missing partitions in both branches, and rejects incompatible
-  hierarchical splits.
+  missing partitions in both branches, and uses an orthogonal complement
+  obtained by QR for non-hierarchical collections. Non-orthogonal and
+  dependent inputs are retained with warnings; added QR columns may be
+  general log-contrasts.
 - Basis construction normalizes balances once and avoids unnecessary QR
   decompositions for orthonormal bases. Unnamed formula balances now
   receive generated names, and `silent = TRUE` is respected during

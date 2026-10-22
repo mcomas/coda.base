@@ -435,14 +435,10 @@ fill_partition <- function(D) {
 fill_sbp <- function(iRES) {
   D <- nrow(iRES)
   K <- ncol(iRES)
-  incompatible <- function() {
-    stop("'fill = TRUE' requires balances compatible with a hierarchical SBP.")
-  }
-  if (K > D - 1L) incompatible()
+  # NULL signals a non-hierarchical collection to the QR completion path.
+  if (K > D - 1L) return(NULL)
 
-  BAL <- matrix(0, D, D - 1L)
-  BAL[, seq_len(K)] <- iRES
-  next_column <- K
+  additions <- list()
   component <- seq_len(D)
   members <- as.list(seq_len(D))
   sizes <- rep.int(1L, D)
@@ -453,10 +449,7 @@ fill_sbp <- function(iRES) {
     root <- roots[which.max(sizes[roots])]
     for (other in roots[roots != root]) {
       if (add_balance) {
-        next_column <<- next_column + 1L
-        if (next_column > D - 1L) incompatible()
-        BAL[members[[root]], next_column] <<- 1
-        BAL[members[[other]], next_column] <<- -1
+        additions[[length(additions) + 1L]] <<- list(members[[root]], members[[other]])
       }
       component[members[[other]]] <<- root
       members[[root]] <<- c(members[[root]], members[[other]])
@@ -476,7 +469,7 @@ fill_sbp <- function(iRES) {
     negative_roots <- unique(component[negative])
     if (sum(sizes[positive_roots]) != length(positive) ||
         sum(sizes[negative_roots]) != length(negative)) {
-      incompatible()
+      return(NULL)
     }
     left <- join(positive_roots)
     right <- join(negative_roots)
@@ -485,6 +478,13 @@ fill_sbp <- function(iRES) {
   }
   # Connect disjoint trees and any parts absent from the supplied balances.
   join(which(sizes > 0L))
+  # Allocate the completed matrix only after compatibility is established.
+  BAL <- matrix(0, D, D - 1L)
+  BAL[, seq_len(K)] <- iRES
+  for (i in seq_along(additions)) {
+    BAL[additions[[i]][[1]], K + i] <- 1
+    BAL[additions[[i]][[2]], K + i] <- -1
+  }
   BAL
 }
 

@@ -1,6 +1,7 @@
 # \`coda.base\` features' enumeration
 
 ``` r
+
 library(coda.base)
 #> 
 #> Attaching package: 'coda.base'
@@ -14,6 +15,7 @@ library(coda.base)
 - Simulated data set:
 
 ``` r
+
 nP = 6
 nO = 8
 set.seed(1)
@@ -37,6 +39,7 @@ X
 - Center:
 
 ``` r
+
 center(X)
 #>        P1        P2        P3        P4        P5        P6 
 #> 0.1732294 0.1599997 0.1982046 0.1544340 0.1509712 0.1631611
@@ -45,6 +48,7 @@ center(X)
 - Variation array:
 
 ``` r
+
 variation_array(X)
 #>           P1        P2       P3        P4        P5        P6
 #> P1 0.0000000 1.7807354 2.154229 2.1457756 0.9638581 0.6955516
@@ -61,6 +65,7 @@ variation_array(X)
 include the Aitchison distance between compositions:
 
 ``` r
+
 dist(X, method = 'aitchison')
 #> Warning: Use dist_coda(x, method = "aitchison") instead. The Aitchison
 #> extension in coda.base::dist() will be removed in a future version.
@@ -85,6 +90,7 @@ dist(X, method = 'aitchison')
 ##### Log-ratio coordinates. `coordinates()`
 
 ``` r
+
 coordinates(X)
 #>          ilr1        ilr2       ilr3       ilr4       ilr5
 #> O1 -0.8501086 -0.00746765 -0.5560864 -0.2230977  0.3219244
@@ -127,6 +133,7 @@ constructed (following section).
 ##### Functions to build log-contrast matrices
 
 ``` r
+
 ilr_basis(nP)
 #>          ilr1       ilr2       ilr3       ilr4       ilr5
 #> c1  0.7071068  0.4082483  0.2886751  0.2236068  0.1825742
@@ -138,6 +145,7 @@ ilr_basis(nP)
 ```
 
 ``` r
+
 all.equal(as.numeric(coordinates(X, 'ilr')),
           as.numeric(log(X) %*% ilr_basis(nP)))
 #> [1] TRUE

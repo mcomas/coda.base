@@ -24,12 +24,14 @@ Core numerical operations are implemented in C++ for performance.
 Install the released version from CRAN:
 
 ``` r
+
 install.packages("coda.base")
 ```
 
 Install the development version from GitHub:
 
 ``` r
+
 # install.packages("pak")
 pak::pak("mcomas/coda.base")
 ```
@@ -40,6 +42,7 @@ Transform a composition into isometric log-ratio coordinates and
 reconstruct the original composition:
 
 ``` r
+
 library(coda.base)
 
 x <- c(a = 0.2, b = 0.3, c = 0.5)
@@ -59,6 +62,7 @@ The package also provides the standard operations of the Aitchison
 geometry:
 
 ``` r
+
 x <- c(a = 2, b = 3, c = 5)
 y <- c(a = 1, b = 4, c = 5)
 
@@ -76,6 +80,7 @@ Principal balances provide interpretable coordinates that seek to
 capture the variation in a compositional data set:
 
 ``` r
+
 votes <- parliament2017[-1]
 B_pb <- pb_basis(votes, method = "constrained")
 head(coordinates(votes, B_pb), 3)
@@ -107,6 +112,7 @@ If you use `coda.base` in research, retrieve the recommended citation
 with:
 
 ``` r
+
 citation("coda.base")
 ```
 

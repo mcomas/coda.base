@@ -9,6 +9,7 @@ In this vignette we work with a subcomposition of the results obtained
 in different regions of Catalonia in 2017’s parliament elections:
 
 ``` r
+
 library(coda.base)
 data('parliament2017')
 X = parliament2017[,c('erc','jxcat','psc','cs')]
@@ -26,6 +27,7 @@ If you don’t want the last part in the denominator, the easiest way to
 define an alr-coordinates is to set `basis='alr'`:
 
 ``` r
+
 H1.alr = coordinates(X, basis = 'alr')
 head(H1.alr)
 #>          alr1        alr2       alr3
@@ -42,6 +44,7 @@ denominator. The basis used to build `H1.alr` can be obtained with the
 function `alr_bases()`:
 
 ``` r
+
 alr_basis(X)
 #>       alr1 alr2 alr3
 #> erc      1    0    0
@@ -54,6 +57,7 @@ In fact, function `alr_basis` allows to define any type of alr-like
 coordinate by defining the numerator and the denominator:
 
 ``` r
+
 B.alr = alr_basis(X, numerator = c(4,2,3), denominator = 1)
 B.alr
 #>       alr1 alr2 alr3
@@ -68,6 +72,7 @@ The log-contrast matrix can be used as `basis` parameter in
 function:
 
 ``` r
+
 H2.alr = coordinates(X, basis = B.alr)
 head(H2.alr)
 #>          alr1        alr2       alr3
@@ -85,6 +90,7 @@ Building centered log-ratio coordinates can be accomplished by setting
 parameter `basis='clr'` or
 
 ``` r
+
 H.clr = coordinates(X, basis = 'clr')
 head(H.clr)
 #>         clr1      clr2       clr3         clr4
@@ -107,6 +113,7 @@ The default ilr coordinate used by `coda.base` are accessible by simply
 calling function `coordinates` without parameters:
 
 ``` r
+
 H1.ilr = coordinates(X)
 head(H1.ilr)
 #>          ilr1      ilr2        ilr3
@@ -121,6 +128,7 @@ head(H1.ilr)
 Parameter `basis` is set to `ilr` by default:
 
 ``` r
+
 all.equal( coordinates(X, basis = 'ilr'),
            H1.ilr )
 #> [1] TRUE
@@ -134,6 +142,7 @@ log-contrast with the highest variance, the second the one independent
 of the first and with the highest variance and so on:
 
 ``` r
+
 H2.ilr = coordinates(X, basis = 'pc')
 head(H2.ilr)
 #>          pc1         pc2       pc3
@@ -151,6 +160,7 @@ barplot(apply(H2.ilr, 2, var))
 Note that the PC coordinates are independent:
 
 ``` r
+
 cov(H2.ilr)
 #>               pc1           pc2           pc3
 #> pc1  4.475083e-01 -8.279305e-17 -1.474304e-16
@@ -162,6 +172,7 @@ The Principal Balance coordinates are similar to PC coordinates but with
 the restriction that the log contrast are balances
 
 ``` r
+
 H3.ilr = coordinates(X, basis = 'pb')
 head(H3.ilr)
 #>          pb1         pb2         pb3
@@ -179,6 +190,7 @@ barplot(apply(H3.ilr, 2, var))
 Moreover, they are not independent:
 
 ``` r
+
 cor(H3.ilr)
 #>            pb1       pb2        pb3
 #> pb1  1.0000000 0.6043786 -0.3197742
@@ -191,18 +203,21 @@ components is very high. `coda.base` allows building PB approximations
 using different algorithms.
 
 ``` r
+
 X100 = exp(matrix(rnorm(1000*100), ncol = 100))
 ```
 
 - *Hierarchical clustering based algorithm*.
 
 ``` r
+
 PB1.ward = pb_basis(X100, method = 'cluster')
 ```
 
 - *Constrained search algorithm*
 
 ``` r
+
 PB1.constrained = pb_basis(X100, method = 'constrained')
 ```
 
@@ -210,6 +225,7 @@ We can compare their performance (variance explained by the first
 balance) with respect to the principal components.
 
 ``` r
+
 PC_approx = coordinates(X100, cbind(pc_basis(X100)[,1], PB1.ward[,1], PB1.constrained[,1]))
 names(PC_approx) = c('PC', 'Ward', 'Constrained')
 apply(PC_approx, 2, var)
@@ -222,6 +238,7 @@ consists in defining well balanced balances, i.e. equal number of
 branches in each balance.
 
 ``` r
+
 H4.ilr = coordinates(X, basis = 'cdp')
 head(H4.ilr)
 #>        ilr1        ilr2        ilr3
@@ -241,6 +258,7 @@ We can define the coordinates directly by providing the log-contrast
 matrix.
 
 ``` r
+
 B = matrix(c(-1,-1,2,0,
              1,0,-0.5,-0.5,
              -0.5,0.5,0,0), ncol = 3)
@@ -260,6 +278,7 @@ head(H1.man)
 We can also define balances using formula `numerator~denominator`:
 
 ``` r
+
 B.man = sbp_basis(list(b1 = erc~jxcat,
                        b2 = psc~cs,
                        b3 = erc+jxcat~psc+cs), 
@@ -279,6 +298,7 @@ With `sbp_basis` we do not need to define neither a basis nor a system
 generator
 
 ``` r
+
 B = sbp_basis(list(b1 = erc+jxcat~psc+cs), 
               data=X)
 #> Warning in sbp_basis(list(b1 = erc + jxcat ~ psc + cs), data = X):
@@ -297,6 +317,7 @@ head(H3.man)
 or
 
 ``` r
+
 B = sbp_basis(list(b1 = erc~jxcat+psc+cs,
                    b2 = jxcat~erc+psc+cs,
                    b3 = psc~erc+jxcat+cs,
@@ -319,6 +340,7 @@ If interested, we can complete a sequential binary partition giving only
 some partitions
 
 ``` r
+
 B = sbp_basis(list(b1 = erc+jxcat~psc), 
               data=X, fill = TRUE)
 sign(B)
@@ -329,12 +351,50 @@ sign(B)
 #> cs     0   0  -1
 ```
 
+For balances compatible with a hierarchy, completion adds further
+balances. For other collections, it adds an orthonormal basis of the
+orthogonal complement within the clr-plane. These additional columns
+have names starting with `.q` and may be general log-contrasts rather
+than balances:
+
+``` r
+
+B.qr = sbp_basis(list(
+  ef = e ~ f,
+  cd = c ~ d,
+  aef = a + e + f ~ b + c + d,
+  ab = a + b ~ c + d + e + f
+), data = letters[1:6], fill = TRUE)
+round(B.qr, 3)
+#>       ef     cd    aef     ab    .q5
+#> a  0.000  0.000  0.408  0.577 -0.577
+#> b  0.000  0.000 -0.408  0.577  0.577
+#> c  0.000  0.707 -0.408 -0.289 -0.289
+#> d  0.000 -0.707 -0.408 -0.289 -0.289
+#> e  0.707  0.000  0.408 -0.289  0.289
+#> f -0.707  0.000  0.408 -0.289  0.289
+round(crossprod(B.qr), 10)
+#>     ef cd aef ab .q5
+#> ef   1  0   0  0   0
+#> cd   0  1   0  0   0
+#> aef  0  0   1  0   0
+#> ab   0  0   0  1   0
+#> .q5  0  0   0  0   1
+```
+
+All supplied balances retain their names, order and coefficients. If
+they are not orthogonal, the completed basis is also non-orthogonal and
+a warning is issued. Dependent balances are retained too, resulting in a
+redundant generating system and a warning. Set `silent = TRUE` to
+suppress these warnings.
+
 We can also define sequential binary partition using a matrix. By using
 a matrix we don’t need to include a dataset. The number of components is
 obtained with the number of rows and component names from row names (if
 available).
 
 ``` r
+
 P =  matrix(c(1, 1,-1,-1,
               1,-1, 0, 0,
               0, 0, 1,-1), ncol= 3)

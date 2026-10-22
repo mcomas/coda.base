@@ -67,7 +67,7 @@
                         <h4 data-toc-skip class="author">Marc
 Comas-Cufí</h4>
             
-            <h4 data-toc-skip class="date">2026-10-21</h4>
+            <h4 data-toc-skip class="date">2026-10-22</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/mcomas/coda.base/blob/HEAD/vignettes/coda-base.Rmd" class="external-link"><code>vignettes/coda-base.Rmd</code></a></small>
       <div class="d-none name"><code>coda-base.Rmd</code></div>
@@ -356,11 +356,43 @@ only some partitions</p>
 <span><span class="co">#&gt; jxcat  1  -1   1</span></span>
 <span><span class="co">#&gt; psc   -1   0   1</span></span>
 <span><span class="co">#&gt; cs     0   0  -1</span></span></code></pre></div>
+<p>For balances compatible with a hierarchy, completion adds further
+balances. For other collections, it adds an orthonormal basis of the
+orthogonal complement within the clr-plane. These additional columns
+have names starting with <code>.q</code> and may be general
+log-contrasts rather than balances:</p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">B.qr</span> <span class="op">=</span> <span class="fu"><a href="../reference/sbp_basis.html">sbp_basis</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  ef <span class="op">=</span> <span class="va">e</span> <span class="op">~</span> <span class="va">f</span>,</span>
+<span>  cd <span class="op">=</span> <span class="va">c</span> <span class="op">~</span> <span class="va">d</span>,</span>
+<span>  aef <span class="op">=</span> <span class="va">a</span> <span class="op">+</span> <span class="va">e</span> <span class="op">+</span> <span class="va">f</span> <span class="op">~</span> <span class="va">b</span> <span class="op">+</span> <span class="va">c</span> <span class="op">+</span> <span class="va">d</span>,</span>
+<span>  ab <span class="op">=</span> <span class="va">a</span> <span class="op">+</span> <span class="va">b</span> <span class="op">~</span> <span class="va">c</span> <span class="op">+</span> <span class="va">d</span> <span class="op">+</span> <span class="va">e</span> <span class="op">+</span> <span class="va">f</span></span>
+<span><span class="op">)</span>, data <span class="op">=</span> <span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span>, fill <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">B.qr</span>, <span class="fl">3</span><span class="op">)</span></span>
+<span><span class="co">#&gt;       ef     cd    aef     ab    .q5</span></span>
+<span><span class="co">#&gt; a  0.000  0.000  0.408  0.577 -0.577</span></span>
+<span><span class="co">#&gt; b  0.000  0.000 -0.408  0.577  0.577</span></span>
+<span><span class="co">#&gt; c  0.000  0.707 -0.408 -0.289 -0.289</span></span>
+<span><span class="co">#&gt; d  0.000 -0.707 -0.408 -0.289 -0.289</span></span>
+<span><span class="co">#&gt; e  0.707  0.000  0.408 -0.289  0.289</span></span>
+<span><span class="co">#&gt; f -0.707  0.000  0.408 -0.289  0.289</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/crossprod.html" class="external-link">crossprod</a></span><span class="op">(</span><span class="va">B.qr</span><span class="op">)</span>, <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="co">#&gt;     ef cd aef ab .q5</span></span>
+<span><span class="co">#&gt; ef   1  0   0  0   0</span></span>
+<span><span class="co">#&gt; cd   0  1   0  0   0</span></span>
+<span><span class="co">#&gt; aef  0  0   1  0   0</span></span>
+<span><span class="co">#&gt; ab   0  0   0  1   0</span></span>
+<span><span class="co">#&gt; .q5  0  0   0  0   1</span></span></code></pre></div>
+<p>All supplied balances retain their names, order and coefficients. If
+they are not orthogonal, the completed basis is also non-orthogonal and
+a warning is issued. Dependent balances are retained too, resulting in a
+redundant generating system and a warning. Set
+<code>silent = TRUE</code> to suppress these warnings.</p>
 <p>We can also define sequential binary partition using a matrix. By
 using a matrix we don’t need to include a dataset. The number of
 components is obtained with the number of rows and component names from
 row names (if available).</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">P</span> <span class="op">=</span>  <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>,<span class="op">-</span><span class="fl">1</span>,<span class="op">-</span><span class="fl">1</span>,</span>
 <span>              <span class="fl">1</span>,<span class="op">-</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0</span>,</span>
 <span>              <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span>,<span class="op">-</span><span class="fl">1</span><span class="op">)</span>, ncol<span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>

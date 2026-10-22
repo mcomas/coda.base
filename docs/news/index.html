@@ -41,7 +41,7 @@
 <h2 class="pkg-version" data-toc-text="1.0.8" id="codabase-108-release-date-2026-10-21">coda.base 1.0.8 (Release date: 2026-10-21)<a class="anchor" aria-label="anchor" href="#codabase-108-release-date-2026-10-21"></a></h2>
 <ul><li>
 <code><a href="../reference/sbp_basis.html">sbp_basis()</a></code> validates formula groups and names, resolves forward balance references efficiently, and reports circular references instead of hanging.</li>
-<li>Completion with <code>fill = TRUE</code> preserves supplied balances, handles missing partitions in both branches, and rejects incompatible hierarchical splits.</li>
+<li>Completion with <code>fill = TRUE</code> preserves supplied balances, handles missing partitions in both branches, and uses an orthogonal complement obtained by QR for non-hierarchical collections. Non-orthogonal and dependent inputs are retained with warnings; added QR columns may be general log-contrasts.</li>
 <li>Basis construction normalizes balances once and avoids unnecessary QR decompositions for orthonormal bases. Unnamed formula balances now receive generated names, and <code>silent = TRUE</code> is respected during completion.</li>
 </ul></div>
     <div class="section level2">
