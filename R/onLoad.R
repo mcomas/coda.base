@@ -7,5 +7,7 @@
   olr_c(1:10)
 }
 .setOptions <- function(){
-  options("coda.base.basis" = FALSE)
+  if (is.null(getOption("coda.base.basis"))) {
+    options("coda.base.basis" = FALSE)
+  }
 }

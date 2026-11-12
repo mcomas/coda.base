@@ -62,6 +62,19 @@ coordinates.
 ## Examples
 
 ``` r
+# Replace zero protein in hippopotamus milk and zero lactose in seal milk.
+X <- mammals_milk[, c("W", "P", "F", "L", "A")]
+X_imp <- coda_replacement(X)
+affected <- mammals_milk$mammal %in% c("Hippopotamus", "Seal")
+X[affected, ]
+#>       W   P    F   L    A
+#> 13 90.4 0.0  4.5 4.4 0.10
+#> 23 46.4 9.7 42.0 0.0 0.85
+X_imp[affected, ]
+#>            W           P          F           L            A
+#> 13 0.9012063 0.009071877 0.04486093 0.043864022 0.0009969096
+#> 23 0.4680014 0.097836502 0.42362197 0.001966816 0.0085733017
+
 X <- matrix(c(
   0.00, 0.30, 0.70,
   0.20,   NA, 0.80,

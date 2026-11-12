@@ -1,4 +1,4 @@
-coda.base 1.0.8 (Release date: 2026-10-21)
+coda.base 1.0.8 (Release date: 2026-11-12)
 ===============
 * `sbp_basis()` validates formula groups and names, resolves forward balance
   references efficiently, and reports circular references instead of hanging.
@@ -9,6 +9,9 @@ coda.base 1.0.8 (Release date: 2026-10-21)
 * Basis construction normalizes balances once and avoids unnecessary QR
   decompositions for orthonormal bases. Unnamed formula balances now receive
   generated names, and `silent = TRUE` is respected during completion.
+* Corrected and expanded `mammals_milk` to 26 mammals, recording the blank
+  protein and lactose entries as zeros and adding a replacement example.
+* Loading the package preserves an existing `coda.base.basis` user option.
 
 coda.base 1.0.7 (Release date: 2026-05-12)
 ===============

@@ -2,8 +2,8 @@
 #'
 #' A minimum set of functions to perform compositional data analysis
 #' using the log-ratio approach introduced by John Aitchison (1982)
-#' <https://www.jstor.org/stable/2345821>. Main functions
-#' have been implemented in c++ for better performance.
+#' \doi{10.1111/j.2517-6161.1982.tb01195.x}. Main functions
+#' have been implemented in C++ for better performance.
 #'
 #' @docType package
 #' @author Marc Comas-Cufí

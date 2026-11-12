@@ -204,10 +204,19 @@
 #'
 #' @description
 #' The `mammals_milk` data set contains the percentages of five constituents of
-#' the milk of 24 mammals:
+#' the milk of 26 mammals:
 #' \eqn{[W, P, F, L, A]}{[W, P, F, L, A]},
 #' where `W` is water, `P` is protein, `F` is fat, `L` is lactose, and `A` is
 #' ash.
+#'
+#' The blank protein entry for hippopotamus and the blank lactose entry for
+#' seal are recorded as zeros. Before log-ratio analysis,
+#' these values can be imputed using \code{\link{coda_replacement}()}.
+#'
+#' @source Spector, W. S. (ed.) (1956). \emph{Handbook of Biological Data}.
+#' W. B. Saunders, Philadelphia, Table 35,
+#' \emph{Milk, chemical composition: various animals}, p. 50.
+#' Values are grams per 100 grams of whole milk, transcribed from the table.
 #'
 #' @name mammals_milk
 "mammals_milk"

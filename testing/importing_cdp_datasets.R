@@ -33,8 +33,10 @@ str(blood_mn)
 l_df[['blood_mn']] = blood_mn
 
 # A.7 Mammal’s milk
-mammals_milk =read_cdp('~/Software/CoDaPack/data/mammalsmilk.cdp')
-mammals_milk$code = NULL
+# Spector, W. S. (ed.) (1956), Handbook of Biological Data,
+# W. B. Saunders, Philadelphia, Table 35, p. 50 (docs/Pasted image.png).
+# Blank protein for Hippopotamus and blank lactose for Seal are zeros.
+mammals_milk = read.csv('testing/csv_files/mammals_milk.csv')
 str(mammals_milk)
 l_df[['mammals_milk']] = mammals_milk
 

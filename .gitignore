@@ -12,3 +12,4 @@ src_old
 ..Rcheck
 coda.base.Rcheck
 .positai
+cran-review*

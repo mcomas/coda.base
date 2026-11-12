@@ -13,3 +13,13 @@ src_old
 ^\.claude$
 ^README\.Rmd$
 ^README_files$
+^article$
+^upload_imae$
+^_pkgdown\.yml$
+^pkgdown$
+^\.agents$
+^\.aws$
+^cran-comments\.md$
+^CRAN-REVIEW\.md$
+^\.github$
+^revdep-results$

@@ -23,6 +23,13 @@
 #' and imputed clr coordinates.
 #'
 #' @examples
+#' # Replace zero protein in hippopotamus milk and zero lactose in seal milk.
+#' X <- mammals_milk[, c("W", "P", "F", "L", "A")]
+#' X_imp <- coda_replacement(X)
+#' affected <- mammals_milk$mammal %in% c("Hippopotamus", "Seal")
+#' X[affected, ]
+#' X_imp[affected, ]
+#'
 #' X <- matrix(c(
 #'   0.00, 0.30, 0.70,
 #'   0.20,   NA, 0.80,
